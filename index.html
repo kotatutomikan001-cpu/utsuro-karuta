@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>氷室うつろ配信名言かるたとり</title>
+  <style>
+    :root {
+      --neon-blue: #00ffff;
+      --neon-light-blue: #b3ffff;
+      --karuta-green: #008b8b;
+    }
+
+    body {
+      background-image: url('tatami.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #fff;
+      font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* タイトル画面 */
+    #title-screen {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .title-logo {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-blue);
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .mode-select-box {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid var(--neon-blue);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      border-radius: 15px;
+      padding: 20px 40px;
+      margin-bottom: 35px;
+      text-align: center;
+    }
+
+    .mode-select-title {
+      font-size: 1.1rem;
+      color: var(--neon-light-blue);
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .mode-options {
+      display: flex;
+      gap: 20px;
+    }
+
+    .mode-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 2px solid #666;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn:hover {
+      border-color: var(--neon-blue);
+      color: var(--neon-light-blue);
+    }
+
+    .mode-btn.active {
+      background: var(--neon-blue);
+      color: #000;
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 15px var(--neon-blue);
+    }
+
+    .action-btn {
+      background: var(--neon-blue);
+      color: #000;
+      border: none;
+      padding: 18px 60px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 30px var(--neon-blue);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 50px var(--neon-blue), 0 0 20px #fff;
+    }
+
+    /* ゲームエリア全体 */
+    #game-container {
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 上部ヘッダー */
+    #top-header {
+      margin-top: 15px;
+      display: flex;
+      gap: 15px;
+      width: 92%;
+      max-width: 1300px;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #timer-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--neon-blue);
+      box-shadow: 0 0 15px var(--neon-blue);
+      border-radius: 10px;
+      padding: 10px 20px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      min-width: 130px;
+    }
+
+    #timer-label {
+      font-size: 0.85rem;
+      color: var(--neon-light-blue);
+    }
+
+    #timer-display {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #fff;
+      font-family: monospace;
+    }
+
+    #target-voice-container {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid var(--neon-blue);
+      box-shadow: 0 0 15px var(--neon-blue);
+      border-radius: 10px;
+      padding: 10px 20px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      max-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #voice-status {
+      font-size: 0.85rem;
+      color: var(--neon-light-blue);
+      margin-bottom: 2px;
+    }
+
+    #target-voice {
+      font-size: clamp(0.95rem, 1.8vw, 1.35rem);
+      color: #fff;
+      font-weight: bold;
+      line-height: 1.3;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    #current-mode-badge {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--neon-blue);
+      box-shadow: 0 0 10px var(--neon-blue);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      color: var(--neon-light-blue);
+      font-weight: bold;
+      backdrop-filter: blur(4px);
+    }
+
+    #retire-btn {
+      background: rgba(255, 51, 85, 0.2);
+      border: 2px solid #ff3355;
+      color: #ff99aa;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: all 0.15s;
+    }
+
+    #retire-btn:hover {
+      background: #ff3355;
+      color: #fff;
+      box-shadow: 0 0 15px #ff3355;
+    }
+
+    /* かるた盤面エリア */
+    #board-container {
+      position: relative;
+      width: 92%;
+      max-width: 1300px;
+      height: 74vh;
+      margin-bottom: 15px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      height: 100%;
+    }
+
+    #deal-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+      z-index: 50;
+    }
+
+    /* かるた札 */
+    .card {
+      background: #fff;
+      color: #333;
+      border-radius: 6px;
+      padding: 5px;
+      border: 4px solid var(--karuta-green);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+      user-select: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: scale(1.04) translateY(-4px);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
+    }
+
+    .card-char-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      background-color: #ffffff;
+      border: 2px solid var(--karuta-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #111;
+      font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+
+    .card-char-badge.hidden {
+      display: none !important;
+    }
+
+    /* 上側：16:9 サムネイル */
+    .card .thumbnail-wrapper {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #000;
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card .thumbnail-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* 下側：日付＋タイトル（★文字サイズ拡大調整） */
+    .card .card-info {
+      padding-top: 4px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ★日付のフォントサイズを大きく変更 */
+    .card .card-date {
+      color: #555;
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.1;
+      margin-bottom: 3px;
+    }
+
+    /* ★配信タイトルのフォントサイズを大きく変更 */
+    .card .card-title {
+      font-weight: bold;
+      font-size: 0.9rem;
+      line-height: 1.3;
+      color: #111;
+      word-break: break-all;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .card .card-title::-webkit-scrollbar {
+      width: 4px;
+    }
+    .card .card-title::-webkit-scrollbar-thumb {
+      background: var(--karuta-green);
+      border-radius: 2px;
+    }
+
+    /* 手のアニメーション */
+    .hand-action {
+      position: fixed;
+      font-size: 4.5rem;
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-50%, -50%) scale(1.8) rotate(-15deg);
+      opacity: 0;
+      animation: handSnap 0.35s ease-out forwards;
+      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+    }
+
+    @keyframes handSnap {
+      0% {
+        opacity: 0;
+        transform: translate(-30%, 10%) scale(2.2) rotate(-30deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1) rotate(-10deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.9) rotate(0deg);
+      }
+    }
+
+    /* 判定ポップアップ */
+    #feedback-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+      font-size: 4.5rem;
+      font-weight: bold;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 100;
+      transition: all 0.2s ease-out;
+      text-shadow: 0 0 20px rgba(0,0,0,0.8);
+      white-space: nowrap;
+    }
+
+    #feedback-overlay.correct {
+      color: #ff3366;
+      text-shadow: 0 0 30px #ff3366, 0 0 10px #ffffff;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    #feedback-overlay.wrong {
+      color: #ff3333;
+      text-shadow: 0 0 30px #ff3333, 0 0 10px #ffffff;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    /* モーダル共通スタイル */
+    .modal-overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: #111;
+      border: 3px solid var(--neon-blue);
+      box-shadow: 0 0 30px var(--neon-blue);
+      border-radius: 15px;
+      padding: 30px 50px;
+      text-align: center;
+      max-width: 500px;
+    }
+
+    .modal-content h2 {
+      font-size: 2.2rem;
+      color: var(--neon-light-blue);
+      margin: 0 0 15px 0;
+    }
+
+    #final-time {
+      font-size: 2.8rem;
+      color: #ffeb3b;
+      font-family: monospace;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    #penalty-info {
+      color: #ff6666;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .modal-btn-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .retry-btn {
+      background: var(--neon-blue);
+      color: #000;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .retry-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px var(--neon-blue);
+    }
+
+    .cancel-btn {
+      background: #444;
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .cancel-btn:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- タイトル画面 -->
+  <div id="title-screen">
+    <div class="title-logo">氷室うつろ配信名言かるたとり</div>
+
+    <div class="mode-select-box">
+      <div class="mode-select-title">🎮 難易度を選択</div>
+      <div class="mode-options">
+        <button id="mode-normal-btn" class="mode-btn active" onclick="selectDifficulty('normal')">ノーマル (頭文字あり)</button>
+        <button id="mode-hard-btn" class="mode-btn" onclick="selectDifficulty('hard')">ハード (頭文字なし)</button>
+      </div>
+    </div>
+
+    <button class="action-btn" onclick="goToGameArea()">ゲームスタート</button>
+  </div>
+
+  <!-- ゲームエリア全体 -->
+  <div id="game-container">
+    <div id="top-header">
+      <div id="timer-container">
+        <div id="timer-label">⏱ TIME</div>
+        <div id="timer-display">00:00.0</div>
+      </div>
+
+      <div id="target-voice-container" onclick="playCurrentVoice()">
+        <div id="voice-status">🔊 （「かるた札を配る」を押してください）</div>
+        <div id="target-voice">『準備はいいでございますか？』</div>
+      </div>
+
+      <div id="current-mode-badge">NORMAL</div>
+      <button id="retire-btn" onclick="openRetireConfirm()">🏳️ リタイア</button>
+    </div>
+
+    <div id="board-container">
+      <div id="deal-overlay">
+        <button class="action-btn" onclick="dealCardsAndStart()">かるた札を配る</button>
+      </div>
+
+      <div id="board"></div>
+    </div>
+  </div>
+
+  <!-- 判定エフェクト -->
+  <div id="feedback-overlay"></div>
+
+  <!-- リタイア確認ダイアログ -->
+  <div id="retire-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: #ff3355; box-shadow: 0 0 30px #ff3355;">
+      <h2 style="color: #ff6688;">リタイア確認</h2>
+      <p style="margin: 20px 0; font-size: 1.1rem;">本当にリタイアしてタイトル画面に戻りますか？</p>
+      <div class="modal-btn-group">
+        <button class="retry-btn" style="background: #ff3355; color: #fff;" onclick="showTitleScreen()">リタイアする</button>
+        <button class="cancel-btn" onclick="closeRetireConfirm()">ゲームを続ける</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- クリア画面 -->
+  <div id="clear-modal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>🎉 CLEAR! 🎉</h2>
+      <div>クリアタイム</div>
+      <div id="final-time">00:00.0</div>
+      <div id="penalty-info">お手つき回数: <span id="miss-count">0</span>回 (+<span id="penalty-sec">0</span>秒)</div>
+      <p id="utsuro-comment">「フッ…なかなか素早いじゃないか！見事だぞ！」</p>
+      <button class="retry-btn" onclick="showTitleScreen()">タイトルへもどる</button>
+    </div>
+  </div>
+
+  <script>
+    const allData = [
+      { id: 1, char: "つ", voice: "強い奴は乳首出してても強いから乳首出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3" },
+      { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3" },
+      { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3" },
+      { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3" },
+      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3" },
+      { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3" },
+      { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3" },
+      { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3" },
+      { id: 9, char: "お", voice: "お前をコロス", title: "【SEKIRO】エンディング、見せます。本気のうつろを見てください【うつろの挑戦】", date: "2026.09.13", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3" },
+      { id: 10, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3" },
+      { id: 11, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3" },
+      { id: 12, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3" }
+    ];
+
+    let currentBoard = [];
+    let deck = [];
+    let currentTarget = null;
+    let currentAudioObj = null;
+
+    let startTime = null;
+    let timerInterval = null;
+    let elapsedTime = 0;
+    let penaltyTime = 0;
+    let missCount = 0;
+    let isGameActive = false;
+    let selectedDifficulty = 'normal';
+
+    function selectDifficulty(mode) {
+      selectedDifficulty = mode;
+      const normalBtn = document.getElementById("mode-normal-btn");
+      const hardBtn = document.getElementById("mode-hard-btn");
+
+      if (mode === 'normal') {
+        normalBtn.classList.add("active");
+        hardBtn.classList.remove("active");
+      } else {
+        hardBtn.classList.add("active");
+        normalBtn.classList.remove("active");
+      }
+    }
+
+    function openRetireConfirm() {
+      if (currentAudioObj) currentAudioObj.pause();
+      document.getElementById("retire-modal").style.display = "flex";
+    }
+
+    function closeRetireConfirm() {
+      document.getElementById("retire-modal").style.display = "none";
+    }
+
+    function showTitleScreen() {
+      clearInterval(timerInterval);
+      isGameActive = false;
+      if (currentAudioObj) currentAudioObj.pause();
+      
+      document.getElementById("title-screen").style.display = "flex";
+      document.getElementById("game-container").style.display = "none";
+      document.getElementById("clear-modal").style.display = "none";
+      document.getElementById("retire-modal").style.display = "none";
+    }
+
+    function goToGameArea() {
+      document.getElementById("title-screen").style.display = "none";
+      document.getElementById("game-container").style.display = "flex";
+
+      const modeBadge = document.getElementById("current-mode-badge");
+      if (selectedDifficulty === 'normal') {
+        modeBadge.innerText = "MODE: NORMAL";
+        modeBadge.style.borderColor = "var(--neon-blue)";
+      } else {
+        modeBadge.innerText = "MODE: HARD";
+        modeBadge.style.borderColor = "#ff3366";
+      }
+
+      clearInterval(timerInterval);
+      elapsedTime = 0;
+      penaltyTime = 0;
+      missCount = 0;
+      isGameActive = false;
+
+      document.getElementById("timer-display").innerText = "00:00.0";
+      document.getElementById("board").innerHTML = "";
+      document.getElementById("deal-overlay").style.display = "flex";
+      document.getElementById("target-voice").innerText = "『準備はいいでございますか？』";
+      document.getElementById("voice-status").innerText = "🔊 （「かるた札を配る」を押してください）";
+    }
+
+    function dealCardsAndStart() {
+      document.getElementById("deal-overlay").style.display = "none";
+
+      deck = [...allData];
+      currentBoard = deck.splice(0, Math.min(10, deck.length));
+      deck.sort(() => Math.random() - 0.5);
+
+      renderBoard();
+
+      isGameActive = true;
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+        const now = Date.now();
+        elapsedTime = (now - startTime) + penaltyTime;
+        updateTimerDisplay(elapsedTime);
+      }, 100);
+
+      nextQuestion();
+    }
+
+    function stopTimer() {
+      isGameActive = false;
+      clearInterval(timerInterval);
+    }
+
+    function updateTimerDisplay(timeMs) {
+      const totalSeconds = Math.floor(timeMs / 1000);
+      const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+      const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+      const milli = Math.floor((timeMs % 1000) / 100);
+
+      document.getElementById("timer-display").innerText = `${minutes}:${seconds}.${milli}`;
+    }
+
+    function renderBoard() {
+      const boardEl = document.getElementById("board");
+      boardEl.innerHTML = "";
+
+      const showBadgeClass = (selectedDifficulty === 'normal') ? '' : 'hidden';
+
+      currentBoard.forEach((card, index) => {
+        const cardEl = document.createElement("div");
+        cardEl.className = "card";
+        cardEl.onclick = (e) => onCardClick(index, e);
+        
+        cardEl.innerHTML = `
+          <div class="card-char-badge ${showBadgeClass}">${card.char || 'あ'}</div>
+          <div class="thumbnail-wrapper">
+            <img class="thumbnail-img" src="${card.img}" alt="${card.title}" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Image'">
+          </div>
+          <div class="card-info">
+            <div class="card-date">${card.date}</div>
+            <div class="card-title">${card.title}</div>
+          </div>
+        `;
+        boardEl.appendChild(cardEl);
+      });
+    }
+
+    function playCurrentVoice() {
+      if (!isGameActive || !currentTarget || !currentTarget.audio) return;
+
+      if (currentAudioObj) {
+        currentAudioObj.pause();
+        currentAudioObj.currentTime = 0;
+      }
+
+      currentAudioObj = new Audio(currentTarget.audio);
+      currentAudioObj.play().catch(e => console.log("再生制限回避"));
+    }
+
+    function nextQuestion() {
+      if (currentBoard.length === 0) {
+        stopTimer();
+        showClearScreen();
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * currentBoard.length);
+      currentTarget = currentBoard[randomIndex];
+      
+      document.getElementById("voice-status").innerText = "🔊 （ボイス再生中... / クリックで再再生）";
+      document.getElementById("target-voice").innerText = `『${currentTarget.voice}』`;
+      playCurrentVoice();
+    }
+
+    function spawnHandIcon(x, y) {
+      const hand = document.createElement('div');
+      hand.className = 'hand-action';
+      hand.innerText = '🖐️';
+      hand.style.left = `${x}px`;
+      hand.style.top = `${y}px`;
+
+      document.body.appendChild(hand);
+
+      setTimeout(() => {
+        hand.remove();
+      }, 350);
+    }
+
+    function showFeedback(type, text) {
+      const overlay = document.getElementById("feedback-overlay");
+      overlay.innerText = text;
+      overlay.className = type;
+
+      setTimeout(() => {
+        overlay.className = "";
+      }, 600);
+    }
+
+    function showClearScreen() {
+      document.getElementById("target-voice").innerText = "ゲームクリア！";
+      document.getElementById("voice-status").innerText = "";
+      
+      const finalMs = elapsedTime;
+      const totalSec = Math.floor(finalMs / 1000);
+      const minutes = Math.floor(totalSec / 60).toString().padStart(2, '0');
+      const seconds = (totalSec % 60).toString().padStart(2, '0');
+      const milli = Math.floor((finalMs % 1000) / 100);
+
+      document.getElementById("final-time").innerText = `${minutes}:${seconds}.${milli}`;
+      document.getElementById("miss-count").innerText = missCount;
+      document.getElementById("penalty-sec").innerText = missCount * 5;
+
+      const commentEl = document.getElementById("utsuro-comment");
+      
+      if (selectedDifficulty === 'hard') {
+        if (missCount === 0) {
+          commentEl.innerText = "「頭文字なしのハードモードでパーフェクト！？うつろスキーの鑑じゃないですか！」";
+        } else {
+          commentEl.innerText = "「ハードモード完走、見事でございます！さすがはごしゅ！」";
+        }
+      } else {
+        if (missCount === 0) {
+          commentEl.innerText = "「ノーミスクリア！？ふふん、なかなかやるじゃないですか！」";
+        } else if (missCount <= 2) {
+          commentEl.innerText = "「まずまずのタイムですね！次はノーミスクリアを目指してみましょう！」";
+        } else {
+          commentEl.innerText = "「お手つきが多いですよ！焦らずしっかりボイスを聴いて思い出してください！」";
+        }
+      }
+
+      document.getElementById("clear-modal").style.display = "flex";
+    }
+
+    function onCardClick(index, event) {
+      if (!isGameActive) return;
+
+      const x = event.clientX;
+      const y = event.clientY;
+      spawnHandIcon(x, y);
+
+      const clickedCard = currentBoard[index];
+
+      if (clickedCard.id === currentTarget.id) {
+        showFeedback("correct", "〇 正解！");
+
+        if (deck.length > 0) {
+          const newCard = deck.pop();
+          currentBoard[index] = newCard;
+        } else {
+          currentBoard.splice(index, 1);
+        }
+
+        renderBoard();
+        nextQuestion();
+      } else {
+        missCount++;
+        penaltyTime += 5000;
+        elapsedTime += 5000;
+        updateTimerDisplay(elapsedTime);
+
+        showFeedback("wrong", "❌ +5秒！");
+      }
+    }
+
+    showTitleScreen();
+  </script>
+</body>
+</html>
