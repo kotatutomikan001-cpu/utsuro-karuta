@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>氷室うつろ配信名言かるたとり</title>
   <style>
     :root {
@@ -32,7 +33,7 @@
     #title-screen {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       z-index: 300;
       display: flex;
       flex-direction: column;
@@ -42,13 +43,14 @@
     }
 
     .title-logo {
-      font-size: 3rem;
+      font-size: clamp(1.8rem, 5vw, 3rem);
       font-weight: bold;
       color: #fff;
       text-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-blue);
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       letter-spacing: 2px;
       text-align: center;
+      padding: 0 10px;
     }
 
     .mode-select-box {
@@ -56,8 +58,8 @@
       border: 2px solid var(--neon-blue);
       box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
       border-radius: 15px;
-      padding: 20px 40px;
-      margin-bottom: 35px;
+      padding: 20px 30px;
+      margin-bottom: 25px;
       text-align: center;
     }
 
@@ -70,15 +72,17 @@
 
     .mode-options {
       display: flex;
-      gap: 20px;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .mode-btn {
       background: rgba(255, 255, 255, 0.1);
       color: #fff;
       border: 2px solid #666;
-      padding: 12px 25px;
-      font-size: 1.1rem;
+      padding: 10px 20px;
+      font-size: 1rem;
       font-weight: bold;
       border-radius: 30px;
       cursor: pointer;
@@ -97,22 +101,175 @@
       box-shadow: 0 0 15px var(--neon-blue);
     }
 
+    .title-btn-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     .action-btn {
       background: var(--neon-blue);
       color: #000;
       border: none;
-      padding: 18px 60px;
-      font-size: 1.8rem;
+      padding: 14px 35px;
+      font-size: 1.4rem;
       font-weight: bold;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 0 30px var(--neon-blue);
+      box-shadow: 0 0 25px var(--neon-blue);
       transition: transform 0.15s, box-shadow 0.15s;
     }
 
     .action-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 50px var(--neon-blue), 0 0 20px #fff;
+      transform: scale(1.05);
+      box-shadow: 0 0 40px var(--neon-blue), 0 0 15px #fff;
+    }
+
+    .album-btn {
+      background: rgba(255, 215, 0, 0.2);
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      padding: 14px 30px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+      transition: all 0.15s;
+    }
+
+    .album-btn:hover {
+      transform: scale(1.05);
+      background: #ffd700;
+      color: #000;
+      box-shadow: 0 0 30px #ffd700;
+    }
+
+    /* アルバム画面 */
+    #album-screen {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 10, 15, 0.95);
+      z-index: 400;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      box-sizing: border-box;
+      backdrop-filter: blur(5px);
+    }
+
+    .album-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .album-title {
+      font-size: 1.6rem;
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+
+    .album-progress {
+      font-size: 1.0rem;
+      color: var(--neon-light-blue);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--neon-blue);
+    }
+
+    #album-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      width: 100%;
+      max-width: 1200px;
+      height: 80vh;
+      overflow-y: auto;
+      padding: 10px;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #album-grid::-webkit-scrollbar { width: 6px; }
+    #album-grid::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+    .album-card {
+      background: #fff;
+      color: #333;
+      border-radius: 5px;
+      padding: 4px;
+      border: 3px solid var(--karuta-green);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+      transition: transform 0.15s, box-shadow 0.15s;
+      height: 180px;
+    }
+
+    .album-card.unlocked { cursor: pointer; }
+    .album-card.unlocked:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-blue); }
+    .album-card.locked { filter: grayscale(100%) brightness(0.35); border-color: #555; cursor: not-allowed; }
+
+    .album-card .card-char-badge {
+      position: absolute;
+      top: 4px; right: 4px; width: 22px; height: 22px;
+      background-color: #ffffff;
+      border: 1.5px solid var(--karuta-green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: bold; color: #111;
+      font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif;
+      z-index: 2;
+    }
+
+    .album-card .thumbnail-wrapper {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #000;
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .album-card .thumbnail-img { width: 100%; height: 100%; object-fit: contain; }
+
+    .album-card .card-info {
+      padding-top: 3px;
+      display: flex; flex-direction: column; flex: 1; overflow: hidden;
+    }
+
+    .album-card .card-date {
+      color: #555; font-family: monospace; font-size: 0.65rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px;
+    }
+
+    .album-card .card-title {
+      font-weight: bold; font-size: 0.68rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1;
+    }
+
+    .album-card .yt-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: #ff0000;
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: bold;
+      padding: 1px 5px;
+      border-radius: 6px;
     }
 
     /* ゲームエリア全体 */
@@ -123,14 +280,14 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      box-sizing: border-box;
+      padding: 10px;
     }
 
-    /* 上部ヘッダー */
     #top-header {
-      margin-top: 15px;
       display: flex;
-      gap: 15px;
-      width: 92%;
+      gap: 10px;
+      width: 100%;
       max-width: 1300px;
       align-items: center;
       z-index: 10;
@@ -141,23 +298,15 @@
       border: 2px solid var(--neon-blue);
       box-shadow: 0 0 15px var(--neon-blue);
       border-radius: 10px;
-      padding: 10px 20px;
+      padding: 6px 12px;
       text-align: center;
       backdrop-filter: blur(4px);
-      min-width: 130px;
+      min-width: 100px;
+      flex-shrink: 0;
     }
 
-    #timer-label {
-      font-size: 0.85rem;
-      color: var(--neon-light-blue);
-    }
-
-    #timer-display {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #fff;
-      font-family: monospace;
-    }
+    #timer-label { font-size: 0.75rem; color: var(--neon-light-blue); }
+    #timer-display { font-size: 1.4rem; font-weight: bold; color: #fff; font-family: monospace; }
 
     #target-voice-container {
       flex: 1;
@@ -165,28 +314,23 @@
       border: 2px solid var(--neon-blue);
       box-shadow: 0 0 15px var(--neon-blue);
       border-radius: 10px;
-      padding: 10px 20px;
+      padding: 8px 15px;
       text-align: center;
       backdrop-filter: blur(4px);
       cursor: pointer;
-      max-height: 90px;
+      max-height: 85px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       overflow: hidden;
     }
 
-    #voice-status {
-      font-size: 0.85rem;
-      color: var(--neon-light-blue);
-      margin-bottom: 2px;
-    }
-
+    #voice-status { font-size: 0.75rem; color: var(--neon-light-blue); margin-bottom: 2px; }
     #target-voice {
-      font-size: clamp(0.95rem, 1.8vw, 1.35rem);
+      font-size: clamp(0.85rem, 1.8vw, 1.25rem);
       color: #fff;
       font-weight: bold;
-      line-height: 1.3;
+      line-height: 1.25;
       word-break: break-word;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -199,11 +343,12 @@
       border: 2px solid var(--neon-blue);
       box-shadow: 0 0 10px var(--neon-blue);
       border-radius: 10px;
-      padding: 10px 18px;
-      font-size: 0.95rem;
+      padding: 8px 12px;
+      font-size: 0.85rem;
       color: var(--neon-light-blue);
       font-weight: bold;
       backdrop-filter: blur(4px);
+      flex-shrink: 0;
     }
 
     #retire-btn {
@@ -211,38 +356,35 @@
       border: 2px solid #ff3355;
       color: #ff99aa;
       border-radius: 10px;
-      padding: 10px 15px;
-      font-size: 0.9rem;
+      padding: 8px 12px;
+      font-size: 0.85rem;
       font-weight: bold;
       cursor: pointer;
       backdrop-filter: blur(4px);
       transition: all 0.15s;
+      flex-shrink: 0;
     }
-
-    #retire-btn:hover {
-      background: #ff3355;
-      color: #fff;
-      box-shadow: 0 0 15px #ff3355;
-    }
+    #retire-btn:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; }
 
     /* かるた盤面エリア */
     #board-container {
       position: relative;
-      width: 92%;
+      width: 100%;
       max-width: 1300px;
-      height: 74vh;
-      margin-bottom: 15px;
+      flex: 1;
+      margin: 10px 0;
       z-index: 5;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
 
     #board {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 12px;
+      gap: 10px;
       width: 100%;
       height: 100%;
     }
@@ -265,9 +407,9 @@
       background: #fff;
       color: #333;
       border-radius: 6px;
-      padding: 5px;
-      border: 4px solid var(--karuta-green);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+      padding: 4px;
+      border: 3px solid var(--karuta-green);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
       user-select: none;
       transition: transform 0.15s, box-shadow 0.15s;
       display: flex;
@@ -278,230 +420,134 @@
     }
 
     .card:hover {
-      transform: scale(1.04) translateY(-4px);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
+      transform: scale(1.03) translateY(-2px);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
     }
 
     .card-char-badge {
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 32px;
-      height: 32px;
+      top: 6px; right: 6px; width: 28px; height: 28px;
       background-color: #ffffff;
       border: 2px solid var(--karuta-green);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #111;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; font-weight: bold; color: #111;
       font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif;
       box-shadow: 0 2px 4px rgba(0,0,0,0.4);
       z-index: 2;
     }
 
-    .card-char-badge.hidden {
-      display: none !important;
-    }
+    .card-char-badge.hidden { display: none !important; }
 
-    /* 上側：16:9 サムネイル */
     .card .thumbnail-wrapper {
       width: 100%;
       aspect-ratio: 16 / 9;
       background-color: #000;
       border-radius: 3px;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
 
-    .card .thumbnail-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    .card .thumbnail-img { width: 100%; height: 100%; object-fit: contain; }
 
-    /* 下側：日付＋タイトル（★文字サイズ拡大調整） */
     .card .card-info {
-      padding-top: 4px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      overflow: hidden;
+      padding-top: 3px;
+      display: flex; flex-direction: column; flex: 1; overflow: hidden;
     }
 
-    /* ★日付のフォントサイズを大きく変更 */
     .card .card-date {
-      color: #555;
-      font-family: monospace;
-      font-size: 0.8rem;
-      font-weight: 600;
-      line-height: 1.1;
-      margin-bottom: 3px;
+      color: #555; font-family: monospace; font-size: 0.72rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px;
     }
 
-    /* ★配信タイトルのフォントサイズを大きく変更 */
     .card .card-title {
-      font-weight: bold;
-      font-size: 0.9rem;
-      line-height: 1.3;
-      color: #111;
-      word-break: break-all;
-      overflow-y: auto;
-      flex: 1;
+      font-weight: bold; font-size: 0.8rem; line-height: 1.25; color: #111; word-break: break-all; overflow-y: auto; flex: 1;
     }
 
-    .card .card-title::-webkit-scrollbar {
-      width: 4px;
-    }
-    .card .card-title::-webkit-scrollbar-thumb {
-      background: var(--karuta-green);
-      border-radius: 2px;
+    .card .card-title::-webkit-scrollbar { width: 3px; }
+    .card .card-title::-webkit-scrollbar-thumb { background: var(--karuta-green); border-radius: 2px; }
+
+    /* スマホ向け表示設定 */
+    @media (max-width: 768px) {
+      body { overflow: auto; height: auto; min-height: 100vh; }
+      #game-container { height: auto; min-height: 100vh; }
+      
+      #top-header {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      
+      #target-voice-container {
+        order: 3;
+        width: 100%;
+        flex: none;
+      }
+
+      #board-container {
+        height: auto;
+        min-height: 65vh;
+      }
+
+      #board {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+        gap: 10px;
+      }
+
+      #album-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 5px;
+      }
+      
+      .album-card {
+        height: 155px;
+      }
     }
 
     /* 手のアニメーション */
     .hand-action {
-      position: fixed;
-      font-size: 4.5rem;
-      pointer-events: none;
-      z-index: 999;
-      transform: translate(-50%, -50%) scale(1.8) rotate(-15deg);
-      opacity: 0;
-      animation: handSnap 0.35s ease-out forwards;
-      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+      position: fixed; font-size: 4.5rem; pointer-events: none; z-index: 999;
+      transform: translate(-50%, -50%) scale(1.8) rotate(-15deg); opacity: 0;
+      animation: handSnap 0.35s ease-out forwards; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
     }
 
     @keyframes handSnap {
-      0% {
-        opacity: 0;
-        transform: translate(-30%, 10%) scale(2.2) rotate(-30deg);
-      }
-      50% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.1) rotate(-10deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -60%) scale(0.9) rotate(0deg);
-      }
+      0% { opacity: 0; transform: translate(-30%, 10%) scale(2.2) rotate(-30deg); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(-10deg); }
+      100% { opacity: 0; transform: translate(-50%, -60%) scale(0.9) rotate(0deg); }
     }
 
     /* 判定ポップアップ */
     #feedback-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.5);
-      font-size: 4.5rem;
-      font-weight: bold;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 100;
-      transition: all 0.2s ease-out;
-      text-shadow: 0 0 20px rgba(0,0,0,0.8);
-      white-space: nowrap;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+      font-size: 4rem; font-weight: bold; pointer-events: none; opacity: 0; z-index: 100;
+      transition: all 0.2s ease-out; text-shadow: 0 0 20px rgba(0,0,0,0.8); white-space: nowrap;
     }
 
-    #feedback-overlay.correct {
-      color: #ff3366;
-      text-shadow: 0 0 30px #ff3366, 0 0 10px #ffffff;
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.2);
-    }
-
-    #feedback-overlay.wrong {
-      color: #ff3333;
-      text-shadow: 0 0 30px #ff3333, 0 0 10px #ffffff;
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.2);
-    }
+    #feedback-overlay.correct { color: #ff3366; text-shadow: 0 0 30px #ff3366, 0 0 10px #ffffff; opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    #feedback-overlay.wrong { color: #ff3333; text-shadow: 0 0 30px #ff3333, 0 0 10px #ffffff; opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
 
     /* モーダル共通スタイル */
     .modal-overlay {
-      display: none;
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 200;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(5px);
+      display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85); z-index: 500; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);
     }
 
     .modal-content {
-      background: #111;
-      border: 3px solid var(--neon-blue);
-      box-shadow: 0 0 30px var(--neon-blue);
-      border-radius: 15px;
-      padding: 30px 50px;
-      text-align: center;
-      max-width: 500px;
+      background: #111; border: 3px solid var(--neon-blue); box-shadow: 0 0 30px var(--neon-blue);
+      border-radius: 15px; padding: 25px 35px; text-align: center; max-width: 90%; box-sizing: border-box;
     }
 
-    .modal-content h2 {
-      font-size: 2.2rem;
-      color: var(--neon-light-blue);
-      margin: 0 0 15px 0;
-    }
+    .modal-content h2 { font-size: 2rem; color: var(--neon-light-blue); margin: 0 0 15px 0; }
+    #final-time { font-size: 2.5rem; color: #ffeb3b; font-family: monospace; font-weight: bold; margin: 10px 0; }
+    #penalty-info { color: #ff6666; font-size: 0.95rem; margin-bottom: 20px; }
 
-    #final-time {
-      font-size: 2.8rem;
-      color: #ffeb3b;
-      font-family: monospace;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-
-    #penalty-info {
-      color: #ff6666;
-      font-size: 1rem;
-      margin-bottom: 20px;
-    }
-
-    .modal-btn-group {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .retry-btn {
-      background: var(--neon-blue);
-      color: #000;
-      border: none;
-      padding: 12px 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-
-    .retry-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px var(--neon-blue);
-    }
-
-    .cancel-btn {
-      background: #444;
-      color: #fff;
-      border: none;
-      padding: 12px 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-
-    .cancel-btn:hover {
-      background: #666;
-    }
+    .modal-btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+    .retry-btn { background: var(--neon-blue); color: #000; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+    .retry-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-blue); }
+    .cancel-btn { background: #444; color: #fff; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: background 0.1s; }
+    .cancel-btn:hover { background: #666; }
   </style>
 </head>
 <body>
@@ -518,7 +564,20 @@
       </div>
     </div>
 
-    <button class="action-btn" onclick="goToGameArea()">ゲームスタート</button>
+    <div class="title-btn-group">
+      <button class="action-btn" onclick="goToGameArea()">ゲームスタート</button>
+      <button class="album-btn" onclick="openAlbumScreen()">📖 カードアルバム</button>
+    </div>
+  </div>
+
+  <!-- アルバム画面 -->
+  <div id="album-screen">
+    <div class="album-header">
+      <div class="album-title">📖 名言カードアルバム</div>
+      <div class="album-progress">コンプリート率: <span id="album-progress-text">0/0 (0%)</span></div>
+      <button class="cancel-btn" onclick="closeAlbumScreen()">タイトルへ戻る</button>
+    </div>
+    <div id="album-grid"></div>
   </div>
 
   <!-- ゲームエリア全体 -->
@@ -576,18 +635,18 @@
 
   <script>
     const allData = [
-      { id: 1, char: "つ", voice: "強い奴は乳首出してても強いから乳首出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3" },
-      { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3" },
-      { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3" },
-      { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3" },
-      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3" },
-      { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3" },
-      { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3" },
-      { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3" },
-      { id: 9, char: "お", voice: "お前をコロス", title: "【SEKIRO】エンディング、見せます。本気のうつろを見てください【うつろの挑戦】", date: "2026.09.13", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3" },
-      { id: 10, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3" },
-      { id: 11, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3" },
-      { id: 12, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3" }
+      { id: 1, char: "つ", voice: "強い奴は乳首出してても強いから乳首出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/" },
+      { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/" },
+      { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3", youtube: "https://www.youtube.com/" },
+      { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3", youtube: "https://www.youtube.com/" },
+      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/" },
+      { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3", youtube: "https://www.youtube.com/" },
+      { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3", youtube: "https://www.youtube.com/" },
+      { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3", youtube: "https://www.youtube.com/" },
+      { id: 9, char: "お", voice: "お前をコロス", title: "【SEKIRO】エンディング、見せます。本気のうつろを見てください【うつろの挑戦】", date: "2026.09.13", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3", youtube: "https://www.youtube.com/" },
+      { id: 10, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/" },
+      { id: 11, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/" },
+      { id: 12, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/" }
     ];
 
     let currentBoard = [];
@@ -603,6 +662,19 @@
     let isGameActive = false;
     let selectedDifficulty = 'normal';
 
+    function getUnlockedCardIds() {
+      const saved = localStorage.getItem("utsuro_karuta_album");
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    function saveUnlockedCardId(id) {
+      const current = getUnlockedCardIds();
+      if (!current.includes(id)) {
+        current.push(id);
+        localStorage.setItem("utsuro_karuta_album", JSON.stringify(current));
+      }
+    }
+
     function selectDifficulty(mode) {
       selectedDifficulty = mode;
       const normalBtn = document.getElementById("mode-normal-btn");
@@ -615,6 +687,67 @@
         hardBtn.classList.add("active");
         normalBtn.classList.remove("active");
       }
+    }
+
+    function openAlbumScreen() {
+      const unlockedIds = getUnlockedCardIds();
+      const albumGrid = document.getElementById("album-grid");
+      albumGrid.innerHTML = "";
+
+      let unlockedCount = 0;
+
+      allData.forEach(card => {
+        const isUnlocked = unlockedIds.includes(card.id);
+        if (isUnlocked) unlockedCount++;
+
+        const cardEl = document.createElement("div");
+        cardEl.className = `album-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        
+        if (isUnlocked) {
+          cardEl.onclick = () => {
+            if (card.youtube) {
+              window.open(card.youtube, '_blank');
+            } else {
+              alert("配信のタイムスタンプURLが設定されていません。");
+            }
+          };
+
+          cardEl.innerHTML = `
+            <div class="card-char-badge">${card.char || 'あ'}</div>
+            <div class="thumbnail-wrapper">
+              <img class="thumbnail-img" src="${card.img}" alt="${card.title}" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Image'">
+            </div>
+            <div class="card-info">
+              <div class="card-date">${card.date}</div>
+              <div class="card-title">${card.title}</div>
+            </div>
+            <div class="yt-badge">▶ 配信へ</div>
+          `;
+        } else {
+          cardEl.innerHTML = `
+            <div class="card-char-badge">？</div>
+            <div class="thumbnail-wrapper" style="background: #222;">
+              <div style="font-size: 1.5rem; color: #666;">🔒</div>
+            </div>
+            <div class="card-info">
+              <div class="card-date">????.??.??</div>
+              <div class="card-title">未獲得の札</div>
+            </div>
+          `;
+        }
+        albumGrid.appendChild(cardEl);
+      });
+
+      const percent = Math.floor((unlockedCount / allData.length) * 100);
+      document.getElementById("album-progress-text").innerText = `${unlockedCount}/${allData.length} (${percent}%)`;
+      
+      document.getElementById("album-screen").style.display = "flex";
+    }
+
+    function closeAlbumScreen() {
+      document.getElementById("album-screen").style.display = "none";
+      document.getElementById("title-screen").style.display = "flex";
+      document.getElementById("game-container").style.display = "none";
     }
 
     function openRetireConfirm() {
@@ -635,10 +768,12 @@
       document.getElementById("game-container").style.display = "none";
       document.getElementById("clear-modal").style.display = "none";
       document.getElementById("retire-modal").style.display = "none";
+      document.getElementById("album-screen").style.display = "none";
     }
 
     function goToGameArea() {
       document.getElementById("title-screen").style.display = "none";
+      document.getElementById("album-screen").style.display = "none";
       document.getElementById("game-container").style.display = "flex";
 
       const modeBadge = document.getElementById("current-mode-badge");
@@ -786,21 +921,22 @@
       document.getElementById("miss-count").innerText = missCount;
       document.getElementById("penalty-sec").innerText = missCount * 5;
 
+      // ★ 指定されたセリフパターンを反映
       const commentEl = document.getElementById("utsuro-comment");
       
       if (selectedDifficulty === 'hard') {
         if (missCount === 0) {
-          commentEl.innerText = "「頭文字なしのハードモードでパーフェクト！？うつろスキーの鑑じゃないですか！」";
+          commentEl.innerText = "「頭文字なしのハードモードでパーフェクト！？うつろスキーの鑑でございます！」";
         } else {
-          commentEl.innerText = "「ハードモード完走、見事でございます！さすがはごしゅ！」";
+          commentEl.innerText = "「ハードモード完走、お見事です！さすがはごしゅ！」";
         }
       } else {
         if (missCount === 0) {
           commentEl.innerText = "「ノーミスクリア！？ふふん、なかなかやるじゃないですか！」";
         } else if (missCount <= 2) {
-          commentEl.innerText = "「まずまずのタイムですね！次はノーミスクリアを目指してみましょう！」";
+          commentEl.innerText = "「まずまずのタイムでございますね！次はノーミスクリアを目指しましょう！」";
         } else {
-          commentEl.innerText = "「お手つきが多いですよ！焦らずしっかりボイスを聴いて思い出してください！」";
+          commentEl.innerText = "「お手つきが多いですよ！焦らずしっかりボイスを聴いて配信を思い出しましょう！」";
         }
       }
 
@@ -818,6 +954,8 @@
 
       if (clickedCard.id === currentTarget.id) {
         showFeedback("correct", "〇 正解！");
+
+        saveUnlockedCardId(clickedCard.id);
 
         if (deck.length > 0) {
           const newCard = deck.pop();
