@@ -166,7 +166,7 @@
       align-items: center;
       width: 100%;
       max-width: 1200px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       gap: 10px;
     }
@@ -189,7 +189,7 @@
 
     #album-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 12px;
       width: 100%;
       max-width: 1200px;
@@ -208,69 +208,91 @@
     .album-card {
       background: #fff;
       color: #333;
-      border-radius: 5px;
-      padding: 4px;
+      border-radius: 6px;
+      padding: 6px;
       border: 3px solid var(--karuta-green);
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
       transition: transform 0.15s, box-shadow 0.15s;
-      height: 180px;
     }
 
-    .album-card.unlocked { cursor: pointer; }
-    .album-card.unlocked:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-blue); }
-    .album-card.locked { filter: grayscale(100%) brightness(0.35); border-color: #555; cursor: not-allowed; }
+    .album-card.locked {
+      filter: grayscale(100%) brightness(0.35);
+      border-color: #555;
+      cursor: not-allowed;
+    }
 
     .album-card .card-char-badge {
       position: absolute;
-      top: 4px; right: 4px; width: 22px; height: 22px;
+      top: 6px; right: 6px; width: 24px; height: 24px;
       background-color: #ffffff;
       border: 1.5px solid var(--karuta-green);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; font-weight: bold; color: #111;
+      font-size: 0.8rem; font-weight: bold; color: #111;
       font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif;
       z-index: 2;
+    }
+
+    .album-card .img-container-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 100%;
+      margin-bottom: 6px;
     }
 
     .album-card .thumbnail-wrapper {
       width: 100%;
       aspect-ratio: 16 / 9;
       background-color: #000;
-      border-radius: 2px;
+      border-radius: 3px;
       overflow: hidden;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+      position: relative;
     }
 
     .album-card .thumbnail-img { width: 100%; height: 100%; object-fit: contain; }
 
     .album-card .card-info {
-      padding-top: 3px;
-      display: flex; flex-direction: column; flex: 1; overflow: hidden;
+      display: flex; flex-direction: column; flex: 1; overflow: hidden; margin-bottom: 6px;
     }
 
     .album-card .card-date {
-      color: #555; font-family: monospace; font-size: 0.65rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px;
+      color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 3px;
     }
 
     .album-card .card-title {
-      font-weight: bold; font-size: 0.68rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1;
+      font-weight: bold; font-size: 0.72rem; line-height: 1.25; color: #111; word-break: break-all;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
 
-    .album-card .yt-badge {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      background: #ff0000;
-      color: #fff;
-      font-size: 0.55rem;
-      font-weight: bold;
-      padding: 1px 5px;
-      border-radius: 6px;
+    .album-btn-group {
+      display: flex;
+      gap: 4px;
+      margin-top: auto;
     }
+
+    .album-act-btn {
+      flex: 1;
+      border: none;
+      padding: 5px 0;
+      font-size: 0.68rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: filter 0.15s;
+    }
+
+    .album-act-btn:hover { filter: brightness(1.2); }
+    .album-act-btn.yt { background: #ff0000; color: #fff; }
+    .album-act-btn.voice { background: var(--karuta-green); color: #fff; }
 
     /* ゲームエリア全体 */
     #game-container {
@@ -293,7 +315,8 @@
       z-index: 10;
     }
 
-    #timer-container {
+    /* タイマー＆スコア表示 */
+    #timer-container, #score-container {
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid var(--neon-blue);
       box-shadow: 0 0 15px var(--neon-blue);
@@ -301,12 +324,13 @@
       padding: 6px 12px;
       text-align: center;
       backdrop-filter: blur(4px);
-      min-width: 100px;
+      min-width: 90px;
       flex-shrink: 0;
     }
 
-    #timer-label { font-size: 0.75rem; color: var(--neon-light-blue); }
-    #timer-display { font-size: 1.4rem; font-weight: bold; color: #fff; font-family: monospace; }
+    #timer-label, #score-label { font-size: 0.75rem; color: var(--neon-light-blue); }
+    #timer-display, #score-display { font-size: 1.4rem; font-weight: bold; color: #fff; font-family: monospace; }
+    #score-display { color: #ffd700; }
 
     #target-voice-container {
       flex: 1;
@@ -472,21 +496,9 @@
       body { overflow: auto; height: auto; min-height: 100vh; }
       #game-container { height: auto; min-height: 100vh; }
       
-      #top-header {
-        flex-wrap: wrap;
-        gap: 6px;
-      }
-      
-      #target-voice-container {
-        order: 3;
-        width: 100%;
-        flex: none;
-      }
-
-      #board-container {
-        height: auto;
-        min-height: 65vh;
-      }
+      #top-header { flex-wrap: wrap; gap: 6px; }
+      #target-voice-container { order: 3; width: 100%; flex: none; }
+      #board-container { height: auto; min-height: 65vh; }
 
       #board {
         grid-template-columns: repeat(2, 1fr);
@@ -495,27 +507,41 @@
       }
 
       #album-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
         padding: 5px;
       }
-      
-      .album-card {
-        height: 155px;
-      }
     }
 
-    /* 手のアニメーション */
+    /* 巨大な手のアニメーション */
     .hand-action {
-      position: fixed; font-size: 4.5rem; pointer-events: none; z-index: 999;
-      transform: translate(-50%, -50%) scale(1.8) rotate(-15deg); opacity: 0;
-      animation: handSnap 0.35s ease-out forwards; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+      position: fixed;
+      font-size: 12rem;
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      animation: handSnap 0.5s ease-out forwards;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.85));
     }
 
     @keyframes handSnap {
-      0% { opacity: 0; transform: translate(-30%, 10%) scale(2.2) rotate(-30deg); }
-      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(-10deg); }
-      100% { opacity: 0; transform: translate(-50%, -60%) scale(0.9) rotate(0deg); }
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -85%) scale(2.4) rotate(-35deg);
+      }
+      35% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.0) rotate(-10deg);
+      }
+      75% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) scale(0.98) rotate(-5deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -40%) scale(0.85) rotate(0deg);
+      }
     }
 
     /* 判定ポップアップ */
@@ -540,7 +566,7 @@
     }
 
     .modal-content h2 { font-size: 2rem; color: var(--neon-light-blue); margin: 0 0 15px 0; }
-    #final-time { font-size: 2.5rem; color: #ffeb3b; font-family: monospace; font-weight: bold; margin: 10px 0; }
+    #final-score { font-size: 2.5rem; color: #ffd700; font-family: monospace; font-weight: bold; margin: 10px 0; }
     #penalty-info { color: #ff6666; font-size: 0.95rem; margin-bottom: 20px; }
 
     .modal-btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
@@ -557,7 +583,7 @@
     <div class="title-logo">氷室うつろ配信名言かるたとり</div>
 
     <div class="mode-select-box">
-      <div class="mode-select-title">🎮 難易度を選択</div>
+      <div class="mode-select-title">🎮 難易度を選択 (制限時間 60秒)</div>
       <div class="mode-options">
         <button id="mode-normal-btn" class="mode-btn active" onclick="selectDifficulty('normal')">ノーマル (頭文字あり)</button>
         <button id="mode-hard-btn" class="mode-btn" onclick="selectDifficulty('hard')">ハード (頭文字なし)</button>
@@ -585,11 +611,16 @@
     <div id="top-header">
       <div id="timer-container">
         <div id="timer-label">⏱ TIME</div>
-        <div id="timer-display">00:00.0</div>
+        <div id="timer-display">60.0</div>
+      </div>
+
+      <div id="score-container">
+        <div id="score-label">🎴 SCORE</div>
+        <div id="score-display">0枚</div>
       </div>
 
       <div id="target-voice-container" onclick="playCurrentVoice()">
-        <div id="voice-status">🔊 （「かるた札を配る」を押してください）</div>
+        <div id="voice-status">🔊 （「札を配る」を押してください）</div>
         <div id="target-voice">『準備はいいでございますか？』</div>
       </div>
 
@@ -599,7 +630,7 @@
 
     <div id="board-container">
       <div id="deal-overlay">
-        <button class="action-btn" onclick="dealCardsAndStart()">かるた札を配る</button>
+        <button class="action-btn" onclick="dealCardsAndStart()">札を配る</button>
       </div>
 
       <div id="board"></div>
@@ -621,32 +652,34 @@
     </div>
   </div>
 
-  <!-- クリア画面 -->
+  <!-- タイムアップ（結果表示）画面 -->
   <div id="clear-modal" class="modal-overlay">
     <div class="modal-content">
-      <h2>🎉 CLEAR! 🎉</h2>
-      <div>クリアタイム</div>
-      <div id="final-time">00:00.0</div>
-      <div id="penalty-info">お手つき回数: <span id="miss-count">0</span>回 (+<span id="penalty-sec">0</span>秒)</div>
+      <h2>⌛ TIME UP! ⌛</h2>
+      <div>獲得枚数</div>
+      <div id="final-score">0 枚</div>
+      <div id="penalty-info">お手つき回数: <span id="miss-count">0</span>回 (-<span id="penalty-sec">0</span>秒減算)</div>
       <p id="utsuro-comment">「フッ…なかなか素早いじゃないか！見事だぞ！」</p>
       <button class="retry-btn" onclick="showTitleScreen()">タイトルへもどる</button>
     </div>
   </div>
 
   <script>
+    const GAME_TIME_LIMIT = 60; // 制限時間 60秒
+
     const allData = [
-      { id: 1, char: "つ", voice: "強い奴は乳首出してても強いから乳首出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/" },
-      { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/" },
-      { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3", youtube: "https://www.youtube.com/" },
-      { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3", youtube: "https://www.youtube.com/" },
-      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/" },
-      { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3", youtube: "https://www.youtube.com/" },
-      { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3", youtube: "https://www.youtube.com/" },
-      { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3", youtube: "https://www.youtube.com/" },
-      { id: 9, char: "お", voice: "お前をコロス", title: "【SEKIRO】エンディング、見せます。本気のうつろを見てください【うつろの挑戦】", date: "2026.09.13", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3", youtube: "https://www.youtube.com/" },
-      { id: 10, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/" },
-      { id: 11, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/" },
-      { id: 12, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/" }
+      { id: 1, char: "つ", voice: "強い奴はTKB出してても強いからTKB出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/" },
+      { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/" },
+      { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", screenshot: "screenshot/utsuro_ss_003.png", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3", youtube: "https://www.youtube.com/" },
+      { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", screenshot: "screenshot/utsuro_ss_004.png", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3", youtube: "https://www.youtube.com/" },
+      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", screenshot: "screenshot/utsuro_ss_005.png", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/" },
+      { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", screenshot: "screenshot/utsuro_ss_006.png", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3", youtube: "https://www.youtube.com/" },
+      { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_007.png", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3", youtube: "https://www.youtube.com/" },
+      { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", screenshot: "screenshot/utsuro_ss_008.png", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3", youtube: "https://www.youtube.com/" },
+      { id: 9, char: "お", voice: "お前をコロス", title: "【SEKIRO】エンディング、見せます。本気のうつろを見てください【うつろの挑戦】", date: "2026.09.13", screenshot: "screenshot/utsuro_ss_009.png", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3", youtube: "https://www.youtube.com/" },
+      { id: 10, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_010.png", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/" },
+      { id: 11, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_011.png", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/" },
+      { id: 12, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/" }
     ];
 
     let currentBoard = [];
@@ -654,10 +687,9 @@
     let currentTarget = null;
     let currentAudioObj = null;
 
-    let startTime = null;
     let timerInterval = null;
-    let elapsedTime = 0;
-    let penaltyTime = 0;
+    let remainingTime = GAME_TIME_LIMIT;
+    let score = 0;
     let missCount = 0;
     let isGameActive = false;
     let selectedDifficulty = 'normal';
@@ -689,6 +721,15 @@
       }
     }
 
+    function playAlbumVoice(audioPath) {
+      if (currentAudioObj) {
+        currentAudioObj.pause();
+        currentAudioObj.currentTime = 0;
+      }
+      currentAudioObj = new Audio(audioPath);
+      currentAudioObj.play().catch(e => console.log("再生制限"));
+    }
+
     function openAlbumScreen() {
       const unlockedIds = getUnlockedCardIds();
       const albumGrid = document.getElementById("album-grid");
@@ -704,30 +745,34 @@
         cardEl.className = `album-card ${isUnlocked ? 'unlocked' : 'locked'}`;
         
         if (isUnlocked) {
-          cardEl.onclick = () => {
-            if (card.youtube) {
-              window.open(card.youtube, '_blank');
-            } else {
-              alert("配信のタイムスタンプURLが設定されていません。");
-            }
-          };
+          const ssImg = card.screenshot || card.img;
 
           cardEl.innerHTML = `
             <div class="card-char-badge">${card.char || 'あ'}</div>
-            <div class="thumbnail-wrapper">
-              <img class="thumbnail-img" src="${card.img}" alt="${card.title}" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Image'">
+            <div class="img-container-vertical">
+              <div class="thumbnail-wrapper">
+                <img class="thumbnail-img" src="${ssImg}" alt="スクリーンショット" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
+              </div>
+              <div class="thumbnail-wrapper">
+                <img class="thumbnail-img" src="${card.img}" alt="サムネイル" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Thumb'">
+              </div>
             </div>
             <div class="card-info">
               <div class="card-date">${card.date}</div>
               <div class="card-title">${card.title}</div>
             </div>
-            <div class="yt-badge">▶ 配信へ</div>
+            <div class="album-btn-group">
+              <button class="album-act-btn yt" onclick="window.open('${card.youtube || 'https://youtube.com'}', '_blank')">▶ 配信へ</button>
+              <button class="album-act-btn voice" onclick="playAlbumVoice('${card.audio}')">🔊 ボイス</button>
+            </div>
           `;
         } else {
           cardEl.innerHTML = `
             <div class="card-char-badge">？</div>
-            <div class="thumbnail-wrapper" style="background: #222;">
-              <div style="font-size: 1.5rem; color: #666;">🔒</div>
+            <div class="img-container-vertical">
+              <div class="thumbnail-wrapper" style="background: #222; aspect-ratio: 16/9;">
+                <div style="font-size: 1.5rem; color: #666; margin: auto;">🔒 未獲得</div>
+              </div>
             </div>
             <div class="card-info">
               <div class="card-date">????.??.??</div>
@@ -745,6 +790,7 @@
     }
 
     function closeAlbumScreen() {
+      if (currentAudioObj) currentAudioObj.pause();
       document.getElementById("album-screen").style.display = "none";
       document.getElementById("title-screen").style.display = "flex";
       document.getElementById("game-container").style.display = "none";
@@ -786,16 +832,17 @@
       }
 
       clearInterval(timerInterval);
-      elapsedTime = 0;
-      penaltyTime = 0;
+      remainingTime = GAME_TIME_LIMIT;
+      score = 0;
       missCount = 0;
       isGameActive = false;
 
-      document.getElementById("timer-display").innerText = "00:00.0";
+      document.getElementById("timer-display").innerText = "60.0";
+      document.getElementById("score-display").innerText = "0枚";
       document.getElementById("board").innerHTML = "";
       document.getElementById("deal-overlay").style.display = "flex";
       document.getElementById("target-voice").innerText = "『準備はいいでございますか？』";
-      document.getElementById("voice-status").innerText = "🔊 （「かるた札を配る」を押してください）";
+      document.getElementById("voice-status").innerText = "🔊 （「札を配る」を押してください）";
     }
 
     function dealCardsAndStart() {
@@ -808,11 +855,23 @@
       renderBoard();
 
       isGameActive = true;
-      startTime = Date.now();
+      let lastTimestamp = Date.now();
+
       timerInterval = setInterval(() => {
         const now = Date.now();
-        elapsedTime = (now - startTime) + penaltyTime;
-        updateTimerDisplay(elapsedTime);
+        const delta = (now - lastTimestamp) / 1000;
+        lastTimestamp = now;
+
+        remainingTime -= delta;
+
+        if (remainingTime <= 0) {
+          remainingTime = 0;
+          updateTimerDisplay(0);
+          stopTimer();
+          showTimeUpScreen();
+        } else {
+          updateTimerDisplay(remainingTime);
+        }
       }, 100);
 
       nextQuestion();
@@ -823,13 +882,12 @@
       clearInterval(timerInterval);
     }
 
-    function updateTimerDisplay(timeMs) {
-      const totalSeconds = Math.floor(timeMs / 1000);
-      const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-      const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-      const milli = Math.floor((timeMs % 1000) / 100);
+    function updateTimerDisplay(sec) {
+      document.getElementById("timer-display").innerText = sec.toFixed(1);
+    }
 
-      document.getElementById("timer-display").innerText = `${minutes}:${seconds}.${milli}`;
+    function updateScoreDisplay() {
+      document.getElementById("score-display").innerText = `${score}枚`;
     }
 
     function renderBoard() {
@@ -843,10 +901,12 @@
         cardEl.className = "card";
         cardEl.onclick = (e) => onCardClick(index, e);
         
+        const displayImg = card.screenshot || card.img;
+
         cardEl.innerHTML = `
           <div class="card-char-badge ${showBadgeClass}">${card.char || 'あ'}</div>
           <div class="thumbnail-wrapper">
-            <img class="thumbnail-img" src="${card.img}" alt="${card.title}" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Image'">
+            <img class="thumbnail-img" src="${displayImg}" alt="${card.title}" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Image'">
           </div>
           <div class="card-info">
             <div class="card-date">${card.date}</div>
@@ -871,10 +931,11 @@
 
     function nextQuestion() {
       if (currentBoard.length === 0) {
-        stopTimer();
-        showClearScreen();
-        return;
+        deck = [...allData];
+        currentBoard = deck.splice(0, Math.min(10, deck.length));
+        renderBoard();
       }
+
       const randomIndex = Math.floor(Math.random() * currentBoard.length);
       currentTarget = currentBoard[randomIndex];
       
@@ -894,7 +955,7 @@
 
       setTimeout(() => {
         hand.remove();
-      }, 350);
+      }, 500);
     }
 
     function showFeedback(type, text) {
@@ -907,36 +968,33 @@
       }, 600);
     }
 
-    function showClearScreen() {
-      document.getElementById("target-voice").innerText = "ゲームクリア！";
+    function showTimeUpScreen() {
+      if (currentAudioObj) currentAudioObj.pause();
+
+      document.getElementById("target-voice").innerText = "タイムアップ！";
       document.getElementById("voice-status").innerText = "";
       
-      const finalMs = elapsedTime;
-      const totalSec = Math.floor(finalMs / 1000);
-      const minutes = Math.floor(totalSec / 60).toString().padStart(2, '0');
-      const seconds = (totalSec % 60).toString().padStart(2, '0');
-      const milli = Math.floor((finalMs % 1000) / 100);
-
-      document.getElementById("final-time").innerText = `${minutes}:${seconds}.${milli}`;
+      document.getElementById("final-score").innerText = `${score} 枚`;
       document.getElementById("miss-count").innerText = missCount;
-      document.getElementById("penalty-sec").innerText = missCount * 5;
+      document.getElementById("penalty-sec").innerText = missCount * 5; // ★ お手つき1回につき5秒計算
 
-      // ★ 指定されたセリフパターンを反映
       const commentEl = document.getElementById("utsuro-comment");
       
       if (selectedDifficulty === 'hard') {
-        if (missCount === 0) {
-          commentEl.innerText = "「頭文字なしのハードモードでパーフェクト！？うつろスキーの鑑でございます！」";
+        if (score >= 10) {
+          commentEl.innerText = "「ハードモードで10枚超え！？うつろのボイスを知り尽くしている素晴らしい手腕でございます！」";
+        } else if (score >= 5) {
+          commentEl.innerText = "「ハードモードでこれだけ取れれば上出来でございます！さすがはごしゅ！」";
         } else {
-          commentEl.innerText = "「ハードモード完走、お見事です！さすがはごしゅ！」";
+          commentEl.innerText = "「ハードモードはなかなか厳しいでございますね！めげずに再挑戦でございます！」";
         }
       } else {
-        if (missCount === 0) {
-          commentEl.innerText = "「ノーミスクリア！？ふふん、なかなかやるじゃないですか！」";
-        } else if (missCount <= 2) {
-          commentEl.innerText = "「まずまずのタイムでございますね！次はノーミスクリアを目指しましょう！」";
+        if (score >= 12) {
+          commentEl.innerText = "「12枚以上獲得！？恐ろしい動眼力と反射神経でございますね…見事！」";
+        } else if (score >= 7) {
+          commentEl.innerText = "「7枚獲得！なかなかの素早さでございますね！次はさらに上を目指しましょう！」";
         } else {
-          commentEl.innerText = "「お手つきが多いですよ！焦らずしっかりボイスを聴いて配信を思い出しましょう！」";
+          commentEl.innerText = "「お手つきに気をつけて、ボイスをじっくり聞き分けるのがコツでございますよ！」";
         }
       }
 
@@ -953,7 +1011,9 @@
       const clickedCard = currentBoard[index];
 
       if (clickedCard.id === currentTarget.id) {
-        showFeedback("correct", "〇 正解！");
+        score++;
+        updateScoreDisplay();
+        showFeedback("correct", "〇 正解！ +1枚");
 
         saveUnlockedCardId(clickedCard.id);
 
@@ -968,11 +1028,16 @@
         nextQuestion();
       } else {
         missCount++;
-        penaltyTime += 5000;
-        elapsedTime += 5000;
-        updateTimerDisplay(elapsedTime);
+        // ★ お手つきペナルティ：残り時間を5秒減算！
+        remainingTime = Math.max(0, remainingTime - 5);
+        updateTimerDisplay(remainingTime);
 
-        showFeedback("wrong", "❌ +5秒！");
+        showFeedback("wrong", "❌ -5秒！");
+
+        if (remainingTime <= 0) {
+          stopTimer();
+          showTimeUpScreen();
+        }
       }
     }
 
