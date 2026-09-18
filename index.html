@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>氷室うつろ配信名言かるたとり</title>
+  <title>氷室うつろ配信名言かるた</title>
+  <!-- かわいい丸ゴシックフォント（Zen Maru Gothic） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --neon-blue: #00ffff;
@@ -17,7 +22,7 @@
       background-position: center;
       background-attachment: fixed;
       color: #fff;
-      font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
       margin: 0;
       padding: 0;
       height: 100vh;
@@ -42,15 +47,60 @@
       backdrop-filter: blur(4px);
     }
 
+    /* タイトルロゴ */
     .title-logo {
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      font-weight: bold;
-      color: #fff;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: #ffffff;
       text-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-blue);
       margin-bottom: 25px;
       letter-spacing: 2px;
       text-align: center;
       padding: 0 10px;
+      line-height: 1.3;
+    }
+
+    /* ★ 「繰言かたる」だけをピンポイントで消す設定（外側には一切はみ出さない） ★ */
+    .erased-text {
+      position: relative;
+      display: inline-block;
+      color: #e0e0e0;
+      margin: 0 4px;
+    }
+
+    /* 1層目：文字幅ぴったり（0%～100%）に収めたジグザグ赤マジック */
+    .erased-text::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 15%;
+      width: 100%;
+      height: 70%;
+      background: rgba(255, 35, 75, 0.85);
+      clip-path: polygon(
+        0% 80%, 15% 10%, 30% 85%, 45% 15%, 60% 90%, 75% 20%, 90% 85%, 100% 30%,
+        100% 55%, 85% 100%, 70% 35%, 55% 100%, 40% 30%, 25% 100%, 10% 30%, 0% 100%
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* 2層目：少し位置をズラした内側限定の重なりギザギザライン */
+    .erased-text::after {
+      content: "";
+      position: absolute;
+      left: 2%;
+      top: 25%;
+      width: 96%;
+      height: 55%;
+      background: rgba(230, 20, 60, 0.7);
+      clip-path: polygon(
+        0% 20%, 12% 90%, 28% 15%, 42% 85%, 58% 10%, 72% 95%, 88% 15%, 100% 80%,
+        100% 95%, 85% 30%, 70% 100%, 55% 25%, 40% 95%, 25% 30%, 10% 95%, 0% 35%
+      );
+      pointer-events: none;
+      z-index: 3;
     }
 
     .mode-select-box {
@@ -87,6 +137,7 @@
       border-radius: 30px;
       cursor: pointer;
       transition: all 0.2s;
+      font-family: 'Zen Maru Gothic', sans-serif;
     }
 
     .mode-btn:hover {
@@ -119,6 +170,7 @@
       cursor: pointer;
       box-shadow: 0 0 25px var(--neon-blue);
       transition: transform 0.15s, box-shadow 0.15s;
+      font-family: 'Zen Maru Gothic', sans-serif;
     }
 
     .action-btn:hover {
@@ -137,6 +189,7 @@
       cursor: pointer;
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
       transition: all 0.15s;
+      font-family: 'Zen Maru Gothic', sans-serif;
     }
 
     .album-btn:hover {
@@ -232,7 +285,7 @@
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.8rem; font-weight: bold; color: #111;
-      font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif;
+      font-family: 'Zen Maru Gothic', serif;
       z-index: 2;
     }
 
@@ -387,6 +440,7 @@
       backdrop-filter: blur(4px);
       transition: all 0.15s;
       flex-shrink: 0;
+      font-family: 'Zen Maru Gothic', sans-serif;
     }
     #retire-btn:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; }
 
@@ -456,7 +510,7 @@
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.95rem; font-weight: bold; color: #111;
-      font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif;
+      font-family: 'Zen Maru Gothic', serif;
       box-shadow: 0 2px 4px rgba(0,0,0,0.4);
       z-index: 2;
     }
@@ -570,9 +624,9 @@
     #penalty-info { color: #ff6666; font-size: 0.95rem; margin-bottom: 20px; }
 
     .modal-btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
-    .retry-btn { background: var(--neon-blue); color: #000; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+    .retry-btn { background: var(--neon-blue); color: #000; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; font-family: 'Zen Maru Gothic', sans-serif; }
     .retry-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-blue); }
-    .cancel-btn { background: #444; color: #fff; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: background 0.1s; }
+    .cancel-btn { background: #444; color: #fff; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: background 0.1s; font-family: 'Zen Maru Gothic', sans-serif; }
     .cancel-btn:hover { background: #666; }
   </style>
 </head>
@@ -580,7 +634,10 @@
 
   <!-- タイトル画面 -->
   <div id="title-screen">
-    <div class="title-logo">氷室うつろ配信名言かるたとり</div>
+    <!-- ★ 「繰言かたる」だけにぴったりの範囲でジグザグ赤消しを適用 ★ -->
+    <div class="title-logo">
+      氷室うつろ配信<span class="erased-text">繰言かたる</span>名言かるた
+    </div>
 
     <div class="mode-select-box">
       <div class="mode-select-title">🎮 難易度を選択 (制限時間 60秒)</div>
@@ -976,7 +1033,7 @@
       
       document.getElementById("final-score").innerText = `${score} 枚`;
       document.getElementById("miss-count").innerText = missCount;
-      document.getElementById("penalty-sec").innerText = missCount * 5; // ★ お手つき1回につき5秒計算
+      document.getElementById("penalty-sec").innerText = missCount * 5;
 
       const commentEl = document.getElementById("utsuro-comment");
       
@@ -1028,7 +1085,7 @@
         nextQuestion();
       } else {
         missCount++;
-        // ★ お手つきペナルティ：残り時間を5秒減算！
+        // お手つきペナルティ：残り時間を5秒減算
         remainingTime = Math.max(0, remainingTime - 5);
         updateTimerDisplay(remainingTime);
 
