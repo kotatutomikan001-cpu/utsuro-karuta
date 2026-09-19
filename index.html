@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>氷室うつろ配信名言かるた</title>
+  <title>氷室うつろ配信名言カルタ</title>
   <!-- かわいい丸ゴシックフォント（Zen Maru Gothic） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,7 +61,7 @@
       line-height: 1.3;
     }
 
-    /* ★ 「繰言かたる」だけをピンポイントで消す設定（外側には一切はみ出さない） ★ */
+    /* 「繰言カタル」だけにぴったりの範囲でジグザグ赤消し */
     .erased-text {
       position: relative;
       display: inline-block;
@@ -69,7 +69,6 @@
       margin: 0 4px;
     }
 
-    /* 1層目：文字幅ぴったり（0%～100%）に収めたジグザグ赤マジック */
     .erased-text::before {
       content: "";
       position: absolute;
@@ -86,7 +85,6 @@
       z-index: 2;
     }
 
-    /* 2層目：少し位置をズラした内側限定の重なりギザギザライン */
     .erased-text::after {
       content: "";
       position: absolute;
@@ -356,63 +354,69 @@
       align-items: center;
       justify-content: space-between;
       box-sizing: border-box;
-      padding: 10px;
+      padding: 8px 10px;
     }
 
     #top-header {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
       max-width: 1300px;
-      align-items: center;
+      align-items: stretch;
       z-index: 10;
     }
 
-    /* タイマー＆スコア表示 */
+    /* タイマー＆スコア表示（少しスリム化） */
     #timer-container, #score-container {
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid var(--neon-blue);
-      box-shadow: 0 0 15px var(--neon-blue);
+      box-shadow: 0 0 12px var(--neon-blue);
       border-radius: 10px;
-      padding: 6px 12px;
+      padding: 4px 8px;
       text-align: center;
       backdrop-filter: blur(4px);
-      min-width: 90px;
+      min-width: 75px;
       flex-shrink: 0;
-    }
-
-    #timer-label, #score-label { font-size: 0.75rem; color: var(--neon-light-blue); }
-    #timer-display, #score-display { font-size: 1.4rem; font-weight: bold; color: #fff; font-family: monospace; }
-    #score-display { color: #ffd700; }
-
-    #target-voice-container {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.85);
-      border: 2px solid var(--neon-blue);
-      box-shadow: 0 0 15px var(--neon-blue);
-      border-radius: 10px;
-      padding: 8px 15px;
-      text-align: center;
-      backdrop-filter: blur(4px);
-      cursor: pointer;
-      max-height: 85px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      overflow: hidden;
     }
 
-    #voice-status { font-size: 0.75rem; color: var(--neon-light-blue); margin-bottom: 2px; }
+    #timer-label, #score-label { font-size: 0.7rem; color: var(--neon-light-blue); }
+    #timer-display, #score-display { font-size: 1.25rem; font-weight: bold; color: #fff; font-family: monospace; }
+    #score-display { color: #ffd700; }
+
+    /* ★ ボイス表示枠を拡大して長文を綺麗に納める ★ */
+    #target-voice-container {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.88);
+      border: 2px solid var(--neon-blue);
+      box-shadow: 0 0 15px var(--neon-blue);
+      border-radius: 12px;
+      padding: 6px 14px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      min-height: 110px;
+      max-height: 130px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    #target-voice-container::-webkit-scrollbar { width: 4px; }
+    #target-voice-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 2px; }
+
+    #voice-status { font-size: 0.72rem; color: var(--neon-light-blue); margin-bottom: 3px; flex-shrink: 0; }
+    
     #target-voice {
-      font-size: clamp(0.85rem, 1.8vw, 1.25rem);
+      font-size: clamp(0.8rem, 1.4vw, 1.05rem);
       color: #fff;
       font-weight: bold;
-      line-height: 1.25;
+      line-height: 1.35;
       word-break: break-word;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
 
     #current-mode-badge {
@@ -420,12 +424,14 @@
       border: 2px solid var(--neon-blue);
       box-shadow: 0 0 10px var(--neon-blue);
       border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 0.85rem;
+      padding: 6px 10px;
+      font-size: 0.8rem;
       color: var(--neon-light-blue);
       font-weight: bold;
       backdrop-filter: blur(4px);
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
     }
 
     #retire-btn {
@@ -433,24 +439,26 @@
       border: 2px solid #ff3355;
       color: #ff99aa;
       border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 0.85rem;
+      padding: 6px 10px;
+      font-size: 0.8rem;
       font-weight: bold;
       cursor: pointer;
       backdrop-filter: blur(4px);
       transition: all 0.15s;
       flex-shrink: 0;
       font-family: 'Zen Maru Gothic', sans-serif;
+      display: flex;
+      align-items: center;
     }
     #retire-btn:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; }
 
-    /* かるた盤面エリア */
+    /* かるた盤面エリア（少し上下マージンを抑えてバランス調整） */
     #board-container {
       position: relative;
       width: 100%;
       max-width: 1300px;
       flex: 1;
-      margin: 10px 0;
+      margin: 6px 0 0 0;
       z-index: 5;
       display: flex;
       align-items: center;
@@ -462,7 +470,7 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 10px;
+      gap: 8px;
       width: 100%;
       height: 100%;
     }
@@ -480,14 +488,14 @@
       z-index: 50;
     }
 
-    /* かるた札 */
+    /* かるた札（パディング等を調整） */
     .card {
       background: #fff;
       color: #333;
       border-radius: 6px;
       padding: 4px;
       border: 3px solid var(--karuta-green);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.5);
       user-select: none;
       transition: transform 0.15s, box-shadow 0.15s;
       display: flex;
@@ -504,12 +512,12 @@
 
     .card-char-badge {
       position: absolute;
-      top: 6px; right: 6px; width: 28px; height: 28px;
+      top: 5px; right: 5px; width: 26px; height: 26px;
       background-color: #ffffff;
       border: 2px solid var(--karuta-green);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.95rem; font-weight: bold; color: #111;
+      font-size: 0.9rem; font-weight: bold; color: #111;
       font-family: 'Zen Maru Gothic', serif;
       box-shadow: 0 2px 4px rgba(0,0,0,0.4);
       z-index: 2;
@@ -530,16 +538,16 @@
     .card .thumbnail-img { width: 100%; height: 100%; object-fit: contain; }
 
     .card .card-info {
-      padding-top: 3px;
+      padding-top: 2px;
       display: flex; flex-direction: column; flex: 1; overflow: hidden;
     }
 
     .card .card-date {
-      color: #555; font-family: monospace; font-size: 0.72rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px;
+      color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px;
     }
 
     .card .card-title {
-      font-weight: bold; font-size: 0.8rem; line-height: 1.25; color: #111; word-break: break-all; overflow-y: auto; flex: 1;
+      font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1;
     }
 
     .card .card-title::-webkit-scrollbar { width: 3px; }
@@ -551,13 +559,13 @@
       #game-container { height: auto; min-height: 100vh; }
       
       #top-header { flex-wrap: wrap; gap: 6px; }
-      #target-voice-container { order: 3; width: 100%; flex: none; }
-      #board-container { height: auto; min-height: 65vh; }
+      #target-voice-container { order: 3; width: 100%; flex: none; min-height: 90px; }
+      #board-container { height: auto; min-height: 60vh; }
 
       #board {
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: auto;
-        gap: 10px;
+        gap: 8px;
       }
 
       #album-grid {
@@ -634,9 +642,8 @@
 
   <!-- タイトル画面 -->
   <div id="title-screen">
-    <!-- ★ 「繰言かたる」だけにぴったりの範囲でジグザグ赤消しを適用 ★ -->
     <div class="title-logo">
-      氷室うつろ配信<span class="erased-text">繰言かたる</span>名言かるた
+      氷室うつろ配信<span class="erased-text">繰言カタル</span>名言カルタ
     </div>
 
     <div class="mode-select-box">
@@ -724,20 +731,64 @@
   <script>
     const GAME_TIME_LIMIT = 60; // 制限時間 60秒
 
+    /* ★ 1 〜 50 までのデータリスト ★ */
     const allData = [
-      { id: 1, char: "つ", voice: "強い奴はTKB出してても強いからTKB出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/" },
-      { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/" },
-      { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", screenshot: "screenshot/utsuro_ss_003.png", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3", youtube: "https://www.youtube.com/" },
-      { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", screenshot: "screenshot/utsuro_ss_004.png", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3", youtube: "https://www.youtube.com/" },
-      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", screenshot: "screenshot/utsuro_ss_005.png", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/" },
-      { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", screenshot: "screenshot/utsuro_ss_006.png", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3", youtube: "https://www.youtube.com/" },
-      { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_007.png", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3", youtube: "https://www.youtube.com/" },
-      { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", screenshot: "screenshot/utsuro_ss_008.png", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3", youtube: "https://www.youtube.com/" },
-      { id: 9, char: "お", voice: "お前をコロス", title: "【SEKIRO】エンディング、見せます。本気のうつろを見てください【うつろの挑戦】", date: "2026.09.13", screenshot: "screenshot/utsuro_ss_009.png", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3", youtube: "https://www.youtube.com/" },
-      { id: 10, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_010.png", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/" },
-      { id: 11, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_011.png", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/" },
-      { id: 12, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/" }
+      { id: 1, char: "つ", voice: "強い奴はTKB出してても強いからTKB出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/live/DDP6DwUEKYo?si=59kyN78UCjUYf4te&t=2603" },
+      { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/live/mM5Xw-2ESfo?si=VuxXaipry9FOspja&t=4989" },
+      { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", screenshot: "screenshot/utsuro_ss_003.png", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3", youtube: "https://www.youtube.com/live/JoqzOVhb-Y8?si=gKLgWZ_gD-285YJH&t=4427" },
+      { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", screenshot: "screenshot/utsuro_ss_004.png", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3", youtube: "https://www.youtube.com/live/Kv8GowZmx9Q?si=C-M4RSbxPYMTsQVm&t=10168" },
+      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", screenshot: "screenshot/utsuro_ss_005.png", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/live/O-THeiYmD7s?si=BaVKrZzfgZWoyDqr&t=10084" },
+      { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", screenshot: "screenshot/utsuro_ss_006.png", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3", youtube: "https://www.youtube.com/live/yo8MpXv0aG8?si=7KcJiSAsZ99hgNeQ&t=4171" },
+      { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_007.png", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=lcrVc8rygNK4p4Yq&t=35746" },
+      { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", screenshot: "screenshot/utsuro_ss_008.png", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3", youtube: "https://www.youtube.com/live/v2TKISC-lBQ?si=pApEpKF8YMOqXYFW&t=5981" },
+      { id: 9, char: "お", voice: "お前をコロス", title: "【SEKIRO】エンディング、見せます。本気のうつろを見てください【うつろの挑戦】", date: "2026.09.13", screenshot: "screenshot/utsuro_ss_009.png", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3", youtube: "https://www.youtube.com/live/Ju9NlLMVjrI?si=RlYrdObEgsCIDAmo&t=5066" },
+      { id: 10, char: "う", voice: "うわぁ～！・・・NTRだぁ～！・・・私でいいんかこれ？うつろちゃんかこれ？うつろちゃんか、うつろちゃんかも・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_010.png", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=QBOdfGqKlVzMhYjc&t=9886" },
+      { id: 11, char: "わ", voice: "私が命を削って寝起き10分で録っている、楽しいカスートありがとうございます！", title: "【＃雑談】就寝前の一時間雑談 うつろジオ＃6【星めぐり学園／氷室うつろ】", date: "2025.01.23", screenshot: "screenshot/utsuro_ss_011.png", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/live/p2kS5LJ2ml4?si=mm3mdmyU4UU6Svlz&t=1690" },
+      { id: 12, char: "も", voice: "もしかしてこれさぁ、あれなんじゃない？未来の悟飯ちゃんなんじゃない？悟飯ちゃん最終的にこうなるんじゃない？もしかして。なんかよくわかんないけど反抗期で髪の毛染めた悟飯ちゃんなんじゃない？コレ。", title: "【＃ドラゴンボールZ KAKAROT】人造人間編開始！サムネの人は誰でございますか？【＃完全初見】", date: "2025.01.24", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/live/4MCEmLoXNp4?si=bDIVrLkHQS2h-85_&t=614" },
+      { id: 13, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/" },
+      { id: 14, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_014.png", img: "img/utsuro_thumb_014.jpg", audio: "audio/utsuro_voice_014.mp3", youtube: "https://www.youtube.com/" },
+      { id: 15, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/" },
+      { id: 16, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_016.png", img: "img/utsuro_thumb_016.jpg", audio: "audio/utsuro_voice_016.mp3", youtube: "https://www.youtube.com/" },
+      { id: 17, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/" },
+      { id: 18, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/" },
+      { id: 19, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/" },
+      { id: 20, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/" },
+      { id: 21, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/" },
+      { id: 22, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/" },
+      { id: 23, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/" },
+      { id: 24, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/" },
+      { id: 25, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_025.png", img: "img/utsuro_thumb_025.jpg", audio: "audio/utsuro_voice_025.mp3", youtube: "https://www.youtube.com/" },
+      { id: 26, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_026.png", img: "img/utsuro_thumb_026.jpg", audio: "audio/utsuro_voice_026.mp3", youtube: "https://www.youtube.com/" },
+      { id: 27, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_027.png", img: "img/utsuro_thumb_027.jpg", audio: "audio/utsuro_voice_027.mp3", youtube: "https://www.youtube.com/" },
+      { id: 28, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_028.png", img: "img/utsuro_thumb_028.jpg", audio: "audio/utsuro_voice_028.mp3", youtube: "https://www.youtube.com/" },
+      { id: 29, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_029.png", img: "img/utsuro_thumb_029.jpg", audio: "audio/utsuro_voice_029.mp3", youtube: "https://www.youtube.com/" },
+      { id: 30, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_030.png", img: "img/utsuro_thumb_030.jpg", audio: "audio/utsuro_voice_030.mp3", youtube: "https://www.youtube.com/" },
+      { id: 31, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_031.png", img: "img/utsuro_thumb_031.jpg", audio: "audio/utsuro_voice_031.mp3", youtube: "https://www.youtube.com/" },
+      { id: 32, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_032.png", img: "img/utsuro_thumb_032.jpg", audio: "audio/utsuro_voice_032.mp3", youtube: "https://www.youtube.com/" },
+      { id: 33, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_033.png", img: "img/utsuro_thumb_033.jpg", audio: "audio/utsuro_voice_033.mp3", youtube: "https://www.youtube.com/" },
+      { id: 34, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_034.png", img: "img/utsuro_thumb_034.jpg", audio: "audio/utsuro_voice_034.mp3", youtube: "https://www.youtube.com/" },
+      { id: 35, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_035.png", img: "img/utsuro_thumb_035.jpg", audio: "audio/utsuro_voice_035.mp3", youtube: "https://www.youtube.com/" },
+      { id: 36, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_036.png", img: "img/utsuro_thumb_036.jpg", audio: "audio/utsuro_voice_036.mp3", youtube: "https://www.youtube.com/" },
+      { id: 37, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_037.png", img: "img/utsuro_thumb_037.jpg", audio: "audio/utsuro_voice_037.mp3", youtube: "https://www.youtube.com/" },
+      { id: 38, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_038.png", img: "img/utsuro_thumb_038.jpg", audio: "audio/utsuro_voice_038.mp3", youtube: "https://www.youtube.com/" },
+      { id: 39, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_039.png", img: "img/utsuro_thumb_039.jpg", audio: "audio/utsuro_voice_039.mp3", youtube: "https://www.youtube.com/" },
+      { id: 40, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_040.png", img: "img/utsuro_thumb_040.jpg", audio: "audio/utsuro_voice_040.mp3", youtube: "https://www.youtube.com/" },
+      { id: 41, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_041.png", img: "img/utsuro_thumb_041.jpg", audio: "audio/utsuro_voice_041.mp3", youtube: "https://www.youtube.com/" },
+      { id: 42, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_042.png", img: "img/utsuro_thumb_042.jpg", audio: "audio/utsuro_voice_042.mp3", youtube: "https://www.youtube.com/" },
+      { id: 43, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_043.png", img: "img/utsuro_thumb_043.jpg", audio: "audio/utsuro_voice_043.mp3", youtube: "https://www.youtube.com/" },
+      { id: 44, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_044.png", img: "img/utsuro_thumb_044.jpg", audio: "audio/utsuro_voice_044.mp3", youtube: "https://www.youtube.com/" },
+      { id: 45, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_045.png", img: "img/utsuro_thumb_045.jpg", audio: "audio/utsuro_voice_045.mp3", youtube: "https://www.youtube.com/" },
+      { id: 46, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_046.png", img: "img/utsuro_thumb_046.jpg", audio: "audio/utsuro_voice_046.mp3", youtube: "https://www.youtube.com/" },
+      { id: 47, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_047.png", img: "img/utsuro_thumb_047.jpg", audio: "audio/utsuro_voice_047.mp3", youtube: "https://www.youtube.com/" },
+      { id: 48, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_048.png", img: "img/utsuro_thumb_048.jpg", audio: "audio/utsuro_voice_048.mp3", youtube: "https://www.youtube.com/" },
+      { id: 49, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_049.png", img: "img/utsuro_thumb_049.jpg", audio: "audio/utsuro_voice_049.mp3", youtube: "https://www.youtube.com/" },
+      { id: 50, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_050.png", img: "img/utsuro_thumb_050.jpg", audio: "audio/utsuro_voice_050.mp3", youtube: "https://www.youtube.com/" }
     ];
+
+    /* ★ ゲームで使用可能な有効データ（タイトルやボイスが未設定でないもの）を自動抽出 ★ */
+    function getValidGameData() {
+      return allData.filter(item => item.title !== "未設定" && item.voice !== "未設定");
+    }
 
     let currentBoard = [];
     let deck = [];
@@ -794,7 +845,12 @@
 
       let unlockedCount = 0;
 
-      allData.forEach(card => {
+      // 日付順（昇順：古い日付 → 新しい日付）にソート
+      const sortedData = [...allData].sort((a, b) => {
+        return a.date.localeCompare(b.date);
+      });
+
+      sortedData.forEach(card => {
         const isUnlocked = unlockedIds.includes(card.id);
         if (isUnlocked) unlockedCount++;
 
@@ -905,7 +961,15 @@
     function dealCardsAndStart() {
       document.getElementById("deal-overlay").style.display = "none";
 
-      deck = [...allData];
+      const validData = getValidGameData();
+
+      if (validData.length === 0) {
+        alert("有効な名言カードがありません！「未設定」を解除してください。");
+        showTitleScreen();
+        return;
+      }
+
+      deck = [...validData];
       currentBoard = deck.splice(0, Math.min(10, deck.length));
       deck.sort(() => Math.random() - 0.5);
 
@@ -988,7 +1052,7 @@
 
     function nextQuestion() {
       if (currentBoard.length === 0) {
-        deck = [...allData];
+        deck = [...getValidGameData()];
         currentBoard = deck.splice(0, Math.min(10, deck.length));
         renderBoard();
       }
