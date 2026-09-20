@@ -54,11 +54,25 @@
       font-weight: 900;
       color: #ffffff;
       text-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-blue);
-      margin-bottom: 25px;
+      margin-bottom: 12px;
       letter-spacing: 2px;
       text-align: center;
       padding: 0 10px;
       line-height: 1.3;
+    }
+
+    /* 音声注意書き */
+    .audio-notice {
+      color: #ffdd66;
+      font-size: clamp(0.85rem, 2vw, 1.05rem);
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 221, 102, 0.5);
+      border-radius: 20px;
+      padding: 5px 18px;
+      margin-bottom: 22px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(255, 221, 102, 0.2);
     }
 
     /* 「繰言カタル」だけにぴったりの範囲でジグザグ赤消し */
@@ -366,7 +380,7 @@
       z-index: 10;
     }
 
-    /* タイマー＆スコア表示（少しスリム化） */
+    /* タイマー＆スコア表示 */
     #timer-container, #score-container {
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid var(--neon-blue);
@@ -386,7 +400,7 @@
     #timer-display, #score-display { font-size: 1.25rem; font-weight: bold; color: #fff; font-family: monospace; }
     #score-display { color: #ffd700; }
 
-    /* ★ ボイス表示枠を拡大して長文を綺麗に納める ★ */
+    /* ボイス表示枠 */
     #target-voice-container {
       flex: 1;
       background: rgba(0, 0, 0, 0.88);
@@ -452,7 +466,7 @@
     }
     #retire-btn:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; }
 
-    /* かるた盤面エリア（少し上下マージンを抑えてバランス調整） */
+    /* かるた盤面エリア */
     #board-container {
       position: relative;
       width: 100%;
@@ -488,7 +502,7 @@
       z-index: 50;
     }
 
-    /* かるた札（パディング等を調整） */
+    /* かるた札 */
     .card {
       background: #fff;
       color: #333;
@@ -644,6 +658,11 @@
   <div id="title-screen">
     <div class="title-logo">
       氷室うつろ配信<span class="erased-text">繰言カタル</span>名言カルタ
+    </div>
+
+    <!-- 音声注意メッセージ -->
+    <div class="audio-notice">
+      🔊 ※音声を再生するゲームです。音量にご注意ください
     </div>
 
     <div class="mode-select-box">
