@@ -16,6 +16,14 @@
       --karuta-green: #008b8b;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
     body {
       background-image: url('tatami.png');
       background-size: cover;
@@ -23,15 +31,9 @@
       background-attachment: fixed;
       color: #fff;
       font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      height: 100dvh; /* スマホのアドレスバー考慮 */
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
       position: relative;
     }
 
@@ -374,16 +376,13 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       box-sizing: border-box;
       padding: 8px 10px;
       overflow: hidden;
     }
 
-    /* 上部ヘッダー（常に最上部に固定） */
+    /* 上部ヘッダー（最上部に固定） */
     #top-header {
-      position: sticky;
-      top: 0;
       display: flex;
       gap: 8px;
       width: 100%;
@@ -427,8 +426,8 @@
       text-align: center;
       backdrop-filter: blur(4px);
       cursor: pointer;
-      min-height: 90px;
-      max-height: 120px;
+      min-height: 85px;
+      max-height: 110px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -482,18 +481,17 @@
     }
     #retire-btn:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; }
 
-    /* かるた盤面エリア（独立スクロール） */
+    /* かるた盤面エリア（縦スクロール領域） */
     #board-container {
       position: relative;
       width: 100%;
       max-width: 1300px;
       flex: 1;
+      min-height: 0; /* フレックス要素の縮小を許可 */
       margin: 6px 0 0 0;
       z-index: 5;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding-bottom: 20px;
     }
 
@@ -587,10 +585,8 @@
     .card .card-title::-webkit-scrollbar { width: 3px; }
     .card .card-title::-webkit-scrollbar-thumb { background: var(--karuta-green); border-radius: 2px; }
 
-    /* スマホ向けレイアウト設定 */
+    /* ★ スマホ向けレイアウト調整 ★ */
     @media (max-width: 768px) {
-      body { overflow: hidden; }
-      
       #top-header { 
         flex-wrap: wrap; 
         gap: 6px; 
@@ -601,18 +597,14 @@
         order: 3; 
         width: 100%; 
         flex: none; 
-        min-height: 75px; 
-        max-height: 95px;
-      }
-      
-      #board-container { 
-        height: auto; 
-        flex: 1;
+        min-height: 70px; 
+        max-height: 90px;
       }
 
       #board {
         grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: auto;
+        grid-template-rows: none; /* スマホでは行数固定を解除 */
+        grid-auto-rows: minmax(180px, auto); /* 札の最小高さを保持して潰れを防止 */
         gap: 8px;
         padding-bottom: 20px;
       }
