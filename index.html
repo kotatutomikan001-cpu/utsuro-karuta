@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>氷室うつろ配信名言カルタ</title>
+  
+  <!-- Google Analytics (GA4) 計測タグ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-226DWMX0DQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-226DWMX0DQ');
+  </script>
+
   <!-- かわいい丸ゴシックフォント（Zen Maru Gothic） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1023,6 +1034,11 @@
     }
 
     function openAlbumScreen() {
+      // GAイベント送信: アルバム閲覧
+      if (typeof gtag === 'function') {
+        gtag('event', 'view_album');
+      }
+
       const unlockedIds = getUnlockedCardIds();
       const albumGrid = document.getElementById("album-grid");
       albumGrid.innerHTML = "";
@@ -1157,6 +1173,13 @@
         return;
       }
 
+      // GAイベント送信: ゲームスタート
+      if (typeof gtag === 'function') {
+        gtag('event', 'game_start', {
+          'difficulty': selectedDifficulty
+        });
+      }
+
       // 最初に全カードをランダムシャッフル
       let shuffled = [...validData].sort(() => Math.random() - 0.5);
 
@@ -1280,6 +1303,15 @@
     function showTimeUpScreen() {
       stopCurrentNormalizedVoice();
 
+      // GAイベント送信: ゲームクリア/タイムアップ
+      if (typeof gtag === 'function') {
+        gtag('event', 'game_clear', {
+          'score': score,
+          'miss_count': missCount,
+          'difficulty': selectedDifficulty
+        });
+      }
+
       document.getElementById("target-voice").innerText = "タイムアップ！";
       document.getElementById("voice-status").innerText = "";
       
@@ -1323,6 +1355,14 @@
         // ★ 札取得成功：バン！のSEを再生
         playGetCardSE();
 
+        // GAイベント送信: 札獲得
+        if (typeof gtag === 'function') {
+          gtag('event', 'card_get', {
+            'card_id': clickedCard.id,
+            'card_char': clickedCard.char
+          });
+        }
+
         score++;
         updateScoreDisplay();
         showFeedback("correct", "〇 正解！ +1枚");
@@ -1341,6 +1381,12 @@
         nextQuestion();
       } else {
         missCount++;
+
+        // GAイベント送信: お手つき
+        if (typeof gtag === 'function') {
+          gtag('event', 'card_miss');
+        }
+
         // お手つきペナルティ：残り時間を5秒減算
         remainingTime = Math.max(0, remainingTime - 5);
         updateTimerDisplay(remainingTime);
