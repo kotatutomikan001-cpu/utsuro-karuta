@@ -404,7 +404,17 @@
       opacity: 0; pointer-events: none; visibility: hidden;
     }
 
-    /* ★ スマホ・縦長画面（768px以下）のとき：左右エリアを上下に積み重ねて重なりを防ぐ ★ */
+    /* 判定ポップアップ（デフォルト：PC用大きめ） */
+    #feedback-overlay {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+      font-size: 4rem; font-weight: bold; pointer-events: none; opacity: 0; z-index: 1000;
+      transition: all 0.2s ease-out; text-shadow: 0 0 20px rgba(0,0,0,0.8); white-space: nowrap;
+    }
+
+    #feedback-overlay.correct { color: #ff3366; text-shadow: 0 0 30px #ff3366, 0 0 10px #ffffff; opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    #feedback-overlay.wrong { color: #ff3333; text-shadow: 0 0 30px #ff3333, 0 0 10px #ffffff; opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+
+    /* ★ スマホ・縦長画面（768px以下）のときのレイアウト調整 ★ */
     @media (max-width: 768px) {
       .top-header-common { flex-wrap: wrap; gap: 6px; padding: 4px 2px 6px 2px; }
       #target-voice-container { order: 3; width: 100%; flex: none; min-height: 60px; max-height: 75px; }
@@ -427,6 +437,16 @@
       .shinki-card {
         max-width: none; /* スマホ幅に合わせて自動調整 */
       }
+
+      /* スマホでは判定ポップアップを小さくし、画面からはみ出さないように調整 */
+      #feedback-overlay {
+        font-size: 2.0rem;
+        white-space: normal;
+        text-align: center;
+        width: 90%;
+      }
+      #feedback-overlay.correct { transform: translate(-50%, -50%) scale(1.0); }
+      #feedback-overlay.wrong { transform: translate(-50%, -50%) scale(1.0); }
     }
 
     /* 巨大な手のアニメーション */
@@ -442,16 +462,6 @@
       75% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.98) rotate(-5deg); }
       100% { opacity: 0; transform: translate(-50%, -40%) scale(0.85) rotate(0deg); }
     }
-
-    /* 判定ポップアップ */
-    #feedback-overlay {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
-      font-size: 4rem; font-weight: bold; pointer-events: none; opacity: 0; z-index: 100;
-      transition: all 0.2s ease-out; text-shadow: 0 0 20px rgba(0,0,0,0.8); white-space: nowrap;
-    }
-
-    #feedback-overlay.correct { color: #ff3366; text-shadow: 0 0 30px #ff3366, 0 0 10px #ffffff; opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-    #feedback-overlay.wrong { color: #ff3333; text-shadow: 0 0 30px #ff3333, 0 0 10px #ffffff; opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
 
     /* モーダル共通スタイル */
     .modal-overlay {
@@ -792,7 +802,7 @@
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ！ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
       { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾やった！rocket launcherウテルノ！？", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
       { id: 19, char: "こ", voice: "〇すぞ・・・〇すぞ・・・（スゥ～ッ）ふぅ～～っ・・・〇すぞ・・・マジで・・・マジでがっかりだ美樹原ホントに・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=Yw9emN7k1A_8zrZy&t=4105" },
-      { id: 20, char: "よ", voice: "妖精が<span><span><span><span><span>「ｲｴ~~ﾝ!!!」</span></span></span></span></span>って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
+      { id: 20, char: "よ", voice: "妖精が<span><span><span><span><span><span>「ｲｴ~~ﾝ!!!」</span></span></span></span></span></span>って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
       { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい、あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
