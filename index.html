@@ -324,28 +324,28 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト (左右) ★ */
+    /* ★ 神経衰弱用レイアウト (デフォルトPC：左右に並べる) ★ */
     #shinki-board-container {
       position: relative; width: 100%; max-width: 1300px; flex: 1; min-height: 0; margin: 4px 0 0 0; z-index: 5;
-      display: flex; gap: 15px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
+      display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
     }
 
     .shinki-side-area {
       flex: 1; display: flex; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.4);
-      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 6px 8px; box-sizing: border-box;
+      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 6px 10px; box-sizing: border-box;
       min-height: 0;
     }
 
     .shinki-side-title {
-      font-size: 0.95rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 4px; text-shadow: 0 0 8px var(--neon-blue);
+      font-size: 1.0rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 4px; text-shadow: 0 0 8px var(--neon-blue);
       flex-shrink: 0;
     }
 
     .shinki-grid {
       display: grid; 
-      grid-template-columns: repeat(3, 1fr); /* スマホで見やすいように 3列×4行に調整 */
-      grid-template-rows: repeat(4, 1fr); 
-      gap: 5px; 
+      grid-template-columns: repeat(4, 1fr); 
+      grid-template-rows: repeat(3, 1fr); 
+      gap: 6px; 
       width: 100%; 
       flex: 1; 
       min-height: 0;
@@ -368,7 +368,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.7);
       width: 100%;
       height: 100%;
-      max-width: 120px;
+      max-width: 155px;
       aspect-ratio: 812 / 1153;
       box-sizing: border-box;
     }
@@ -400,7 +400,7 @@
     .shinki-card.flipped .card-inner-pattern {
       display: block;
       color: var(--karuta-green);
-      font-size: 1.8rem;
+      font-size: 2.0rem;
       opacity: 1;
     }
 
@@ -408,18 +408,7 @@
       opacity: 0; pointer-events: none; visibility: hidden;
     }
 
-    /* パソコンや横長画面（768px超）のとき：左右に並べる（4列×3行） */
-    @media (min-width: 769px) {
-      .shinki-grid {
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-      }
-      .shinki-card {
-        max-width: 155px;
-      }
-    }
-
-    /* スマホ・縦長画面（768px以下）のとき：左右エリアを上下に積み重ねてスッキリ表示 */
+    /* ★ スマホ・縦長画面（768px以下）のとき：左右エリアを上下に積み重ねる ＆ 4列×3行を維持 ★ */
     @media (max-width: 768px) {
       .top-header-common { flex-wrap: wrap; gap: 6px; padding: 4px 2px 6px 2px; }
       #target-voice-container { order: 3; width: 100%; flex: none; min-height: 60px; max-height: 75px; }
@@ -427,14 +416,22 @@
       #album-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 5px; }
       
       #shinki-board-container { 
-        flex-direction: column; 
-        gap: 10px; 
+        flex-direction: column; /* 上下に分ける */
+        gap: 12px; 
         overflow-y: visible; 
         height: auto; 
       }
       .shinki-side-area {
         width: 100%;
         margin-bottom: 5px;
+      }
+      .shinki-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4列を維持 */
+        grid-template-rows: repeat(3, 1fr);    /* 3行を維持 */
+        gap: 5px;
+      }
+      .shinki-card {
+        max-width: none; /* 幅いっぱいに合わせて綺麗に配置 */
       }
     }
 
@@ -537,8 +534,8 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🧠 遊び方 (制限時間 180秒)</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・左右のエリアからカードを1枚ずつめくります。<br>
-        ・左右で同じボイスが出ればペア成立＆カード獲得！<br>
+        ・上下のエリアからカードを1枚ずつめくります。<br>
+        ・上下で同じボイスが出ればペア成立＆カード獲得！<br>
         ・制限時間内に全12ペアのコンプリートを目指しましょう！
       </p>
     </div>
@@ -573,7 +570,7 @@
       </div>
 
       <div id="target-voice-container" onclick="playCurrentVoice()">
-        <div id="voice-status">🔊 （<span>「札を配る」を押してください</span>）</div>
+        <div id="voice-status">🔊 （<span><span>「札を配る」を押してください</span></span>）</div>
         <div id="target-voice">『準備はいいでございますか？』</div>
       </div>
 
@@ -604,7 +601,7 @@
 
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="shinki-voice-status" style="font-size: 0.85rem; color: var(--neon-light-blue); font-weight: bold;">
-          🔊 左右のトランプを1枚ずつ選んでください
+          🔊 上下のトランプを1枚ずつ選んでください
         </div>
       </div>
 
@@ -616,15 +613,15 @@
         <button class="action-btn" onclick="dealShinkiCardsAndStart()">カードを配る</button>
       </div>
 
-      <!-- 左エリア -->
+      <!-- 左/上エリア -->
       <div class="shinki-side-area">
-        <div class="shinki-side-title">◀ 左エリア</div>
+        <div class="shinki-side-title">◀ 左エリア (PC) / 上エリア (スマホ)</div>
         <div id="shinki-grid-left" class="shinki-grid"></div>
       </div>
 
-      <!-- 右エリア -->
+      <!-- 右/下エリア -->
       <div class="shinki-side-area">
-        <div class="shinki-side-title">右エリア ▶</div>
+        <div class="shinki-side-title">右エリア (PC) / 下エリア (スマホ) ▶</div>
         <div id="shinki-grid-right" class="shinki-grid"></div>
       </div>
     </div>
@@ -801,7 +798,7 @@
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ！ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
       { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾やった！rocket launcherウテルノ！？", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
       { id: 19, char: "こ", voice: "〇すぞ・・・〇すぞ・・・（スゥ～ッ）ふぅ～～っ・・・〇すぞ・・・マジで・・・マジでがっかりだ美樹原ホントに・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=Yw9emN7k1A_8zrZy&t=4105" },
-      { id: 20, char: "よ", voice: "妖精が<span><span><span>「ｲｴ~~ﾝ!!!」</span></span></span>って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
+      { id: 20, char: "よ", voice: "妖精が<span><span><span><span>「ｲｴ~~ﾝ!!!」</span></span></span></span>って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
       { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい、あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
