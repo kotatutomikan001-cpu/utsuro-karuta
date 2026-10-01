@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>氷室うつろ配信名言カルタ</title>
+  <title>氷室うつろ配信名言収集ミニゲーム</title>
   
   <!-- Google Analytics (GA4) 計測タグ -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-226DWMX0DQ"></script>
@@ -25,6 +25,7 @@
       --neon-blue: #00ffff;
       --neon-light-blue: #b3ffff;
       --karuta-green: #008b8b;
+      --card-back-color: #1a2a3a;
     }
 
     html, body {
@@ -48,8 +49,8 @@
       position: relative;
     }
 
-    /* タイトル画面 */
-    #title-screen {
+    /* 画面共通オーバーレイ */
+    .screen-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.75);
@@ -65,34 +66,33 @@
     }
 
     /* タイトルロゴ */
-    .title-logo {
+    .main-title-logo {
       font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-size: clamp(1.8rem, 4.5vw, 3.0rem);
       font-weight: 900;
       color: #ffffff;
       text-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-blue);
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       letter-spacing: 2px;
       text-align: center;
       padding: 0 10px;
       line-height: 1.3;
     }
 
-    /* 音声注意書き */
-    .audio-notice {
-      color: #ffdd66;
-      font-size: clamp(0.85rem, 2vw, 1.0rem);
-      font-weight: bold;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 221, 102, 0.5);
-      border-radius: 20px;
-      padding: 4px 16px;
+    .sub-title-logo {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-blue);
       margin-bottom: 15px;
-      letter-spacing: 1px;
-      box-shadow: 0 0 10px rgba(255, 221, 102, 0.2);
+      letter-spacing: 2px;
+      text-align: center;
+      padding: 0 10px;
+      line-height: 1.3;
     }
 
-    /* 「繰言カタル」だけにぴったりの範囲でジグザグ赤消し */
+    /* 「繰言カタル」ジグザグ赤消し */
     .erased-text {
       position: relative;
       display: inline-block;
@@ -102,34 +102,24 @@
 
     .erased-text::before {
       content: "";
-      position: absolute;
-      left: 0;
-      top: 15%;
-      width: 100%;
-      height: 70%;
+      position: absolute; left: 0; top: 15%; width: 100%; height: 70%;
       background: rgba(255, 35, 75, 0.85);
       clip-path: polygon(
         0% 80%, 15% 10%, 30% 85%, 45% 15%, 60% 90%, 75% 20%, 90% 85%, 100% 30%,
         100% 55%, 85% 100%, 70% 35%, 55% 100%, 40% 30%, 25% 100%, 10% 30%, 0% 100%
       );
-      pointer-events: none;
-      z-index: 2;
+      pointer-events: none; z-index: 2;
     }
 
     .erased-text::after {
       content: "";
-      position: absolute;
-      left: 2%;
-      top: 25%;
-      width: 96%;
-      height: 55%;
+      position: absolute; left: 2%; top: 25%; width: 96%; height: 55%;
       background: rgba(230, 20, 60, 0.7);
       clip-path: polygon(
         0% 20%, 12% 90%, 28% 15%, 42% 85%, 58% 10%, 72% 95%, 88% 15%, 100% 80%,
         100% 95%, 85% 30%, 70% 100%, 55% 25%, 40% 95%, 25% 30%, 10% 95%, 0% 35%
       );
-      pointer-events: none;
-      z-index: 3;
+      pointer-events: none; z-index: 3;
     }
 
     .setting-box {
@@ -137,525 +127,310 @@
       border: 2px solid var(--neon-blue);
       box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
       border-radius: 15px;
-      padding: 15px 25px;
+      padding: 12px 25px;
       margin-bottom: 15px;
       text-align: center;
-      width: 90%;
-      max-width: 420px;
+      width: 90%; max-width: 420px;
       box-sizing: border-box;
     }
 
     .setting-title {
-      font-size: 1.0rem;
+      font-size: 0.95rem;
       color: var(--neon-light-blue);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: bold;
     }
 
     .setting-options {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
+      display: flex; gap: 10px; justify-content: center;
     }
 
     .opt-btn {
       background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border: 2px solid #666;
-      padding: 8px 16px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Zen Maru Gothic', sans-serif;
-      flex: 1;
+      color: #fff; border: 2px solid #666;
+      padding: 8px 16px; font-size: 0.95rem; font-weight: bold;
+      border-radius: 25px; cursor: pointer; transition: all 0.2s;
+      font-family: 'Zen Maru Gothic', sans-serif; flex: 1;
     }
 
-    .opt-btn:hover {
-      border-color: var(--neon-blue);
-      color: var(--neon-light-blue);
-    }
-
+    .opt-btn:hover { border-color: var(--neon-blue); color: var(--neon-light-blue); }
     .opt-btn.active {
-      background: var(--neon-blue);
-      color: #000;
-      border-color: var(--neon-blue);
+      background: var(--neon-blue); color: #000; border-color: var(--neon-blue);
       box-shadow: 0 0 12px var(--neon-blue);
     }
 
-    .title-btn-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 5px;
+    /* ボタン群 */
+    .title-btn-group-vertical {
+      display: flex; flex-direction: column; gap: 12px; align-items: center;
+      width: 90%; max-width: 360px; margin-top: 5px;
     }
+
+    .game-select-btn {
+      width: 100%; background: var(--neon-blue); color: #000;
+      border: none; padding: 14px 20px; font-size: 1.3rem; font-weight: bold;
+      border-radius: 50px; cursor: pointer; box-shadow: 0 0 25px var(--neon-blue);
+      transition: transform 0.15s, box-shadow 0.15s; font-family: 'Zen Maru Gothic', sans-serif;
+      text-align: center;
+    }
+
+    .game-select-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-blue), 0 0 15px #fff; }
 
     .action-btn {
-      background: var(--neon-blue);
-      color: #000;
-      border: none;
-      padding: 14px 35px;
-      font-size: 1.4rem;
-      font-weight: bold;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 0 25px var(--neon-blue);
-      transition: transform 0.15s, box-shadow 0.15s;
-      font-family: 'Zen Maru Gothic', sans-serif;
+      background: var(--neon-blue); color: #000; border: none;
+      padding: 14px 35px; font-size: 1.4rem; font-weight: bold;
+      border-radius: 50px; cursor: pointer; box-shadow: 0 0 25px var(--neon-blue);
+      transition: transform 0.15s, box-shadow 0.15s; font-family: 'Zen Maru Gothic', sans-serif;
     }
 
-    .action-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 40px var(--neon-blue), 0 0 15px #fff;
-    }
+    .action-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-blue), 0 0 15px #fff; }
 
     .album-btn {
-      background: rgba(255, 215, 0, 0.2);
-      border: 2px solid #ffd700;
-      color: #ffd700;
-      padding: 14px 30px;
-      font-size: 1.3rem;
-      font-weight: bold;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-      transition: all 0.15s;
-      font-family: 'Zen Maru Gothic', sans-serif;
+      width: 100%; background: rgba(255, 215, 0, 0.2); border: 2px solid #ffd700;
+      color: #ffd700; padding: 12px 20px; font-size: 1.2rem; font-weight: bold;
+      border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+      transition: all 0.15s; font-family: 'Zen Maru Gothic', sans-serif; text-align: center;
     }
 
-    .album-btn:hover {
-      transform: scale(1.05);
-      background: #ffd700;
-      color: #000;
-      box-shadow: 0 0 30px #ffd700;
-    }
+    .album-btn:hover { transform: scale(1.05); background: #ffd700; color: #000; box-shadow: 0 0 30px #ffd700; }
 
     /* アルバム画面 */
     #album-screen {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(10, 10, 15, 0.95);
-      z-index: 400;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      padding: 15px;
-      box-sizing: border-box;
-      backdrop-filter: blur(5px);
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 10, 15, 0.95); z-index: 400; display: none;
+      flex-direction: column; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(5px);
     }
 
     .album-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      max-width: 1200px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; max-width: 1200px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;
     }
 
-    .album-title {
-      font-size: 1.6rem;
-      color: #ffd700;
-      font-weight: bold;
-      text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-    }
-
-    .album-progress {
-      font-size: 1.0rem;
-      color: var(--neon-light-blue);
-      background: rgba(0, 0, 0, 0.6);
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid var(--neon-blue);
-    }
+    .album-title { font-size: 1.6rem; color: #ffd700; font-weight: bold; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+    .album-progress { font-size: 1.0rem; color: var(--neon-light-blue); background: rgba(0, 0, 0, 0.6); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--neon-blue); }
 
     #album-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
-      width: 100%;
-      max-width: 1200px;
-      height: 80vh;
-      overflow-y: auto;
-      padding: 10px;
-      box-sizing: border-box;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;
+      width: 100%; max-width: 1200px; height: 80vh; overflow-y: auto; padding: 10px; box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.05); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     #album-grid::-webkit-scrollbar { width: 6px; }
     #album-grid::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
 
     .album-card {
-      background: #fff;
-      color: #333;
-      border-radius: 6px;
-      padding: 6px;
-      border: 3px solid var(--karuta-green);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      box-sizing: border-box;
-      transition: transform 0.15s, box-shadow 0.15s;
+      background: #fff; color: #333; border-radius: 6px; padding: 6px;
+      border: 3px solid var(--karuta-green); display: flex; flex-direction: column;
+      position: relative; box-sizing: border-box; transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    .album-card.locked {
-      filter: grayscale(100%) brightness(0.35);
-      border-color: #555;
-      cursor: not-allowed;
-    }
+    .album-card.locked { filter: grayscale(100%) brightness(0.35); border-color: #555; cursor: not-allowed; }
 
     .album-card .card-char-badge {
-      position: absolute;
-      top: 6px; right: 6px; width: 24px; height: 24px;
-      background-color: #ffffff;
-      border: 1.5px solid var(--karuta-green);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; font-weight: bold; color: #111;
-      font-family: 'Zen Maru Gothic', serif;
-      z-index: 2;
+      position: absolute; top: 6px; right: 6px; width: 24px; height: 24px;
+      background-color: #ffffff; border: 1.5px solid var(--karuta-green); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: #111;
+      font-family: 'Zen Maru Gothic', serif; z-index: 2;
     }
 
-    .album-card .img-container-vertical {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      width: 100%;
-      margin-bottom: 6px;
-    }
-
-    .album-card .thumbnail-wrapper {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background-color: #000;
-      border-radius: 3px;
-      overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-    }
-
+    .album-card .img-container-vertical { display: flex; flex-direction: column; gap: 5px; width: 100%; margin-bottom: 6px; }
+    .album-card .thumbnail-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: 3px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
     .album-card .thumbnail-img { width: 100%; height: 100%; object-fit: contain; }
+    .album-card .card-info { display: flex; flex-direction: column; flex: 1; overflow: hidden; margin-bottom: 6px; }
+    .album-card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 3px; }
+    .album-card .card-title { font-weight: bold; font-size: 0.72rem; line-height: 1.25; color: #111; word-break: break-all; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-    .album-card .card-info {
-      display: flex; flex-direction: column; flex: 1; overflow: hidden; margin-bottom: 6px;
-    }
-
-    .album-card .card-date {
-      color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 3px;
-    }
-
-    .album-card .card-title {
-      font-weight: bold; font-size: 0.72rem; line-height: 1.25; color: #111; word-break: break-all;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-
-    .album-btn-group {
-      display: flex;
-      gap: 4px;
-      margin-top: auto;
-    }
-
-    .album-act-btn {
-      flex: 1;
-      border: none;
-      padding: 5px 0;
-      font-size: 0.68rem;
-      font-weight: bold;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      transition: filter 0.15s;
-    }
-
+    .album-btn-group { display: flex; gap: 4px; margin-top: auto; }
+    .album-act-btn { flex: 1; border: none; padding: 5px 0; font-size: 0.68rem; font-weight: bold; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 2px; transition: filter 0.15s; }
     .album-act-btn:hover { filter: brightness(1.2); }
     .album-act-btn.yt { background: #ff0000; color: #fff; }
     .album-act-btn.voice { background: var(--karuta-green); color: #fff; }
 
-    /* ゲームエリア全体 */
-    #game-container {
-      width: 100%;
-      height: 100%;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      box-sizing: border-box;
-      padding: 8px 10px;
-      overflow: hidden;
+    /* ゲームエリア共通 */
+    #game-container, #shinki-container {
+      width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; box-sizing: border-box; padding: 8px 10px; overflow: hidden;
     }
 
-    /* 上部ヘッダー（最上部に固定） */
-    #top-header {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      max-width: 1300px;
-      align-items: stretch;
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 4px 0 8px 0;
-      backdrop-filter: blur(8px);
-      flex-shrink: 0;
+    .top-header-common {
+      display: flex; gap: 8px; width: 100%; max-width: 1300px; align-items: stretch; z-index: 100;
+      background: rgba(0, 0, 0, 0.4); padding: 4px 0 8px 0; backdrop-filter: blur(8px); flex-shrink: 0;
     }
 
-    /* タイマー＆スコア表示 */
-    #timer-container, #score-container {
-      background: rgba(0, 0, 0, 0.88);
-      border: 2px solid var(--neon-blue);
-      box-shadow: 0 0 12px var(--neon-blue);
-      border-radius: 10px;
-      padding: 4px 8px;
-      text-align: center;
-      backdrop-filter: blur(4px);
-      min-width: 75px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .stat-box {
+      background: rgba(0, 0, 0, 0.88); border: 2px solid var(--neon-blue); box-shadow: 0 0 12px var(--neon-blue);
+      border-radius: 10px; padding: 4px 8px; text-align: center; backdrop-filter: blur(4px);
+      min-width: 75px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center;
     }
 
-    #timer-label, #score-label { font-size: 0.7rem; color: var(--neon-light-blue); }
-    #timer-display, #score-display { font-size: 1.25rem; font-weight: bold; color: #fff; font-family: monospace; }
-    #score-display { color: #ffd700; }
+    .stat-label { font-size: 0.7rem; color: var(--neon-light-blue); }
+    .stat-display { font-size: 1.25rem; font-weight: bold; color: #fff; font-family: monospace; }
+    .score-color { color: #ffd700; }
 
-    /* ボイス表示枠 */
     #target-voice-container {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.88);
-      border: 2px solid var(--neon-blue);
-      box-shadow: 0 0 15px var(--neon-blue);
-      border-radius: 12px;
-      padding: 6px 14px;
-      text-align: center;
-      backdrop-filter: blur(4px);
-      cursor: pointer;
-      min-height: 85px;
-      max-height: 110px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      overflow-y: auto;
-      box-sizing: border-box;
+      flex: 1; background: rgba(0, 0, 0, 0.88); border: 2px solid var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue);
+      border-radius: 12px; padding: 6px 14px; text-align: center; backdrop-filter: blur(4px); cursor: pointer;
+      min-height: 85px; max-height: 110px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; box-sizing: border-box;
     }
 
     #target-voice-container::-webkit-scrollbar { width: 4px; }
     #target-voice-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 2px; }
 
     #voice-status { font-size: 0.72rem; color: var(--neon-light-blue); margin-bottom: 3px; flex-shrink: 0; }
-    
-    #target-voice {
-      font-size: clamp(0.8rem, 1.4vw, 1.05rem);
-      color: #fff;
-      font-weight: bold;
-      line-height: 1.35;
-      word-break: break-word;
+    #target-voice { font-size: clamp(0.8rem, 1.4vw, 1.05rem); color: #fff; font-weight: bold; line-height: 1.35; word-break: break-word; }
+
+    .mode-badge {
+      background: rgba(0, 0, 0, 0.88); border: 2px solid var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue);
+      border-radius: 10px; padding: 6px 10px; font-size: 0.8rem; color: var(--neon-light-blue); font-weight: bold;
+      backdrop-filter: blur(4px); flex-shrink: 0; display: flex; align-items: center;
     }
 
-    #current-mode-badge {
-      background: rgba(0, 0, 0, 0.88);
-      border: 2px solid var(--neon-blue);
-      box-shadow: 0 0 10px var(--neon-blue);
-      border-radius: 10px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      color: var(--neon-light-blue);
-      font-weight: bold;
-      backdrop-filter: blur(4px);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
+    .retire-btn-common {
+      background: rgba(255, 51, 85, 0.2); border: 2px solid #ff3355; color: #ff99aa; border-radius: 10px;
+      padding: 6px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; backdrop-filter: blur(4px);
+      transition: all 0.15s; flex-shrink: 0; font-family: 'Zen Maru Gothic', sans-serif; display: flex; align-items: center;
     }
+    .retire-btn-common:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; }
 
-    #retire-btn {
-      background: rgba(255, 51, 85, 0.2);
-      border: 2px solid #ff3355;
-      color: #ff99aa;
-      border-radius: 10px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-      transition: all 0.15s;
-      flex-shrink: 0;
-      font-family: 'Zen Maru Gothic', sans-serif;
-      display: flex;
-      align-items: center;
-    }
-    #retire-btn:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; }
-
-    /* かるた盤面エリア（縦スクロール領域） */
+    /* かるた盤面 */
     #board-container {
-      position: relative;
-      width: 100%;
-      max-width: 1300px;
-      flex: 1;
-      min-height: 0; /* フレックス要素の縮小を許可 */
-      margin: 6px 0 0 0;
-      z-index: 5;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 20px;
+      position: relative; width: 100%; max-width: 1300px; flex: 1; min-height: 0; margin: 6px 0 0 0; z-index: 5; overflow-y: auto; padding-bottom: 20px;
     }
 
-    #board-container::-webkit-scrollbar { width: 6px; }
-    #board-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+    #board { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; width: 100%; height: 100%; }
 
-    #board {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 8px;
-      width: 100%;
-      height: 100%;
-    }
-
-    #deal-overlay {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(2px);
-      z-index: 50;
+    #deal-overlay, #shinki-deal-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); border-radius: 15px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(2px); z-index: 50;
     }
 
     /* かるた札 */
     .card {
-      background: #fff;
-      color: #333;
-      border-radius: 6px;
-      padding: 4px;
-      border: 3px solid var(--karuta-green);
-      box-shadow: 0 5px 10px rgba(0,0,0,0.5);
-      user-select: none;
-      transition: transform 0.15s, box-shadow 0.15s;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      box-sizing: border-box;
-      overflow: hidden;
+      background: #fff; color: #333; border-radius: 6px; padding: 4px; border: 3px solid var(--karuta-green);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.5); user-select: none; transition: transform 0.15s, box-shadow 0.15s;
+      display: flex; flex-direction: column; position: relative; box-sizing: border-box; overflow: hidden;
     }
 
-    .card:hover {
-      transform: scale(1.03) translateY(-2px);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
-    }
+    .card:hover { transform: scale(1.03) translateY(-2px); box-shadow: 0 0 20px rgba(0, 255, 255, 0.9); }
 
     .card-char-badge {
-      position: absolute;
-      top: 5px; right: 5px; width: 26px; height: 26px;
-      background-color: #ffffff;
-      border: 2px solid var(--karuta-green);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem; font-weight: bold; color: #111;
-      font-family: 'Zen Maru Gothic', serif;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-      z-index: 2;
+      position: absolute; top: 5px; right: 5px; width: 26px; height: 26px; background-color: #ffffff;
+      border: 2px solid var(--karuta-green); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: bold; color: #111; font-family: 'Zen Maru Gothic', serif; box-shadow: 0 2px 4px rgba(0,0,0,0.4); z-index: 2;
     }
-
     .card-char-badge.hidden { display: none !important; }
 
-    .card .thumbnail-wrapper {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background-color: #000;
-      border-radius: 3px;
-      overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+    .card .thumbnail-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: 3px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card .thumbnail-img { width: 100%; height: 100%; object-fit: contain; }
+    .card .card-info { padding-top: 2px; display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+    .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
+    .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
+
+    /* ★ 神経衰弱用レイアウト (左右 4x3) ★ */
+    #shinki-board-container {
+      position: relative; width: 100%; max-width: 1300px; flex: 1; min-height: 0; margin: 4px 0 0 0; z-index: 5;
+      display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 5px;
+    }
+
+    .shinki-side-area {
+      flex: 1; display: flex; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 6px 10px; box-sizing: border-box;
+      min-height: 0;
+    }
+
+    .shinki-side-title {
+      font-size: 1.0rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 4px; text-shadow: 0 0 8px var(--neon-blue);
       flex-shrink: 0;
     }
 
-    .card .thumbnail-img { width: 100%; height: 100%; object-fit: contain; }
-
-    .card .card-info {
-      padding-top: 2px;
-      display: flex; flex-direction: column; flex: 1; overflow: hidden;
+    .shinki-grid {
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      grid-template-rows: repeat(3, 1fr); 
+      gap: 6px; 
+      width: 100%; 
+      flex: 1; 
+      min-height: 0;
+      align-items: center;
+      justify-items: center;
     }
 
-    .card .card-date {
-      color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px;
+    /* ★ 画像サイズ (812×1153) のアスペクト比に合わせた完全フィット設定 ★ */
+    .shinki-card {
+      background-size: contain; /* 正確な比率で隙間なく合わせるため contain または cover */
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #1a2a3a;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+      width: 100%;
+      height: 100%;
+      max-width: 145px;
+      aspect-ratio: 812 / 1153; /* ★ご指定の画像比率に完全に一致させました */
+      box-sizing: border-box;
     }
 
-    .card .card-title {
-      font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1;
+    /* 左エリアの裏面画像は ura_1.png */
+    .shinki-card.left-back {
+      background-image: url('ura_1.png');
     }
 
-    .card .card-title::-webkit-scrollbar { width: 3px; }
-    .card .card-title::-webkit-scrollbar-thumb { background: var(--karuta-green); border-radius: 2px; }
+    /* 右エリアの裏面画像は ura_2.png */
+    .shinki-card.right-back {
+      background-image: url('ura_2.png');
+    }
 
-    /* ★ スマホ向けレイアウト調整 ★ */
+    .shinki-card:hover { transform: scale(1.04); box-shadow: 0 0 18px var(--neon-blue); }
+
+    .shinki-card .card-inner-pattern {
+      display: none;
+    }
+
+    .shinki-card.flipped {
+      background-image: none !important;
+      background-color: #ffffff !important;
+      border: 3px solid #ffd700;
+      box-shadow: 0 0 20px #ffd700;
+      transform: scale(1.03);
+    }
+
+    .shinki-card.flipped .card-inner-pattern {
+      display: block;
+      color: var(--karuta-green);
+      font-size: 2.0rem;
+      opacity: 1;
+    }
+
+    .shinki-card.matched {
+      opacity: 0; pointer-events: none; visibility: hidden;
+    }
+
+    /* スマホ向け調整 */
     @media (max-width: 768px) {
-      #top-header { 
-        flex-wrap: wrap; 
-        gap: 6px; 
-        padding: 4px 2px 6px 2px;
-      }
+      .top-header-common { flex-wrap: wrap; gap: 6px; padding: 4px 2px 6px 2px; }
+      #target-voice-container { order: 3; width: 100%; flex: none; min-height: 65px; max-height: 85px; }
+      #board { grid-template-columns: repeat(2, 1fr); grid-template-rows: none; grid-auto-rows: minmax(180px, auto); gap: 8px; padding-bottom: 20px; }
+      #album-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 5px; }
       
-      #target-voice-container { 
-        order: 3; 
-        width: 100%; 
-        flex: none; 
-        min-height: 70px; 
-        max-height: 90px;
-      }
-
-      #board {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: none; /* スマホでは行数固定を解除 */
-        grid-auto-rows: minmax(180px, auto); /* 札の最小高さを保持して潰れを防止 */
-        gap: 8px;
-        padding-bottom: 20px;
-      }
-
-      #album-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        padding: 5px;
-      }
+      #shinki-board-container { flex-direction: column; gap: 10px; overflow-y: auto; }
+      .shinki-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
     }
 
     /* 巨大な手のアニメーション */
     .hand-action {
-      position: fixed;
-      font-size: 12rem;
-      pointer-events: none;
-      z-index: 999;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      animation: handSnap 0.5s ease-out forwards;
+      position: fixed; font-size: 12rem; pointer-events: none; z-index: 999;
+      transform: translate(-50%, -50%); opacity: 0; animation: handSnap 0.5s ease-out forwards;
       filter: drop-shadow(0 15px 30px rgba(0,0,0,0.85));
     }
 
     @keyframes handSnap {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -85%) scale(2.4) rotate(-35deg);
-      }
-      35% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.0) rotate(-10deg);
-      }
-      75% {
-        opacity: 0.95;
-        transform: translate(-50%, -50%) scale(0.98) rotate(-5deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -40%) scale(0.85) rotate(0deg);
-      }
+      0% { opacity: 0; transform: translate(-50%, -85%) scale(2.4) rotate(-35deg); }
+      35% { opacity: 1; transform: translate(-50%, -50%) scale(1.0) rotate(-10deg); }
+      75% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.98) rotate(-5deg); }
+      100% { opacity: 0; transform: translate(-50%, -40%) scale(0.85) rotate(0deg); }
     }
 
     /* 判定ポップアップ */
@@ -679,9 +454,8 @@
       border-radius: 15px; padding: 25px 35px; text-align: center; max-width: 90%; box-sizing: border-box;
     }
 
-    .modal-content h2 { font-size: 2rem; color: var(--neon-light-blue); margin: 0 0 15px 0; }
-    #final-score { font-size: 2.5rem; color: #ffd700; font-family: monospace; font-weight: bold; margin: 10px 0; }
-    #penalty-info { color: #ff6666; font-size: 0.95rem; margin-bottom: 20px; }
+    .modal-content h2 { font-size: 1.8rem; color: var(--neon-light-blue); margin: 0 0 15px 0; }
+    .final-score-val { font-size: 2.5rem; color: #ffd700; font-family: monospace; font-weight: bold; margin: 10px 0; }
 
     .modal-btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
     .retry-btn { background: var(--neon-blue); color: #000; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; font-family: 'Zen Maru Gothic', sans-serif; }
@@ -692,18 +466,13 @@
 </head>
 <body>
 
-  <!-- タイトル画面 -->
-  <div id="title-screen">
-    <div class="title-logo">
-      氷室うつろ配信<span class="erased-text">繰言カタル</span>名言カルタ
+  <!-- 1. 一番最初の統合タイトル画面（全ゲーム共通の音量調整・ミニゲーム選択＆アルバム） -->
+  <div id="main-title-screen" class="screen-overlay">
+    <div class="main-title-logo">
+      氷室うつろ配信<br>名言収集ミニゲーム
     </div>
 
-    <!-- 音声注意メッセージ -->
-    <div class="audio-notice">
-      🔊 ※音声を再生するゲームです。音量にご注意ください
-    </div>
-
-    <!-- 音量調整 (3段階) -->
+    <!-- 全ゲーム共通 音量調整 (3段階) -->
     <div class="setting-box">
       <div class="setting-title">🔊 音量調整 (お試しボイス再生)</div>
       <div class="setting-options">
@@ -713,8 +482,20 @@
       </div>
     </div>
 
-    <!-- 難易度選択 -->
-    <div class="setting-box">
+    <div class="title-btn-group-vertical">
+      <button class="game-select-btn" onclick="openKarutaTitle()">🎴 名言カルタ</button>
+      <button class="game-select-btn" onclick="openShinkiTitle()">🧠 名言神経衰弱</button>
+      <button class="album-btn" style="margin-top: 8px;" onclick="openAlbumScreen()">📖 カードアルバム</button>
+    </div>
+  </div>
+
+  <!-- 2. 名言カルタのタイトル＆設定画面 -->
+  <div id="karuta-title-screen" class="screen-overlay" style="display: none;">
+    <div class="sub-title-logo">
+      氷室うつろ配信<span class="erased-text">繰言カタル</span>名言カルタ
+    </div>
+
+    <div class="setting-box" style="margin-top: 10px;">
       <div class="setting-title">🎮 難易度を選択 (制限時間 60秒)</div>
       <div class="setting-options">
         <button id="mode-normal-btn" class="opt-btn active" onclick="selectDifficulty('normal')">ノーマル (頭文字あり)</button>
@@ -722,13 +503,34 @@
       </div>
     </div>
 
-    <div class="title-btn-group">
-      <button class="action-btn" onclick="goToGameArea()">ゲームスタート</button>
-      <button class="album-btn" onclick="openAlbumScreen()">📖 カードアルバム</button>
+    <div class="title-btn-group-vertical" style="margin-top: 15px;">
+      <button class="action-btn" style="width: 100%;" onclick="goToGameArea()">ゲームスタート</button>
+      <button class="cancel-btn" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
     </div>
   </div>
 
-  <!-- アルバム画面 -->
+  <!-- 3. 名言神経衰弱のタイトル＆説明画面 -->
+  <div id="shinki-title-screen" class="screen-overlay" style="display: none;">
+    <div class="sub-title-logo">
+      氷室うつろ配信 名言神経衰弱
+    </div>
+
+    <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
+      <div class="setting-title">🧠 遊び方 (制限時間 180秒)</div>
+      <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
+        ・左右のエリアからカードを1枚ずつめくります。<br>
+        ・左右で同じボイスが出ればペア成立＆カード獲得！<br>
+        ・制限時間内に全12ペアのコンプリートを目指しましょう！
+      </p>
+    </div>
+
+    <div class="title-btn-group-vertical" style="margin-top: 15px;">
+      <button class="action-btn" style="width: 100%;" onclick="goToShinkiGameArea()">ゲームスタート</button>
+      <button class="cancel-btn" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
+    </div>
+  </div>
+
+  <!-- 4. カードアルバム画面 -->
   <div id="album-screen">
     <div class="album-header">
       <div class="album-title">📖 名言カードアルバム</div>
@@ -738,34 +540,74 @@
     <div id="album-grid"></div>
   </div>
 
-  <!-- ゲームエリア全体 -->
+  <!-- 5. かるたゲームエリア全体 -->
   <div id="game-container">
-    <div id="top-header">
-      <div id="timer-container">
-        <div id="timer-label">⏱ TIME</div>
-        <div id="timer-display">60.0</div>
+    <div class="top-header-common">
+      <div class="stat-box">
+        <div class="stat-label">⏱ TIME</div>
+        <div id="timer-display" class="stat-display">60.0</div>
       </div>
 
-      <div id="score-container">
-        <div id="score-label">🎴 SCORE</div>
-        <div id="score-display">0枚</div>
+      <div class="stat-box">
+        <div class="stat-label">🎴 SCORE</div>
+        <div id="score-display" class="stat-display score-color">0枚</div>
       </div>
 
       <div id="target-voice-container" onclick="playCurrentVoice()">
-        <div id="voice-status">🔊 （「札を配る」を押してください）</div>
+        <div id="voice-status">🔊 （<span>「札を配る」を押してください</span>）</div>
         <div id="target-voice">『準備はいいでございますか？』</div>
       </div>
 
-      <div id="current-mode-badge">NORMAL</div>
-      <button id="retire-btn" onclick="openRetireConfirm()">🏳️ リタイア</button>
+      <div id="current-mode-badge" class="mode-badge">NORMAL</div>
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️ リタイア</button>
     </div>
 
     <div id="board-container">
       <div id="deal-overlay">
         <button class="action-btn" onclick="dealCardsAndStart()">札を配る</button>
       </div>
-
       <div id="board"></div>
+    </div>
+  </div>
+
+  <!-- 6. 神経衰弱ゲームエリア全体 -->
+  <div id="shinki-container">
+    <div class="top-header-common">
+      <div class="stat-box">
+        <div class="stat-label">⏱ TIME</div>
+        <div id="shinki-timer-display" class="stat-display">180.0</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">ペア獲得</div>
+        <div id="shinki-score-display" class="stat-display score-color">0 / 12</div>
+      </div>
+
+      <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
+        <div id="shinki-voice-status" style="font-size: 0.85rem; color: var(--neon-light-blue); font-weight: bold;">
+          🔊 左右のトランプを1枚ずつ選んでください
+        </div>
+      </div>
+
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️ リタイア</button>
+    </div>
+
+    <div id="shinki-board-container">
+      <div id="shinki-deal-overlay">
+        <button class="action-btn" onclick="dealShinkiCardsAndStart()">カードを配る</button>
+      </div>
+
+      <!-- 左エリア 4x3 -->
+      <div class="shinki-side-area">
+        <div class="shinki-side-title">◀ 左エリア</div>
+        <div id="shinki-grid-left" class="shinki-grid"></div>
+      </div>
+
+      <!-- 右エリア 4x3 -->
+      <div class="shinki-side-area">
+        <div class="shinki-side-title">右エリア ▶</div>
+        <div id="shinki-grid-right" class="shinki-grid"></div>
+      </div>
     </div>
   </div>
 
@@ -778,48 +620,46 @@
       <h2 style="color: #ff6688;">リタイア確認</h2>
       <p style="margin: 20px 0; font-size: 1.1rem;">本当にリタイアしてタイトル画面に戻りますか？</p>
       <div class="modal-btn-group">
-        <button class="retry-btn" style="background: #ff3355; color: #fff;" onclick="showTitleScreen()">リタイアする</button>
+        <button class="retry-btn" style="background: #ff3355; color: #fff;" onclick="showMainTitleScreen()">リタイアする</button>
         <button class="cancel-btn" onclick="closeRetireConfirm()">ゲームを続ける</button>
       </div>
     </div>
   </div>
 
-  <!-- タイムアップ（結果表示）画面 -->
+  <!-- タイムアップ・クリア結果表示画面 -->
   <div id="clear-modal" class="modal-overlay">
     <div class="modal-content">
-      <h2>⌛ TIME UP! ⌛</h2>
-      <div>獲得枚数</div>
-      <div id="final-score">0 枚</div>
-      <div id="penalty-info">お手つき回数: <span id="miss-count">0</span>回 (-<span id="penalty-sec">0</span>秒減算)</div>
-      <p id="utsuro-comment">「フッ…なかなか素早いじゃないか！見事だぞ！」</p>
-      <button class="retry-btn" onclick="showTitleScreen()">タイトルへもどる</button>
+      <h2 id="result-title">⌛ TIME UP! ⌛</h2>
+      <div id="result-score-label">獲得結果</div>
+      <div id="final-score" class="final-score-val">0 枚</div>
+      <div id="penalty-info" style="color: #ff6666; font-size: 0.95rem; margin-bottom: 20px;"></div>
+      <p id="utsuro-comment"><span><span>「フッ…なかなか素早いじゃないか！見事だぞ！」</span></span></p>
+      <button id="result-retry-btn" class="retry-btn" onclick="openKarutaTitle()">もう一度あそぶ</button>
+      <button class="cancel-btn" style="margin-top: 10px;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
     </div>
   </div>
 
   <script>
-    const GAME_TIME_LIMIT = 60; // 制限時間 60秒
+    const GAME_TIME_LIMIT = 60; // カルタ制限時間
+    const SHINKI_TIME_LIMIT = 180; // 神経衰弱制限時間 180秒
 
-    /* ★ お試しボイス＆効果音ファイルの設定 ★ */
+    /* ★ お試しボイス＆効果音ファイル ★ */
     const TEST_VOICE_FILE = "audio/utsuro_voice_000.mp3";
-    const CARD_GET_SE_FILE = "audio/se_bam.mp3"; // 札取得時の効果音
+    const CARD_GET_SE_FILE = "audio/se_bam.mp3";
 
-    /* ★ 音量＆Web Audio API 音量自動均一化管理 ★ */
+    /* ★ 音量管理変数 ★ */
     let audioCtx = null;
     let currentSourceNode = null;
-    let fallbackAudioObj = null; // ローカル用フォールバックオブジェクト
-    let masterVolume = 0.6; // デフォルト音量：中 (0.6)
-    const TARGET_RMS = 0.18; // 均一化の目標平均音量
+    let fallbackAudioObj = null;
+    let masterVolume = 0.6;
+    const TARGET_RMS = 0.18;
 
     function initAudioContext() {
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          audioCtx = new AudioContextClass();
-        }
+        if (AudioContextClass) audioCtx = new AudioContextClass();
       }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     function stopCurrentNormalizedVoice() {
@@ -828,20 +668,16 @@
         currentSourceNode = null;
       }
       if (fallbackAudioObj) {
-        try {
-          fallbackAudioObj.pause();
-          fallbackAudioObj.currentTime = 0;
-        } catch(e){}
+        try { fallbackAudioObj.pause(); fallbackAudioObj.currentTime = 0; } catch(e){}
         fallbackAudioObj = null;
       }
     }
 
-    /* ★ 強化版：音量均一化（ノーマライズ）再生関数 ★ */
-    function playNormalizedAudio(audioPath) {
+    /* 汎用音声再生関数（panValue: -1.0=完全左, 0.0=中央, 1.0=完全右） */
+    function playNormalizedAudio(audioPath, panValue = 0.0) {
       initAudioContext();
       stopCurrentNormalizedVoice();
 
-      // ローカル環境(file:///)等のフォールバック
       if (window.location.protocol === 'file:' || !audioCtx) {
         fallbackAudioObj = new Audio(audioPath);
         fallbackAudioObj.volume = masterVolume;
@@ -862,7 +698,6 @@
           let sumSquares = 0;
           let maxPeak = 0;
 
-          // RMS（平均）と Peak（最大振幅）の両方を測定
           for (let i = 0; i < channelData.length; i++) {
             const absVal = Math.abs(channelData[i]);
             if (absVal > maxPeak) maxPeak = absVal;
@@ -870,20 +705,12 @@
           }
           
           const rms = Math.sqrt(sumSquares / channelData.length) || 0.001;
-          
-          // RMS目標値に基づいたゲイン計算
           let gainValue = TARGET_RMS / rms;
 
-          // 音割れ防止（ピークが1.0を超えないよう制御）
-          if (maxPeak * gainValue > 0.98) {
-            gainValue = 0.98 / maxPeak;
-          }
-
-          // 最小・最大利得の範囲調整
+          if (maxPeak * gainValue > 0.98) gainValue = 0.98 / maxPeak;
           if (gainValue > 4.0) gainValue = 4.0;
           if (gainValue < 0.2) gainValue = 0.2;
 
-          // ユーザーが設定したマスター音量を掛ける
           const finalGain = gainValue * masterVolume;
 
           const source = audioCtx.createBufferSource();
@@ -893,7 +720,15 @@
           gainNode.gain.value = finalGain;
 
           source.connect(gainNode);
-          gainNode.connect(audioCtx.destination);
+
+          if (audioCtx.createStereoPanner) {
+            const pannerNode = audioCtx.createStereoPanner();
+            pannerNode.pan.value = panValue;
+            gainNode.connect(pannerNode);
+            pannerNode.connect(audioCtx.destination);
+          } else {
+            gainNode.connect(audioCtx.destination);
+          }
 
           source.start(0);
           currentSourceNode = source;
@@ -902,11 +737,10 @@
           stopCurrentNormalizedVoice();
           fallbackAudioObj = new Audio(audioPath);
           fallbackAudioObj.volume = masterVolume;
-          fallbackAudioObj.play().catch(e => console.log("Fallback play failed:", e));
+          fallbackAudioObj.play().catch(e => console.log("Fallback failed:", e));
         });
     }
 
-    /* ★ 札取りSE再生用関数 ★ */
     function playGetCardSE() {
       initAudioContext();
       const se = new Audio(CARD_GET_SE_FILE);
@@ -914,10 +748,8 @@
       se.play().catch(e => console.log("SE再生エラー:", e));
     }
 
-    /* ★ 音量切り替え関数 ★ */
     function setMasterVolume(vol) {
       masterVolume = vol;
-
       document.getElementById("vol-low-btn").classList.remove("active");
       document.getElementById("vol-mid-btn").classList.remove("active");
       document.getElementById("vol-high-btn").classList.remove("active");
@@ -926,12 +758,10 @@
       else if (vol === 0.6) document.getElementById("vol-mid-btn").classList.add("active");
       else if (vol === 1.0) document.getElementById("vol-high-btn").classList.add("active");
 
-      // お試しボイスを再生
-      playNormalizedAudio(TEST_VOICE_FILE);
+      playNormalizedAudio(TEST_VOICE_FILE, 0.0);
     }
 
-
-    /* ★ 1 〜 50 までのデータリスト ★ */
+    /* ★ データリスト ★ */
     const allData = [
       { id: 1, char: "つ", voice: "強い奴はTKB出してても強いからTKB出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/live/DDP6DwUEKYo?si=59kyN78UCjUYf4te&t=2603" },
       { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/live/mM5Xw-2ESfo?si=VuxXaipry9FOspja&t=4989" },
@@ -945,21 +775,21 @@
       { id: 10, char: "う", voice: "うわぁ～！・・・NTRだぁ～！・・・私でいいんかこれ？うつろちゃんかこれ？うつろちゃんか、うつろちゃんかも・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_010.png", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=QBOdfGqKlVzMhYjc&t=9886" },
       { id: 11, char: "わ", voice: "私が命を削って寝起き10分で録っている、楽しいカスートありがとうございます！", title: "【＃雑談】就寝前の一時間雑談 うつろジオ＃6【星めぐり学園／氷室うつろ】", date: "2025.01.23", screenshot: "screenshot/utsuro_ss_011.png", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/live/p2kS5LJ2ml4?si=mm3mdmyU4UU6Svlz&t=1690" },
       { id: 12, char: "も", voice: "もしかしてこれさぁ、あれなんじゃない？未来の悟飯ちゃんなんじゃない？悟飯ちゃん最終的にこうなるんじゃない？もしかして。なんかよくわかんないけど反抗期で髪の毛染めた悟飯ちゃんなんじゃない？コレ。", title: "【＃ドラゴンボールZ KAKAROT】人造人間編開始！サムネの人は誰でございますか？【＃完全初見】", date: "2025.01.24", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/live/4MCEmLoXNp4?si=bDIVrLkHQS2h-85_&t=614" },
-      { id: 13, char: "ぱ", voice: "パリ・ダカールラリーの車ってさぁ、弾出るんだ・・・", title: "【 #パリダカールラリースペシャル 】「伝説」の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=LSPFyGLIH7bhjFVV&t=5747" },
+      { id: 13, char: "ぱ", voice: "パリ・ダカールラリーの車ってさぁ、弾出るんだ・・・", title: "【 #パリダカールラリースペシャル 】<span class=\"erased-text\">伝説</span>の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=LSPFyGLIH7bhjFVV&t=5747" },
       { id: 14, char: "な", voice: "なんか聖水って今では叡智な意味になっちゃって、ビックリでございます～", title: "【 ＃メタルスラッグ2】おねえちゃんが一番楽しいこと見せてやろうね【＃レトロゲーム】", date: "2025.04.18", screenshot: "screenshot/utsuro_ss_014.png", img: "img/utsuro_thumb_014.jpg", audio: "audio/utsuro_voice_014.mp3", youtube: "https://www.youtube.com/live/ZD_DvzvH0cY?si=h0eg7ffY2BCbyB5O&t=862" },
       { id: 15, char: "も", voice: "もうだめだぁ・・・おしまいだぁ・・・ガンバンドーン！", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=CKG1DFvOfj5k9Upr" },
       { id: 16, char: "み", voice: "見たっていう事実を積み重ねて人生を厚くしていくんだろうなと思って・・・", title: "【雑談】今日の夜休みだから朝活【朝活】", date: "2026.04.06", screenshot: "screenshot/utsuro_ss_016.png", img: "img/utsuro_thumb_016.jpg", audio: "audio/utsuro_voice_016.mp3", youtube: "https://www.youtube.com/live/qpnTkfTr5Kw?si=eGGpm3ahP3_sWAL9&t=3389" },
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ！ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
       { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾やった！rocket launcherウテルノ！？", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
       { id: 19, char: "こ", voice: "〇すぞ・・・〇すぞ・・・（スゥ～ッ）ふぅ～～っ・・・〇すぞ・・・マジで・・・マジでがっかりだ美樹原ホントに・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=Yw9emN7k1A_8zrZy&t=4105" },
-      { id: 20, char: "よ", voice: "妖精が「ｲｴｪ~~ﾝ!!!」って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
+      { id: 20, char: "よ", voice: "妖精が<span><span><span>「ｲｴ~~ﾝ!!!」</span></span></span>って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
       { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい、あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
-      { id: 24, char: "い", voice: "一旦ぱふるか・・・ふふふ、すまんが一旦ぱふらせてもらうか・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=Uo-qzSpNJhiPE0aD&t=10039" },
+      { id: 24, char: "い", voice: "一旦ぱふるか・・・ふふふ,すまんが一旦ぱふらせてもらうか・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=Uo-qzSpNJhiPE0aD&t=10039" },
       { id: 25, char: "つ", voice: "付き合いたいよぉ・・・もう誰でもいいから付き合いたいよぉ・・・付き合いたいよぉ、もう美樹原でいいよぉ・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_025.png", img: "img/utsuro_thumb_025.jpg", audio: "audio/utsuro_voice_025.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=usAxewascBlX4Ns5&t=1797" },
-      { id: 26, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_026.png", img: "img/utsuro_thumb_026.jpg", audio: "audio/utsuro_voice_026.mp3", youtube: "https://www.youtube.com/" },
-      { id: 27, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_027.png", img: "img/utsuro_thumb_027.jpg", audio: "audio/utsuro_voice_027.mp3", youtube: "https://www.youtube.com/" },
+      { id: 26, char: "く", voice: "くまたん・・・見た？見た？くまたん！見た？見た？くまたん！", title: "【単発枠/DON'T SCREAM】完全決着！叫ばないだけでクリア出来るゲーム【氷室うつろ】", date: "2026.09.28", screenshot: "screenshot/utsuro_ss_026.png", img: "img/utsuro_thumb_026.jpg", audio: "audio/utsuro_voice_026.mp3", youtube: "https://www.youtube.com/live/_zBxs7sQFMo?si=VklT0FnyV80FGmy5&t=5028" },
+      { id: 27, char: "た", voice: "隊長なんだワビスケ、ワビスケがしゃべってる・・・しゃべってるしゃべってる、あまりにもワビスケすぎる、コイツ。", title: "【BLEACH Rebirth of Souls】今日から理解するBLEACH【リバソル／氷室うつろ】", date: "2026.07.07", screenshot: "screenshot/utsuro_ss_027.png", img: "img/utsuro_thumb_027.jpg", audio: "audio/utsuro_voice_027.mp3", youtube: "https://www.youtube.com/live/ZK8Zo0zdbQA?si=XhJ9xdvRHogjv6x3&t=9397" },
       { id: 28, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_028.png", img: "img/utsuro_thumb_028.jpg", audio: "audio/utsuro_voice_028.mp3", youtube: "https://www.youtube.com/" },
       { id: 29, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_029.png", img: "img/utsuro_thumb_029.jpg", audio: "audio/utsuro_voice_029.mp3", youtube: "https://www.youtube.com/" },
       { id: 30, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_030.png", img: "img/utsuro_thumb_030.jpg", audio: "audio/utsuro_voice_030.mp3", youtube: "https://www.youtube.com/" },
@@ -985,22 +815,11 @@
       { id: 50, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_050.png", img: "img/utsuro_thumb_050.jpg", audio: "audio/utsuro_voice_050.mp3", youtube: "https://www.youtube.com/" }
     ];
 
-    /* ★ ゲームで使用可能な有効データ（タイトルやボイスが未設定でないもの）を自動抽出 ★ */
     function getValidGameData() {
       return allData.filter(item => item.title !== "未設定" && item.voice !== "未設定");
     }
 
-    let currentBoard = [];
-    let deck = [];
-    let currentTarget = null;
-
-    let timerInterval = null;
-    let remainingTime = GAME_TIME_LIMIT;
-    let score = 0;
-    let missCount = 0;
-    let isGameActive = false;
-    let selectedDifficulty = 'normal';
-
+    /* アルバム進行データ */
     function getUnlockedCardIds() {
       const saved = localStorage.getItem("utsuro_karuta_album");
       return saved ? JSON.parse(saved) : [];
@@ -1014,41 +833,79 @@
       }
     }
 
+    /* 共通ゲーム状態 */
+    let activeMode = 'karuta'; // 'karuta' or 'shinki'
+    let timerInterval = null;
+    let isGameActive = false;
+
+    /* かるた状態 */
+    let currentBoard = [];
+    let deck = [];
+    let currentTarget = null;
+    let remainingTime = GAME_TIME_LIMIT;
+    let score = 0;
+    let missCount = 0;
+    let selectedDifficulty = 'normal';
+
+    /* 神経衰弱状態 */
+    let shinkiLeftCards = [];
+    let shinkiRightCards = [];
+    let firstCard = null;  // { side: 'left'|'right', index, data }
+    let secondCard = null;
+    let isCheckingPair = false;
+    let shinkiRemainingTime = SHINKI_TIME_LIMIT;
+    let shinkiMatchedPairs = 0;
+
+    /* 画面遷移機能 */
+    function showMainTitleScreen() {
+      clearInterval(timerInterval);
+      isGameActive = false;
+      stopCurrentNormalizedVoice();
+
+      document.getElementById("main-title-screen").style.display = "flex";
+      document.getElementById("karuta-title-screen").style.display = "none";
+      document.getElementById("shinki-title-screen").style.display = "none";
+      document.getElementById("album-screen").style.display = "none";
+      document.getElementById("game-container").style.display = "none";
+      document.getElementById("shinki-container").style.display = "none";
+      document.getElementById("retire-modal").style.display = "none";
+      document.getElementById("clear-modal").style.display = "none";
+    }
+
+    function openKarutaTitle() {
+      stopCurrentNormalizedVoice();
+      showMainTitleScreen();
+      document.getElementById("main-title-screen").style.display = "none";
+      document.getElementById("karuta-title-screen").style.display = "flex";
+    }
+
+    function openShinkiTitle() {
+      stopCurrentNormalizedVoice();
+      showMainTitleScreen();
+      document.getElementById("main-title-screen").style.display = "none";
+      document.getElementById("shinki-title-screen").style.display = "flex";
+    }
+
     function selectDifficulty(mode) {
       selectedDifficulty = mode;
       const normalBtn = document.getElementById("mode-normal-btn");
       const hardBtn = document.getElementById("mode-hard-btn");
-
       if (mode === 'normal') {
-        normalBtn.classList.add("active");
-        hardBtn.classList.remove("active");
+        normalBtn.classList.add("active"); hardBtn.classList.remove("active");
       } else {
-        hardBtn.classList.add("active");
-        normalBtn.classList.remove("active");
+        hardBtn.classList.add("active"); normalBtn.classList.remove("active");
       }
-    }
-
-    function playAlbumVoice(audioPath) {
-      // アルバム画面でも音量設定・均一化を適用して再生
-      playNormalizedAudio(audioPath);
     }
 
     function openAlbumScreen() {
-      // GAイベント送信: アルバム閲覧
-      if (typeof gtag === 'function') {
-        gtag('event', 'view_album');
-      }
+      if (typeof gtag === 'function') gtag('event', 'view_album');
 
       const unlockedIds = getUnlockedCardIds();
       const albumGrid = document.getElementById("album-grid");
       albumGrid.innerHTML = "";
 
       let unlockedCount = 0;
-
-      // 日付順（昇順：古い日付 → 新しい日付）にソート
-      const sortedData = [...allData].sort((a, b) => {
-        return a.date.localeCompare(b.date);
-      });
+      const sortedData = [...allData].sort((a, b) => a.date.localeCompare(b.date));
 
       sortedData.forEach(card => {
         const isUnlocked = unlockedIds.includes(card.id);
@@ -1059,15 +916,14 @@
         
         if (isUnlocked) {
           const ssImg = card.screenshot || card.img;
-
           cardEl.innerHTML = `
             <div class="card-char-badge">${card.char || 'あ'}</div>
             <div class="img-container-vertical">
               <div class="thumbnail-wrapper">
-                <img class="thumbnail-img" src="${ssImg}" alt="スクリーンショット" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
+                <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
               </div>
               <div class="thumbnail-wrapper">
-                <img class="thumbnail-img" src="${card.img}" alt="サムネイル" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Thumb'">
+                <img class="thumbnail-img" src="${card.img}" alt="Thumb" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Thumb'">
               </div>
             </div>
             <div class="card-info">
@@ -1076,7 +932,7 @@
             </div>
             <div class="album-btn-group">
               <button class="album-act-btn yt" onclick="window.open('${card.youtube || 'https://youtube.com'}', '_blank')">▶ 配信へ</button>
-              <button class="album-act-btn voice" onclick="playAlbumVoice('${card.audio}')">🔊 ボイス</button>
+              <button class="album-act-btn voice" onclick="playNormalizedAudio('${card.audio}', 0.0)">🔊 ボイス</button>
             </div>
           `;
         } else {
@@ -1099,14 +955,13 @@
       const percent = Math.floor((unlockedCount / allData.length) * 100);
       document.getElementById("album-progress-text").innerText = `${unlockedCount}/${allData.length} (${percent}%)`;
       
+      document.getElementById("main-title-screen").style.display = "none";
       document.getElementById("album-screen").style.display = "flex";
     }
 
     function closeAlbumScreen() {
       stopCurrentNormalizedVoice();
-      document.getElementById("album-screen").style.display = "none";
-      document.getElementById("title-screen").style.display = "flex";
-      document.getElementById("game-container").style.display = "none";
+      showMainTitleScreen();
     }
 
     function openRetireConfirm() {
@@ -1118,40 +973,25 @@
       document.getElementById("retire-modal").style.display = "none";
     }
 
-    function showTitleScreen() {
-      clearInterval(timerInterval);
-      isGameActive = false;
-      stopCurrentNormalizedVoice();
-      
-      document.getElementById("title-screen").style.display = "flex";
-      document.getElementById("game-container").style.display = "none";
-      document.getElementById("clear-modal").style.display = "none";
-      document.getElementById("retire-modal").style.display = "none";
-      document.getElementById("album-screen").style.display = "none";
-    }
-
+    /* ★ 🎴 かるたモード機能 ★ */
     function goToGameArea() {
+      activeMode = 'karuta';
       initAudioContext();
       stopCurrentNormalizedVoice();
 
-      document.getElementById("title-screen").style.display = "none";
-      document.getElementById("album-screen").style.display = "none";
+      document.getElementById("karuta-title-screen").style.display = "none";
       document.getElementById("game-container").style.display = "flex";
 
       const modeBadge = document.getElementById("current-mode-badge");
       if (selectedDifficulty === 'normal') {
-        modeBadge.innerText = "MODE: NORMAL";
-        modeBadge.style.borderColor = "var(--neon-blue)";
+        modeBadge.innerText = "MODE: NORMAL"; modeBadge.style.borderColor = "var(--neon-blue)";
       } else {
-        modeBadge.innerText = "MODE: HARD";
-        modeBadge.style.borderColor = "#ff3366";
+        modeBadge.innerText = "MODE: HARD"; modeBadge.style.borderColor = "#ff3366";
       }
 
       clearInterval(timerInterval);
       remainingTime = GAME_TIME_LIMIT;
-      score = 0;
-      missCount = 0;
-      isGameActive = false;
+      score = 0; missCount = 0; isGameActive = false;
 
       document.getElementById("timer-display").innerText = "60.0";
       document.getElementById("score-display").innerText = "0枚";
@@ -1164,33 +1004,19 @@
     function dealCardsAndStart() {
       initAudioContext();
       document.getElementById("deal-overlay").style.display = "none";
-
       const validData = getValidGameData();
 
       if (validData.length === 0) {
-        alert("有効な名言カードがありません！「未設定」を解除してください。");
-        showTitleScreen();
-        return;
+        alert("有効な名言カードがありません！"); showMainTitleScreen(); return;
       }
 
-      // GAイベント送信: ゲームスタート
-      if (typeof gtag === 'function') {
-        gtag('event', 'game_start', {
-          'difficulty': selectedDifficulty
-        });
-      }
+      if (typeof gtag === 'function') gtag('event', 'game_start', { 'difficulty': selectedDifficulty });
 
-      // 最初に全カードをランダムシャッフル
       let shuffled = [...validData].sort(() => Math.random() - 0.5);
-
-      // ランダムに選んだ10枚を盤面に初期配置
       currentBoard = shuffled.splice(0, Math.min(10, shuffled.length));
-      
-      // 残りを山札にする
       deck = shuffled;
 
       renderBoard();
-
       isGameActive = true;
       let lastTimestamp = Date.now();
 
@@ -1200,44 +1026,29 @@
         lastTimestamp = now;
 
         remainingTime -= delta;
-
         if (remainingTime <= 0) {
           remainingTime = 0;
-          updateTimerDisplay(0);
-          stopTimer();
+          document.getElementById("timer-display").innerText = "0.0";
+          isGameActive = false;
+          clearInterval(timerInterval);
           showTimeUpScreen();
         } else {
-          updateTimerDisplay(remainingTime);
+          document.getElementById("timer-display").innerText = remainingTime.toFixed(1);
         }
       }, 100);
 
       nextQuestion();
     }
 
-    function stopTimer() {
-      isGameActive = false;
-      clearInterval(timerInterval);
-    }
-
-    function updateTimerDisplay(sec) {
-      document.getElementById("timer-display").innerText = sec.toFixed(1);
-    }
-
-    function updateScoreDisplay() {
-      document.getElementById("score-display").innerText = `${score}枚`;
-    }
-
     function renderBoard() {
       const boardEl = document.getElementById("board");
       boardEl.innerHTML = "";
-
       const showBadgeClass = (selectedDifficulty === 'normal') ? '' : 'hidden';
 
       currentBoard.forEach((card, index) => {
         const cardEl = document.createElement("div");
         cardEl.className = "card";
         cardEl.onclick = (e) => onCardClick(index, e);
-        
         const displayImg = card.screenshot || card.img;
 
         cardEl.innerHTML = `
@@ -1256,7 +1067,7 @@
 
     function playCurrentVoice() {
       if (!isGameActive || !currentTarget || !currentTarget.audio) return;
-      playNormalizedAudio(currentTarget.audio);
+      playNormalizedAudio(currentTarget.audio, 0.0);
     }
 
     function nextQuestion() {
@@ -1276,103 +1087,23 @@
       playCurrentVoice();
     }
 
-    function spawnHandIcon(x, y) {
-      const hand = document.createElement('div');
-      hand.className = 'hand-action';
-      hand.innerText = '🖐️';
-      hand.style.left = `${x}px`;
-      hand.style.top = `${y}px`;
-
-      document.body.appendChild(hand);
-
-      setTimeout(() => {
-        hand.remove();
-      }, 500);
-    }
-
-    function showFeedback(type, text) {
-      const overlay = document.getElementById("feedback-overlay");
-      overlay.innerText = text;
-      overlay.className = type;
-
-      setTimeout(() => {
-        overlay.className = "";
-      }, 600);
-    }
-
-    function showTimeUpScreen() {
-      stopCurrentNormalizedVoice();
-
-      // GAイベント送信: ゲームクリア/タイムアップ
-      if (typeof gtag === 'function') {
-        gtag('event', 'game_clear', {
-          'score': score,
-          'miss_count': missCount,
-          'difficulty': selectedDifficulty
-        });
-      }
-
-      document.getElementById("target-voice").innerText = "タイムアップ！";
-      document.getElementById("voice-status").innerText = "";
-      
-      document.getElementById("final-score").innerText = `${score} 枚`;
-      document.getElementById("miss-count").innerText = missCount;
-      document.getElementById("penalty-sec").innerText = missCount * 5;
-
-      const commentEl = document.getElementById("utsuro-comment");
-      
-      if (selectedDifficulty === 'hard') {
-        if (score >= 10) {
-          commentEl.innerText = "「ハードモードで10枚超え！？うつろのボイスを知り尽くしている素晴らしい手腕でございます！」";
-        } else if (score >= 5) {
-          commentEl.innerText = "「ハードモードでこれだけ取れれば上出来でございます！さすがはごしゅ！」";
-        } else {
-          commentEl.innerText = "「ハードモードはなかなか厳しいでございますね！めげずに再挑戦でございます！」";
-        }
-      } else {
-        if (score >= 12) {
-          commentEl.innerText = "「12枚以上獲得！？恐ろしい動眼力と反射神経でございますね…見事！」";
-        } else if (score >= 7) {
-          commentEl.innerText = "「7枚獲得！なかなかの素早さでございますね！次はさらに上を目指しましょう！」";
-        } else {
-          commentEl.innerText = "「お手つきに気をつけて、ボイスをじっくり聞き分けるのがコツでございますよ！」";
-        }
-      }
-
-      document.getElementById("clear-modal").style.display = "flex";
-    }
-
     function onCardClick(index, event) {
       if (!isGameActive) return;
-
-      const x = event.clientX;
-      const y = event.clientY;
-      spawnHandIcon(x, y);
+      spawnHandIcon(event.clientX, event.clientY);
 
       const clickedCard = currentBoard[index];
 
       if (clickedCard.id === currentTarget.id) {
-        // ★ 札取得成功：バン！のSEを再生
         playGetCardSE();
-
-        // GAイベント送信: 札獲得
-        if (typeof gtag === 'function') {
-          gtag('event', 'card_get', {
-            'card_id': clickedCard.id,
-            'card_char': clickedCard.char
-          });
-        }
+        if (typeof gtag === 'function') gtag('event', 'card_get', { 'card_id': clickedCard.id });
 
         score++;
-        updateScoreDisplay();
+        document.getElementById("score-display").innerText = `${score}枚`;
         showFeedback("correct", "〇 正解！ +1枚");
-
         saveUnlockedCardId(clickedCard.id);
 
         if (deck.length > 0) {
-          // 山札から1枚取って「取った場所（index）」だけに補充
-          const newCard = deck.pop();
-          currentBoard[index] = newCard;
+          currentBoard[index] = deck.pop();
         } else {
           currentBoard.splice(index, 1);
         }
@@ -1381,26 +1112,209 @@
         nextQuestion();
       } else {
         missCount++;
+        if (typeof gtag === 'function') gtag('event', 'card_miss');
 
-        // GAイベント送信: お手つき
-        if (typeof gtag === 'function') {
-          gtag('event', 'card_miss');
-        }
-
-        // お手つきペナルティ：残り時間を5秒減算
         remainingTime = Math.max(0, remainingTime - 5);
-        updateTimerDisplay(remainingTime);
-
+        document.getElementById("timer-display").innerText = remainingTime.toFixed(1);
         showFeedback("wrong", "❌ -5秒！");
 
         if (remainingTime <= 0) {
-          stopTimer();
+          isGameActive = false;
+          clearInterval(timerInterval);
           showTimeUpScreen();
         }
       }
     }
 
-    showTitleScreen();
+    /* ★ 🧠 神経衰弱モード機能 ★ */
+    function goToShinkiGameArea() {
+      activeMode = 'shinki';
+      initAudioContext();
+      stopCurrentNormalizedVoice();
+
+      document.getElementById("shinki-title-screen").style.display = "none";
+      document.getElementById("shinki-container").style.display = "flex";
+
+      clearInterval(timerInterval);
+      shinkiRemainingTime = SHINKI_TIME_LIMIT;
+      shinkiMatchedPairs = 0;
+      firstCard = null; secondCard = null; isCheckingPair = false; isGameActive = false;
+
+      document.getElementById("shinki-timer-display").innerText = "180.0";
+      document.getElementById("shinki-score-display").innerText = "0 / 12";
+      document.getElementById("shinki-grid-left").innerHTML = "";
+      document.getElementById("shinki-grid-right").innerHTML = "";
+      document.getElementById("shinki-deal-overlay").style.display = "flex";
+      document.getElementById("shinki-voice-status").innerText = "🔊 （「カードを配る」を押してください）";
+    }
+
+    function dealShinkiCardsAndStart() {
+      initAudioContext();
+      document.getElementById("shinki-deal-overlay").style.display = "none";
+
+      const validData = getValidGameData();
+      if (validData.length < 12) {
+        alert("神経衰弱には最低12種類のボイスカードが必要です！"); showMainTitleScreen(); return;
+      }
+
+      let selected12 = [...validData].sort(() => Math.random() - 0.5).slice(0, 12);
+
+      shinkiLeftCards = [...selected12].sort(() => Math.random() - 0.5);
+      shinkiRightCards = [...selected12].sort(() => Math.random() - 0.5);
+
+      renderShinkiGrid('left', shinkiLeftCards);
+      renderShinkiGrid('right', shinkiRightCards);
+
+      isGameActive = true;
+      let lastTimestamp = Date.now();
+
+      timerInterval = setInterval(() => {
+        const now = Date.now();
+        const delta = (now - lastTimestamp) / 1000;
+        lastTimestamp = now;
+
+        shinkiRemainingTime -= delta;
+        if (shinkiRemainingTime <= 0) {
+          shinkiRemainingTime = 0;
+          document.getElementById("shinki-timer-display").innerText = "0.0";
+          isGameActive = false;
+          clearInterval(timerInterval);
+          showTimeUpScreen();
+        } else {
+          document.getElementById("shinki-timer-display").innerText = shinkiRemainingTime.toFixed(1);
+        }
+      }, 100);
+
+      document.getElementById("shinki-voice-status").innerText = "🔊 左右のエリアから1枚ずつめくってください";
+    }
+
+    function renderShinkiGrid(side, cardList) {
+      const gridEl = document.getElementById(side === 'left' ? "shinki-grid-left" : "shinki-grid-right");
+      gridEl.innerHTML = "";
+
+      const backClass = (side === 'left') ? 'left-back' : 'right-back';
+
+      cardList.forEach((cardData, idx) => {
+        const cardEl = document.createElement("div");
+        cardEl.className = `shinki-card ${backClass}`;
+        cardEl.id = `shinki-card-${side}-${idx}`;
+        cardEl.onclick = (e) => onShinkiCardClick(side, idx, cardData, e);
+
+        cardEl.innerHTML = `<div class="card-inner-pattern">🔊</div>`;
+        gridEl.appendChild(cardEl);
+      });
+    }
+
+    function onShinkiCardClick(side, index, cardData, event) {
+      if (!isGameActive || isCheckingPair) return;
+
+      const cardEl = document.getElementById(`shinki-card-${side}-${index}`);
+      if (cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
+
+      if (firstCard && firstCard.side === side) {
+        document.getElementById("shinki-voice-status").innerText = "⚠ 反対側のエリアのカードを選んでください！";
+        return;
+      }
+
+      cardEl.classList.add("flipped");
+      
+      const panValue = (side === 'left') ? -1.0 : 1.0;
+      playNormalizedAudio(cardData.audio, panValue);
+
+      if (!firstCard) {
+        firstCard = { side, index, data: cardData, element: cardEl };
+        document.getElementById("shinki-voice-status").innerText = "🔊 2枚目のカードを選んでください...";
+      } else {
+        secondCard = { side, index, data: cardData, element: cardEl };
+        isCheckingPair = true;
+
+        if (firstCard.data.id === secondCard.data.id) {
+          setTimeout(() => {
+            showFeedback("correct", "〇 一致！ゲット！");
+
+            firstCard.element.classList.add("matched");
+            secondCard.element.classList.add("matched");
+
+            saveUnlockedCardId(cardData.id);
+            shinkiMatchedPairs++;
+            document.getElementById("shinki-score-display").innerText = `${shinkiMatchedPairs} / 12`;
+
+            firstCard = null; secondCard = null; isCheckingPair = false;
+
+            if (shinkiMatchedPairs >= 12) {
+              isGameActive = false;
+              clearInterval(timerInterval);
+              setTimeout(() => { showTimeUpScreen(); }, 600);
+            } else {
+              document.getElementById("shinki-voice-status").innerText = "🔊 次のペアを探してください！";
+            }
+          }, 800);
+        } else {
+          setTimeout(() => {
+            showFeedback("wrong", "❌ 不一致...");
+            firstCard.element.classList.remove("flipped");
+            secondCard.element.classList.remove("flipped");
+
+            firstCard = null; secondCard = null; isCheckingPair = false;
+            document.getElementById("shinki-voice-status").innerText = "🔊 残念！もう一度めくってください";
+          }, 1200);
+        }
+      }
+    }
+
+    /* 共通結果・エフェクト演出 */
+    function spawnHandIcon(x, y) {
+      const hand = document.createElement('div');
+      hand.className = 'hand-action'; hand.innerText = '🖐';
+      hand.style.left = `${x}px`; hand.style.top = `${y}px`;
+      document.body.appendChild(hand);
+      setTimeout(() => hand.remove(), 500);
+    }
+
+    function showFeedback(type, text) {
+      const overlay = document.getElementById("feedback-overlay");
+      overlay.innerText = text; overlay.className = type;
+      setTimeout(() => { overlay.className = ""; }, 600);
+    }
+
+    function showTimeUpScreen() {
+      stopCurrentNormalizedVoice();
+
+      const titleEl = document.getElementById("result-title");
+      const scoreLabelEl = document.getElementById("result-score-label");
+      const scoreValEl = document.getElementById("final-score");
+      const penaltyEl = document.getElementById("penalty-info");
+      const commentEl = document.getElementById("utsuro-comment");
+      const retryBtn = document.getElementById("result-retry-btn");
+
+      if (activeMode === 'karuta') {
+        titleEl.innerText = "⌛ TIME UP! ⌛";
+        scoreLabelEl.innerText = "獲得枚数";
+        scoreValEl.innerText = `${score} 枚`;
+        penaltyEl.innerText = `お手つき回数: ${missCount}回 (-${missCount * 5}秒減算)`;
+        retryBtn.onclick = openKarutaTitle;
+
+        if (score >= 10) commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターでございますね！」";
+        else commentEl.innerText = "「フッ…なかなか素早いじゃないか！見事だぞ！」";
+      } else {
+        if (shinkiMatchedPairs >= 12) {
+          titleEl.innerText = "🎉 COMPLETE! 🎉";
+          commentEl.innerText = "「見事でございます！すべての名言ペアを記憶してコンプリートするとは…凄まじい記憶力でございます！」";
+        } else {
+          titleEl.innerText = "⌛ TIME UP! ⌛";
+          commentEl.innerText = "「惜しかったでございますね！耳をすませてボイスを覚えるのがコンプリートのコツでございますよ！」";
+        }
+        scoreLabelEl.innerText = "獲得ペア数";
+        scoreValEl.innerText = `${shinkiMatchedPairs} / 12`;
+        penaltyEl.innerText = `残り時間: ${shinkiRemainingTime.toFixed(1)}秒`;
+        retryBtn.onclick = openShinkiTitle;
+      }
+
+      document.getElementById("clear-modal").style.display = "flex";
+    }
+
+    // 初期化表示
+    showMainTitleScreen();
   </script>
 </body>
 </html>
