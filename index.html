@@ -33,7 +33,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     body {
@@ -247,7 +247,7 @@
 
     /* ゲームエリア共通 */
     #game-container, #shinki-container {
-      width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; box-sizing: border-box; padding: 8px 10px; overflow: hidden;
+      width: 100%; height: 100vh; display: none; flex-direction: column; align-items: center; box-sizing: border-box; padding: 6px 8px; overflow-y: auto;
     }
 
     .top-header-common {
@@ -324,28 +324,28 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト (左右 4x3) ★ */
+    /* ★ 神経衰弱用レイアウト (左右) ★ */
     #shinki-board-container {
       position: relative; width: 100%; max-width: 1300px; flex: 1; min-height: 0; margin: 4px 0 0 0; z-index: 5;
-      display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 5px;
+      display: flex; gap: 15px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
     }
 
     .shinki-side-area {
       flex: 1; display: flex; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.4);
-      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 6px 10px; box-sizing: border-box;
+      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 6px 8px; box-sizing: border-box;
       min-height: 0;
     }
 
     .shinki-side-title {
-      font-size: 1.0rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 4px; text-shadow: 0 0 8px var(--neon-blue);
+      font-size: 0.95rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 4px; text-shadow: 0 0 8px var(--neon-blue);
       flex-shrink: 0;
     }
 
     .shinki-grid {
       display: grid; 
-      grid-template-columns: repeat(4, 1fr); 
-      grid-template-rows: repeat(3, 1fr); 
-      gap: 6px; 
+      grid-template-columns: repeat(3, 1fr); /* スマホで見やすいように 3列×4行に調整 */
+      grid-template-rows: repeat(4, 1fr); 
+      gap: 5px; 
       width: 100%; 
       flex: 1; 
       min-height: 0;
@@ -355,7 +355,7 @@
 
     /* ★ 画像サイズ (812×1153) のアスペクト比に合わせた完全フィット設定 ★ */
     .shinki-card {
-      background-size: contain; /* 正確な比率で隙間なく合わせるため contain または cover */
+      background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
       background-color: #1a2a3a;
@@ -368,8 +368,8 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.7);
       width: 100%;
       height: 100%;
-      max-width: 145px;
-      aspect-ratio: 812 / 1153; /* ★ご指定の画像比率に完全に一致させました */
+      max-width: 120px;
+      aspect-ratio: 812 / 1153;
       box-sizing: border-box;
     }
 
@@ -400,7 +400,7 @@
     .shinki-card.flipped .card-inner-pattern {
       display: block;
       color: var(--karuta-green);
-      font-size: 2.0rem;
+      font-size: 1.8rem;
       opacity: 1;
     }
 
@@ -408,15 +408,34 @@
       opacity: 0; pointer-events: none; visibility: hidden;
     }
 
-    /* スマホ向け調整 */
+    /* パソコンや横長画面（768px超）のとき：左右に並べる（4列×3行） */
+    @media (min-width: 769px) {
+      .shinki-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+      }
+      .shinki-card {
+        max-width: 155px;
+      }
+    }
+
+    /* スマホ・縦長画面（768px以下）のとき：左右エリアを上下に積み重ねてスッキリ表示 */
     @media (max-width: 768px) {
       .top-header-common { flex-wrap: wrap; gap: 6px; padding: 4px 2px 6px 2px; }
-      #target-voice-container { order: 3; width: 100%; flex: none; min-height: 65px; max-height: 85px; }
+      #target-voice-container { order: 3; width: 100%; flex: none; min-height: 60px; max-height: 75px; }
       #board { grid-template-columns: repeat(2, 1fr); grid-template-rows: none; grid-auto-rows: minmax(180px, auto); gap: 8px; padding-bottom: 20px; }
       #album-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 5px; }
       
-      #shinki-board-container { flex-direction: column; gap: 10px; overflow-y: auto; }
-      .shinki-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      #shinki-board-container { 
+        flex-direction: column; 
+        gap: 10px; 
+        overflow-y: visible; 
+        height: auto; 
+      }
+      .shinki-side-area {
+        width: 100%;
+        margin-bottom: 5px;
+      }
     }
 
     /* 巨大な手のアニメーション */
@@ -597,13 +616,13 @@
         <button class="action-btn" onclick="dealShinkiCardsAndStart()">カードを配る</button>
       </div>
 
-      <!-- 左エリア 4x3 -->
+      <!-- 左エリア -->
       <div class="shinki-side-area">
         <div class="shinki-side-title">◀ 左エリア</div>
         <div id="shinki-grid-left" class="shinki-grid"></div>
       </div>
 
-      <!-- 右エリア 4x3 -->
+      <!-- 右エリア -->
       <div class="shinki-side-area">
         <div class="shinki-side-title">右エリア ▶</div>
         <div id="shinki-grid-right" class="shinki-grid"></div>
@@ -633,7 +652,7 @@
       <div id="result-score-label">獲得結果</div>
       <div id="final-score" class="final-score-val">0 枚</div>
       <div id="penalty-info" style="color: #ff6666; font-size: 0.95rem; margin-bottom: 20px;"></div>
-      <p id="utsuro-comment"><span><span>「フッ…なかなか素早いじゃないか！見事だぞ！」</span></span></p>
+      <p id="utsuro-comment"><span>「フッ…なかなか素早いじゃないか！見事だぞ！」</span></p>
       <button id="result-retry-btn" class="retry-btn" onclick="openKarutaTitle()">もう一度あそぶ</button>
       <button class="cancel-btn" style="margin-top: 10px;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
     </div>
