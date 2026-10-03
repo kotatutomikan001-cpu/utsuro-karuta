@@ -661,10 +661,14 @@
     </div>
   </div>
 
-  <!-- スクリーンショット拡大表示用モーダル -->
+  <!-- スクリーンショット拡大表示用モーダル（ボイス再生ボタン付き） -->
   <div id="image-modal" class="modal-overlay" onclick="closeImageModal()">
-    <div style="background: rgba(0,0,0,0.9); padding: 10px; border-radius: 10px; border: 2px solid var(--neon-blue); max-width: 90%; max-height: 90%; display: flex; align-items: center; justify-content: center; position: relative;" onclick="event.stopPropagation()">
-      <img id="modal-expanded-img" src="" alt="拡大画像" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 5px;">
+    <div style="background: rgba(0,0,0,0.9); padding: 15px; border-radius: 12px; border: 2px solid var(--neon-blue); max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; gap: 10px;" onclick="event.stopPropagation()">
+      <img id="modal-expanded-img" src="" alt="拡大画像" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 5px;">
+      
+      <!-- 拡大時ボイス再生ボタン -->
+      <button id="modal-voice-btn" class="album-act-btn voice" style="padding: 10px 20px; font-size: 0.95rem; border-radius: 20px; width: auto;" onclick="playModalVoice()">🔊 このボイスを再生</button>
+
       <button onclick="closeImageModal()" style="position: absolute; top: 10px; right: 10px; background: #ff3355; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; font-size: 1.2rem;">×</button>
     </div>
   </div>
@@ -681,6 +685,7 @@
     let fallbackAudioObj = null;
     let masterVolume = 0.6;
     const TARGET_RMS = 0.18;
+    let modalAudioPath = ""; // 拡大モーダル用の一時音声パス保持
 
     function initAudioContext() {
       if (!audioCtx) {
@@ -728,13 +733,11 @@
           const gainNode = audioCtx.createGain();
           gainNode.gain.value = masterVolume;
 
-          // 左右チャンネルをスプリット＆マージして強制制御
           const splitter = audioCtx.createChannelSplitter(2);
           const merger = audioCtx.createChannelMerger(2);
           const leftGain = audioCtx.createGain();
           const rightGain = audioCtx.createGain();
 
-          // panValue < 0 なら左のみ(右を完全に0)、panValue > 0 なら右のみ(左を完全に0)にする
           if (panValue < 0) {
             leftGain.gain.value = 1.0;
             rightGain.gain.value = 0.0;
@@ -749,8 +752,8 @@
           source.connect(gainNode);
           gainNode.connect(splitter);
 
-          splitter.connect(leftGain, 0);   // チャンネル0 (L)
-          splitter.connect(rightGain, 1);  // チャンネル1 (R)
+          splitter.connect(leftGain, 0);   
+          splitter.connect(rightGain, 1);  
 
           leftGain.connect(merger, 0, 0);
           rightGain.connect(merger, 0, 1);
@@ -788,7 +791,7 @@
       playNormalizedAudio(TEST_VOICE_FILE, 0.0);
     }
 
-    /* ★ データリスト ★ */
+    /* ★ データリスト（ひな形を保持しつつ、有効なデータだけを自動判定して動かします） ★ */
     const allData = [
       { id: 1, char: "つ", voice: "強い奴はTKB出してても強いからTKB出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/live/DDP6DwUEKYo?si=59kyN78UCjUYf4te&t=2603" },
       { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/live/mM5Xw-2ESfo?si=VuxXaipry9FOspja&t=4989" },
@@ -802,14 +805,14 @@
       { id: 10, char: "う", voice: "うわぁ～！・・・NTRだぁ～！・・・私でいいんかこれ？うつろちゃんかこれ？うつろちゃんか、うつろちゃんかも・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_010.png", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=QBOdfGqKlVzMhYjc&t=9886" },
       { id: 11, char: "わ", voice: "私が命を削って寝起き10分で録っている、楽しいカスートありがとうございます！", title: "【＃雑談】就寝前の一時間雑談 うつろジオ＃6【星めぐり学園／氷室うつろ】", date: "2025.01.23", screenshot: "screenshot/utsuro_ss_011.png", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/live/p2kS5LJ2ml4?si=mm3mdmyU4UU6Svlz&t=1690" },
       { id: 12, char: "も", voice: "もしかしてこれさぁ、あれなんじゃない？未来の悟飯ちゃんなんじゃない？悟飯ちゃん最終的にこうなるんじゃない？もしかして。なんかよくわかんないけど反抗期で髪の毛染めた悟飯ちゃんなんじゃない？コレ。", title: "【＃ドラゴンボールZ KAKAROT】人造人間編開始！サムネの人は誰でございますか？【＃完全初見】", date: "2025.01.24", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/live/4MCEmLoXNp4?si=bDIVrLkHQS2h-85_&t=614" },
-      { id: 13, char: "ぱ", voice: "パリ・ダカールラリーの車ってさぁ、弾出るんだ・・・", title: "【 #パリダカールラリースペシャル 】<span class=\"erased-text\">伝説</span>の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=LSPFyGLIH7bhjFVV&t=5747" },
+      { id: 13, char: "ぱ", voice: "パリ・ダカールラリーの車ってさぁ、弾出るんだ・・・", title: "【 #パリダカールラリースペシャル 】伝説の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=LSPFyGLIH7bhjFVV&t=5747" },
       { id: 14, char: "な", voice: "なんか聖水って今では叡智な意味になっちゃって、ビックリでございます～", title: "【 ＃メタルスラッグ2】おねえちゃんが一番楽しいこと見せてやろうね【＃レトロゲーム】", date: "2025.04.18", screenshot: "screenshot/utsuro_ss_014.png", img: "img/utsuro_thumb_014.jpg", audio: "audio/utsuro_voice_014.mp3", youtube: "https://www.youtube.com/live/ZD_DvzvH0cY?si=h0eg7ffY2BCbyB5O&t=862" },
       { id: 15, char: "も", voice: "もうだめだぁ・・・おしまいだぁ・・・ガンバンドーン！", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=CKG1DFvOfj5k9Upr" },
       { id: 16, char: "み", voice: "見たっていう事実を積み重ねて人生を厚くしていくんだろうなと思って・・・", title: "【雑談】今日の夜休みだから朝活【朝活】", date: "2026.04.06", screenshot: "screenshot/utsuro_ss_016.png", img: "img/utsuro_thumb_016.jpg", audio: "audio/utsuro_voice_016.mp3", youtube: "https://www.youtube.com/live/qpnTkfTr5Kw?si=eGGpm3ahP3_sWAL9&t=3389" },
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ！ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
       { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾やった！rocket launcherウテルノ！？", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
       { id: 19, char: "こ", voice: "〇すぞ・・・〇すぞ・・・（スゥ～ッ）ふぅ～～っ・・・〇すぞ・・・マジで・・・マジでがっかりだ美樹原ホントに・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=Yw9emN7k1A_8zrZy&t=4105" },
-      { id: 20, char: "よ", voice: "妖精が<span><span><span><span><span><span><span><span><span>「ｲｴ~~ﾝ!!!」</span></span></span></span></span></span></span></span></span>って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
+      { id: 20, char: "よ", voice: "妖精が「ｲｴ~~ﾝ!!!」って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
       { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい、あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
@@ -819,7 +822,7 @@
       { id: 27, char: "た", voice: "隊長なんだワビスケ、ワビスケがしゃべってる・・・しゃべってるしゃべってる、あまりにもワビスケすぎる、コイツ。", title: "【BLEACH Rebirth of Souls】今日から理解するBLEACH【リバソル／氷室うつろ】", date: "2026.07.07", screenshot: "screenshot/utsuro_ss_027.png", img: "img/utsuro_thumb_027.jpg", audio: "audio/utsuro_voice_027.mp3", youtube: "https://www.youtube.com/live/ZK8Zo0zdbQA?si=XhJ9xdvRHogjv6x3&t=9397" },
       { id: 28, char: "や", voice: "やめなさい！指差すの・・・詰めさせられるよ？", title: "【龍が如く0】#2 第二章から！カタギはヤクザを殴り放題！！【氷室うつろ】", date: "2026.10.01", screenshot: "screenshot/utsuro_ss_028.png", img: "img/utsuro_thumb_028.jpg", audio: "audio/utsuro_voice_028.mp3", youtube: "https://www.youtube.com/live/Rvv6Ep0wTX0?si=CbBMCWcWRO2P4WQF&t=3264" },
       { id: 29, char: "こ", voice: "これでいいか・・・なんか、自分の好きなものにしよう。皆様と一緒に旅したいしな。", title: "【 #クロノトリガー 】#1 完全初見！ついにこの神作をプレイする時が来た！時を駆けるメイド【クロノ・トリガー】", date: "2025.03.25", screenshot: "screenshot/utsuro_ss_029.png", img: "img/utsuro_thumb_029.jpg", audio: "audio/utsuro_voice_029.mp3", youtube: "https://www.youtube.com/live/ImHmLxFwvcI?si=skd75mV-hRtgQ1qp&t=2740" },
-      { id: 30, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_030.png", img: "img/utsuro_thumb_030.jpg", audio: "audio/utsuro_voice_030.mp3", youtube: "https://www.youtube.com/" },
+      { id: 30, char: "め", voice: "メール22通中20通がフルーツジュース抽出中", title: "【おしゃべりキング！】脳内で会話してるやつが最強ってわけ【コミュ力診断ゲーム】", date: "2025.10.18", screenshot: "screenshot/utsuro_ss_030.png", img: "img/utsuro_thumb_030.jpg", audio: "audio/utsuro_voice_030.mp3", youtube: "https://www.youtube.com/live/vSGFrRaMSrk?si=NWQo0u0DFt9y1V-X&t=7102" },
       { id: 31, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_031.png", img: "img/utsuro_thumb_031.jpg", audio: "audio/utsuro_voice_031.mp3", youtube: "https://www.youtube.com/" },
       { id: 32, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_032.png", img: "img/utsuro_thumb_032.jpg", audio: "audio/utsuro_voice_032.mp3", youtube: "https://www.youtube.com/" },
       { id: 33, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_033.png", img: "img/utsuro_thumb_033.jpg", audio: "audio/utsuro_voice_033.mp3", youtube: "https://www.youtube.com/" },
@@ -842,6 +845,7 @@
       { id: 50, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_050.png", img: "img/utsuro_thumb_050.jpg", audio: "audio/utsuro_voice_050.mp3", youtube: "https://www.youtube.com/" }
     ];
 
+    /* ★ 「未設定」のものを自動で除外する関数（ひな形を残しつつ、ゲームやアルバムには反映させないようにする） ★ */
     function getValidGameData() {
       return allData.filter(item => item.title !== "未設定" && item.voice !== "未設定");
     }
@@ -927,8 +931,10 @@
       const albumGrid = document.getElementById("album-grid");
       albumGrid.innerHTML = "";
 
+      // ★ 未設定を除いた有効なデータだけをアルバムに表示・カウントする ★
+      const validData = getValidGameData();
       let unlockedCount = 0;
-      const sortedData = [...allData].sort((a, b) => a.date.localeCompare(b.date));
+      const sortedData = [...validData].sort((a, b) => a.date.localeCompare(b.date));
 
       sortedData.forEach(card => {
         const isUnlocked = unlockedIds.includes(card.id);
@@ -942,10 +948,10 @@
           cardEl.innerHTML = `
             <div class="card-char-badge">${card.char || 'あ'}</div>
             <div class="img-container-vertical">
-              <div class="thumbnail-wrapper" onclick="openImageModal('${ssImg}')" title="クリックして拡大">
+              <div class="thumbnail-wrapper" onclick="openImageModal('${ssImg}', '${card.audio}')" title="クリックして拡大＆音声再生">
                 <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
               </div>
-              <div class="thumbnail-wrapper" onclick="openImageModal('${card.img}')" title="クリックして拡大">
+              <div class="thumbnail-wrapper" onclick="openImageModal('${card.img}', '${card.audio}')" title="クリックして拡大＆音声再生">
                 <img class="thumbnail-img" src="${card.img}" alt="Thumb" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Thumb'">
               </div>
             </div>
@@ -975,8 +981,8 @@
         albumGrid.appendChild(cardEl);
       });
 
-      const percent = Math.floor((unlockedCount / allData.length) * 100);
-      document.getElementById("album-progress-text").innerText = `${unlockedCount}/${allData.length} (${percent}%)`;
+      const percent = Math.floor((unlockedCount / validData.length) * 100);
+      document.getElementById("album-progress-text").innerText = `${unlockedCount}/${validData.length} (${percent}%)`;
       
       document.getElementById("main-title-screen").style.display = "none";
       document.getElementById("album-screen").style.display = "flex";
@@ -987,14 +993,32 @@
       showMainTitleScreen();
     }
 
-    function openImageModal(imgSrc) {
+    function openImageModal(imgSrc, audioSrc = "") {
       const modal = document.getElementById("image-modal");
       const modalImg = document.getElementById("modal-expanded-img");
+      const voiceBtn = document.getElementById("modal-voice-btn");
+
       modalImg.src = imgSrc;
+      modalAudioPath = audioSrc;
+
+      if (audioSrc) {
+        voiceBtn.style.display = "inline-flex";
+        playNormalizedAudio(audioSrc, 0.0);
+      } else {
+        voiceBtn.style.display = "none";
+      }
+
       modal.style.display = "flex";
     }
 
+    function playModalVoice() {
+      if (modalAudioPath) {
+        playNormalizedAudio(modalAudioPath, 0.0);
+      }
+    }
+
     function closeImageModal() {
+      stopCurrentNormalizedVoice();
       const modal = document.getElementById("image-modal");
       modal.style.display = "none";
     }
@@ -1251,8 +1275,6 @@
 
       cardEl.classList.add("flipped");
       
-      // 左エリア選択時は panValue = -1.0 (右チャンネル完全消音)
-      // 右エリア選択時は panValue = 1.0 (左チャンネル完全消音)
       const panValue = (side === 'left') ? -1.0 : 1.0;
       playNormalizedAudio(cardData.audio, panValue);
 
@@ -1336,6 +1358,7 @@
           commentEl.innerText = "「見事でございます！すべての名言ペアを記憶してコンプリートするとは…凄まじい記憶力でございます！」";
         } else {
           titleEl.innerText = "⌛ TIME UP! ⌛";
+          commentFnt = "「惜しかったでございますね！耳をすませてボイスを覚えるのがコンプリートのコツでございますよ！」";
           commentEl.innerText = "「惜しかったでございますね！耳をすませてボイスを覚えるのがコンプリートのコツでございますよ！」";
         }
         scoreLabelEl.innerText = "獲得ペア数";
