@@ -781,6 +781,46 @@
       se.play().catch(e => console.log("SE再生エラー:", e));
     }
 
+    /* ★ 神経衰弱用：一致時（ピンポン：高めピッチで2連音） ★ */
+    function playShinkiMatchSE() {
+      initAudioContext();
+      try {
+        const se1 = new Audio(CARD_GET_SE_FILE);
+        se1.volume = masterVolume;
+        se1.playbackRate = 1.6;
+        se1.play().catch(e => {});
+
+        setTimeout(() => {
+          const se2 = new Audio(CARD_GET_SE_FILE);
+          se2.volume = masterVolume;
+          se2.playbackRate = 2.2;
+          se2.play().catch(e => {});
+        }, 120);
+      } catch(e) {
+        playGetCardSE();
+      }
+    }
+
+    /* ★ 神経衰弱用：不一致時（ブブー：低めピッチで2連音） ★ */
+    function playShinkiMissSE() {
+      initAudioContext();
+      try {
+        const se1 = new Audio(CARD_GET_SE_FILE);
+        se1.volume = masterVolume;
+        se1.playbackRate = 0.6;
+        se1.play().catch(e => {});
+
+        setTimeout(() => {
+          const se2 = new Audio(CARD_GET_SE_FILE);
+          se2.volume = masterVolume;
+          se2.playbackRate = 0.5;
+          se2.play().catch(e => {});
+        }, 150);
+      } catch(e) {
+        playGetCardSE();
+      }
+    }
+
     function setMasterVolume(vol) {
       masterVolume = vol;
       document.getElementById("vol-low-btn").classList.remove("active");
@@ -1299,6 +1339,9 @@
         isCheckingPair = true;
 
         if (firstCard.data.id === secondCard.data.id) {
+          // ★ 一致時の処理（ピンポン音） ★
+          playShinkiMatchSE();
+
           setTimeout(() => {
             showFeedback("correct", "〇 一致！ゲット！");
 
@@ -1320,6 +1363,9 @@
             }
           }, 800);
         } else {
+          // ★ 不一致時の処理（ブブー音） ★
+          playShinkiMissSE();
+
           setTimeout(() => {
             showFeedback("wrong", "❌ 不一致...");
             firstCard.element.classList.remove("flipped");
