@@ -791,7 +791,7 @@
       playNormalizedAudio(TEST_VOICE_FILE, 0.0);
     }
 
-    /* ★ データリスト（ひな形を保持しつつ、有効なデータだけを自動判定して動かします） ★ */
+    /* ★ データリスト（ひな形保持・未設定自動除外対応） ★ */
     const allData = [
       { id: 1, char: "つ", voice: "強い奴はTKB出してても強いからTKB出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/live/DDP6DwUEKYo?si=59kyN78UCjUYf4te&t=2603" },
       { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/live/mM5Xw-2ESfo?si=VuxXaipry9FOspja&t=4989" },
@@ -845,7 +845,6 @@
       { id: 50, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_050.png", img: "img/utsuro_thumb_050.jpg", audio: "audio/utsuro_voice_050.mp3", youtube: "https://www.youtube.com/" }
     ];
 
-    /* ★ 「未設定」のものを自動で除外する関数（ひな形を残しつつ、ゲームやアルバムには反映させないようにする） ★ */
     function getValidGameData() {
       return allData.filter(item => item.title !== "未設定" && item.voice !== "未設定");
     }
@@ -931,7 +930,6 @@
       const albumGrid = document.getElementById("album-grid");
       albumGrid.innerHTML = "";
 
-      // ★ 未設定を除いた有効なデータだけをアルバムに表示・カウントする ★
       const validData = getValidGameData();
       let unlockedCount = 0;
       const sortedData = [...validData].sort((a, b) => a.date.localeCompare(b.date));
@@ -948,10 +946,12 @@
           cardEl.innerHTML = `
             <div class="card-char-badge">${card.char || 'あ'}</div>
             <div class="img-container-vertical">
+              <!-- スクリーンショット (クリックで拡大＆音声再生) -->
               <div class="thumbnail-wrapper" onclick="openImageModal('${ssImg}', '${card.audio}')" title="クリックして拡大＆音声再生">
                 <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
               </div>
-              <div class="thumbnail-wrapper" onclick="openImageModal('${card.img}', '${card.audio}')" title="クリックして拡大＆音声再生">
+              <!-- サムネイル (音声再生なし、拡大のみ) -->
+              <div class="thumbnail-wrapper" onclick="openImageModal('${card.img}', '')" title="クリックして拡大">
                 <img class="thumbnail-img" src="${card.img}" alt="Thumb" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Thumb'">
               </div>
             </div>
@@ -1350,16 +1350,18 @@
         penaltyEl.innerText = `お手つき回数: ${missCount}回 (-${missCount * 5}秒減算)`;
         retryBtn.onclick = openKarutaTitle;
 
-        if (score >= 10) commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターでございますね！」";
-        else commentEl.innerText = "「フッ…なかなか素早いじゃないか！見事だぞ！」";
+        if (score >= 10) {
+          commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターでございますね！」";
+        } else {
+          commentEl.innerText = "「ふふふ…なかなかの速さじゃないですか！お見事です！」";
+        }
       } else {
         if (shinkiMatchedPairs >= 12) {
           titleEl.innerText = "🎉 COMPLETE! 🎉";
-          commentEl.innerText = "「見事でございます！すべての名言ペアを記憶してコンプリートするとは…凄まじい記憶力でございます！」";
+          commentEl.innerText = "「お見事でございます！すべての名言ペアを記憶してそろえるとは…さすがの記憶力でございます！」";
         } else {
           titleEl.innerText = "⌛ TIME UP! ⌛";
-          commentFnt = "「惜しかったでございますね！耳をすませてボイスを覚えるのがコンプリートのコツでございますよ！」";
-          commentEl.innerText = "「惜しかったでございますね！耳をすませてボイスを覚えるのがコンプリートのコツでございますよ！」";
+          commentEl.innerText = "「惜しかったでございますね！耳をすませてボイスを覚えるのがそろえるコツでございますよ！」";
         }
         scoreLabelEl.innerText = "獲得ペア数";
         scoreValEl.innerText = `${shinkiMatchedPairs} / 12`;
