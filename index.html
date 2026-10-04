@@ -683,6 +683,10 @@
     const TEST_VOICE_FILE = "audio/utsuro_voice_000.mp3";
     const CARD_GET_SE_FILE = "audio/se_bam.mp3";
 
+    // ★ 神経衰弱の正解音・不正解音の設定（audio/ フォルダ内に配置してください）
+    const SHINKI_MATCH_SE_FILE = "audio/se_match.mp3"; // 正解時
+    const SHINKI_MISS_SE_FILE  = "audio/se_miss.mp3";  // 不正解時
+
     let audioCtx = null;
     let currentSourceNode = null;
     let fallbackAudioObj = null;
@@ -781,41 +785,29 @@
       se.play().catch(e => console.log("SE再生エラー:", e));
     }
 
-    /* ★ 神経衰弱用：一致時（ピンポン：高めピッチで2連音） ★ */
+    /* ★ 神経衰弱用：一致時のサウンド再生 ★ */
     function playShinkiMatchSE() {
       initAudioContext();
       try {
-        const se1 = new Audio(CARD_GET_SE_FILE);
-        se1.volume = masterVolume;
-        se1.playbackRate = 1.6;
-        se1.play().catch(e => {});
-
-        setTimeout(() => {
-          const se2 = new Audio(CARD_GET_SE_FILE);
-          se2.volume = masterVolume;
-          se2.playbackRate = 2.2;
-          se2.play().catch(e => {});
-        }, 120);
+        const se = new Audio(SHINKI_MATCH_SE_FILE);
+        se.volume = masterVolume;
+        se.play().catch(e => {
+          playGetCardSE();
+        });
       } catch(e) {
         playGetCardSE();
       }
     }
 
-    /* ★ 神経衰弱用：不一致時（ブブー：低めピッチで2連音） ★ */
+    /* ★ 神経衰弱用：不一致時のサウンド再生 ★ */
     function playShinkiMissSE() {
       initAudioContext();
       try {
-        const se1 = new Audio(CARD_GET_SE_FILE);
-        se1.volume = masterVolume;
-        se1.playbackRate = 0.6;
-        se1.play().catch(e => {});
-
-        setTimeout(() => {
-          const se2 = new Audio(CARD_GET_SE_FILE);
-          se2.volume = masterVolume;
-          se2.playbackRate = 0.5;
-          se2.play().catch(e => {});
-        }, 150);
+        const se = new Audio(SHINKI_MISS_SE_FILE);
+        se.volume = masterVolume;
+        se.play().catch(e => {
+          playGetCardSE();
+        });
       } catch(e) {
         playGetCardSE();
       }
@@ -1339,7 +1331,6 @@
         isCheckingPair = true;
 
         if (firstCard.data.id === secondCard.data.id) {
-          // ★ 一致時の処理（ピンポン音） ★
           playShinkiMatchSE();
 
           setTimeout(() => {
@@ -1363,7 +1354,6 @@
             }
           }, 800);
         } else {
-          // ★ 不一致時の処理（ブブー音） ★
           playShinkiMissSE();
 
           setTimeout(() => {
