@@ -661,18 +661,18 @@
     </div>
   </div>
 
-  <!-- スクリーンショット拡大表示用モーダル（ボイス再生＆セリフ表示付き） -->
+  <!-- スクリーンショット拡大表示用モーダル（セリフ枠を大きく拡張し、最大2行で自然に折り返し） -->
   <div id="image-modal" class="modal-overlay" onclick="closeImageModal()">
-    <div style="background: rgba(0,0,0,0.92); padding: 20px; border-radius: 15px; border: 2px solid var(--neon-blue); box-shadow: 0 0 30px rgba(0,255,255,0.4); max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; gap: 12px; box-sizing: border-box;" onclick="event.stopPropagation()">
-      <img id="modal-expanded-img" src="" alt="拡大画像" style="max-width: 100%; max-height: 65vh; object-fit: contain; border-radius: 6px;">
+    <div style="background: rgba(0,0,0,0.92); padding: 25px 30px; border-radius: 15px; border: 2px solid var(--neon-blue); box-shadow: 0 0 30px rgba(0,255,255,0.4); width: 92%; max-width: 1200px; max-height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; gap: 12px; box-sizing: border-box;" onclick="event.stopPropagation()">
+      <img id="modal-expanded-img" src="" alt="拡大画像" style="max-width: 100%; max-height: 60vh; object-fit: contain; border-radius: 6px;">
       
-      <!-- 拡大時セリフ表示エリア -->
-      <div id="modal-voice-text" style="font-size: clamp(0.9rem, 1.5vw, 1.15rem); color: #fff; font-weight: bold; text-align: center; max-width: 600px; line-height: 1.4; word-break: break-word; background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(0,255,255,0.3);"></div>
+      <!-- 拡大時セリフ表示エリア（横幅を広げ、長い文はスクロールではなく2行に綺麗に折り返し） -->
+      <div id="modal-voice-text" style="font-size: clamp(0.85rem, 1.2vw, 1.1rem); color: #fff; font-weight: bold; text-align: center; width: 100%; line-height: 1.45; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; background: rgba(0,0,0,0.6); padding: 10px 16px; border-radius: 8px; border: 1px solid rgba(0,255,255,0.3); box-sizing: border-box;"></div>
 
       <!-- 拡大時ボイス再生ボタン -->
       <button id="modal-voice-btn" class="album-act-btn voice" style="padding: 10px 24px; font-size: 1.0rem; border-radius: 20px; width: auto;" onclick="playModalVoice()">🔊 このボイスを再生</button>
 
-      <button onclick="closeImageModal()" style="position: absolute; top: 10px; right: 10px; background: #ff3355; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; font-size: 1.2rem;">×</button>
+      <button onclick="closeImageModal()" style="position: absolute; top: 12px; right: 12px; background: #ff3355; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;">×</button>
     </div>
   </div>
 
@@ -809,7 +809,7 @@
       { id: 11, char: "わ", voice: "私が命を削って寝起き10分で録っている、楽しいカスートありがとうございます！", title: "【＃雑談】就寝前の一時間雑談 うつろジオ＃6【星めぐり学園／氷室うつろ】", date: "2025.01.23", screenshot: "screenshot/utsuro_ss_011.png", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/live/p2kS5LJ2ml4?si=mm3mdmyU4UU6Svlz&t=1690" },
       { id: 12, char: "も", voice: "もしかしてこれさぁ、あれなんじゃない？未来の悟飯ちゃんなんじゃない？悟飯ちゃん最終的にこうなるんじゃない？もしかして。なんかよくわかんないけど反抗期で髪の毛染めた悟飯ちゃんなんじゃない？コレ。", title: "【＃ドラゴンボールZ KAKAROT】人造人間編開始！サムネの人は誰でございますか？【＃完全初見】", date: "2025.01.24", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/live/4MCEmLoXNp4?si=bDIVrLkHQS2h-85_&t=614" },
       { id: 13, char: "ぱ", voice: "パリ・ダカールラリーの車ってさぁ、弾出るんだ・・・", title: "【 #パリダカールラリースペシャル 】伝説の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=LSPFyGLIH7bhjFVV&t=5747" },
-      { id: 14, char: "な", voice: "なんか聖水って今では叡智な意味になっちゃって、ビックリでございます～", title: "【 ＃メタルスラッグ2】おねえちゃんが一番楽しいこと見せてやろうね【＃レトロゲーム】", date: "2025.04.18", screenshot: "screenshot/utsuro_ss_014.png", img: "img/utsuro_thumb_014.jpg", audio: "audio/utsuro_voice_014.mp3", youtube: "https://www.youtube.com/live/ZD_DvzvH0cY?si=h0eg7ffY2BCbyB5O&t=862" },
+      { id: 14, char: "な", voice: "なんか聖水って今ではすっかり叡智な意味になっちゃって、ビックリでございます～", title: "【 ＃メタルスラッグ2】おねえちゃんが一番楽しいこと見せてやろうね【＃レトロゲーム】", date: "2025.04.18", screenshot: "screenshot/utsuro_ss_014.png", img: "img/utsuro_thumb_014.jpg", audio: "audio/utsuro_voice_014.mp3", youtube: "https://www.youtube.com/live/ZD_DvzvH0cY?si=h0eg7ffY2BCbyB5O&t=862" },
       { id: 15, char: "も", voice: "もうだめだぁ・・・おしまいだぁ・・・ガンバンドーン！", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=CKG1DFvOfj5k9Upr" },
       { id: 16, char: "み", voice: "見たっていう事実を積み重ねて人生を厚くしていくんだろうなと思って・・・", title: "【雑談】今日の夜休みだから朝活【朝活】", date: "2026.04.06", screenshot: "screenshot/utsuro_ss_016.png", img: "img/utsuro_thumb_016.jpg", audio: "audio/utsuro_voice_016.mp3", youtube: "https://www.youtube.com/live/qpnTkfTr5Kw?si=eGGpm3ahP3_sWAL9&t=3389" },
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ！ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
