@@ -574,7 +574,7 @@
       </div>
 
       <div id="target-voice-container" onclick="playCurrentVoice()">
-        <div id="voice-status">🔊 （<span>「札を配る」を押してください</span>）</div>
+        <div id="voice-status">🔊 （<span><span>「札を配る」を押してください</span></span>）</div>
         <div id="target-voice">『準備はいいでございますか？』</div>
       </div>
 
@@ -661,13 +661,16 @@
     </div>
   </div>
 
-  <!-- スクリーンショット拡大表示用モーダル（ボイス再生ボタン付き） -->
+  <!-- スクリーンショット拡大表示用モーダル（ボイス再生＆セリフ表示付き） -->
   <div id="image-modal" class="modal-overlay" onclick="closeImageModal()">
-    <div style="background: rgba(0,0,0,0.9); padding: 15px; border-radius: 12px; border: 2px solid var(--neon-blue); max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; gap: 10px;" onclick="event.stopPropagation()">
-      <img id="modal-expanded-img" src="" alt="拡大画像" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 5px;">
+    <div style="background: rgba(0,0,0,0.92); padding: 20px; border-radius: 15px; border: 2px solid var(--neon-blue); box-shadow: 0 0 30px rgba(0,255,255,0.4); max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; gap: 12px; box-sizing: border-box;" onclick="event.stopPropagation()">
+      <img id="modal-expanded-img" src="" alt="拡大画像" style="max-width: 100%; max-height: 65vh; object-fit: contain; border-radius: 6px;">
       
+      <!-- 拡大時セリフ表示エリア -->
+      <div id="modal-voice-text" style="font-size: clamp(0.9rem, 1.5vw, 1.15rem); color: #fff; font-weight: bold; text-align: center; max-width: 600px; line-height: 1.4; word-break: break-word; background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(0,255,255,0.3);"></div>
+
       <!-- 拡大時ボイス再生ボタン -->
-      <button id="modal-voice-btn" class="album-act-btn voice" style="padding: 10px 20px; font-size: 0.95rem; border-radius: 20px; width: auto;" onclick="playModalVoice()">🔊 このボイスを再生</button>
+      <button id="modal-voice-btn" class="album-act-btn voice" style="padding: 10px 24px; font-size: 1.0rem; border-radius: 20px; width: auto;" onclick="playModalVoice()">🔊 このボイスを再生</button>
 
       <button onclick="closeImageModal()" style="position: absolute; top: 10px; right: 10px; background: #ff3355; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; font-size: 1.2rem;">×</button>
     </div>
@@ -823,7 +826,7 @@
       { id: 28, char: "や", voice: "やめなさい！指差すの・・・詰めさせられるよ？", title: "【龍が如く0】#2 第二章から！カタギはヤクザを殴り放題！！【氷室うつろ】", date: "2026.10.01", screenshot: "screenshot/utsuro_ss_028.png", img: "img/utsuro_thumb_028.jpg", audio: "audio/utsuro_voice_028.mp3", youtube: "https://www.youtube.com/live/Rvv6Ep0wTX0?si=CbBMCWcWRO2P4WQF&t=3264" },
       { id: 29, char: "こ", voice: "これでいいか・・・なんか、自分の好きなものにしよう。皆様と一緒に旅したいしな。", title: "【 #クロノトリガー 】#1 完全初見！ついにこの神作をプレイする時が来た！時を駆けるメイド【クロノ・トリガー】", date: "2025.03.25", screenshot: "screenshot/utsuro_ss_029.png", img: "img/utsuro_thumb_029.jpg", audio: "audio/utsuro_voice_029.mp3", youtube: "https://www.youtube.com/live/ImHmLxFwvcI?si=skd75mV-hRtgQ1qp&t=2740" },
       { id: 30, char: "め", voice: "メール22通中20通がフルーツジュース抽出中", title: "【おしゃべりキング！】脳内で会話してるやつが最強ってわけ【コミュ力診断ゲーム】", date: "2025.10.18", screenshot: "screenshot/utsuro_ss_030.png", img: "img/utsuro_thumb_030.jpg", audio: "audio/utsuro_voice_030.mp3", youtube: "https://www.youtube.com/live/vSGFrRaMSrk?si=NWQo0u0DFt9y1V-X&t=7102" },
-      { id: 31, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_031.png", img: "img/utsuro_thumb_031.jpg", audio: "audio/utsuro_voice_031.mp3", youtube: "https://www.youtube.com/" },
+      { id: 31, char: "ゆ", voice: "ゆずりあいレーシング、走る時は走るけど基本ゆずりあいでいい・・・アイッ！", title: "【 #パリダカールラリースペシャル 】「伝説」の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_031.png", img: "img/utsuro_thumb_031.jpg", audio: "audio/utsuro_voice_031.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=KPC4W2iDZANXmW7e&t=3734" },
       { id: 32, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_032.png", img: "img/utsuro_thumb_032.jpg", audio: "audio/utsuro_voice_032.mp3", youtube: "https://www.youtube.com/" },
       { id: 33, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_033.png", img: "img/utsuro_thumb_033.jpg", audio: "audio/utsuro_voice_033.mp3", youtube: "https://www.youtube.com/" },
       { id: 34, char: "あ", voice: "未設定", title: "未設定", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_034.png", img: "img/utsuro_thumb_034.jpg", audio: "audio/utsuro_voice_034.mp3", youtube: "https://www.youtube.com/" },
@@ -943,15 +946,17 @@
         
         if (isUnlocked) {
           const ssImg = card.screenshot || card.img;
+          const safeVoice = card.voice.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+          
           cardEl.innerHTML = `
             <div class="card-char-badge">${card.char || 'あ'}</div>
             <div class="img-container-vertical">
-              <!-- スクリーンショット (クリックで拡大＆音声再生) -->
-              <div class="thumbnail-wrapper" onclick="openImageModal('${ssImg}', '${card.audio}')" title="クリックして拡大＆音声再生">
+              <!-- スクリーンショット (クリックで拡大＆音声再生＆セリフ表示) -->
+              <div class="thumbnail-wrapper" onclick="openImageModal('${ssImg}', '${card.audio}', '${safeVoice}')" title="クリックして拡大＆音声再生">
                 <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
               </div>
-              <!-- サムネイル (音声再生なし、拡大のみ) -->
-              <div class="thumbnail-wrapper" onclick="openImageModal('${card.img}', '')" title="クリックして拡大">
+              <!-- サムネイル (音声再生なし、拡大＆セリフ表示のみ) -->
+              <div class="thumbnail-wrapper" onclick="openImageModal('${card.img}', '', '${safeVoice}')" title="クリックして拡大">
                 <img class="thumbnail-img" src="${card.img}" alt="Thumb" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Thumb'">
               </div>
             </div>
@@ -993,13 +998,21 @@
       showMainTitleScreen();
     }
 
-    function openImageModal(imgSrc, audioSrc = "") {
+    function openImageModal(imgSrc, audioSrc = "", voiceText = "") {
       const modal = document.getElementById("image-modal");
       const modalImg = document.getElementById("modal-expanded-img");
+      const modalVoiceText = document.getElementById("modal-voice-text");
       const voiceBtn = document.getElementById("modal-voice-btn");
 
       modalImg.src = imgSrc;
       modalAudioPath = audioSrc;
+
+      if (voiceText) {
+        modalVoiceText.innerText = `『${voiceText}』`;
+        modalVoiceText.style.display = "block";
+      } else {
+        modalVoiceText.style.display = "none";
+      }
 
       if (audioSrc) {
         voiceBtn.style.display = "inline-flex";
@@ -1056,7 +1069,7 @@
       document.getElementById("board").innerHTML = "";
       document.getElementById("deal-overlay").style.display = "flex";
       document.getElementById("target-voice").innerText = "『準備はいいでございますか？』";
-      document.getElementById("voice-status").innerText = "🔊 （「札を配る」を押してください）";
+      document.getElementById("voice-status").innerText = "🔊 （<span><span>「札を配る」を押してください</span></span>）";
     }
 
     function dealCardsAndStart() {
@@ -1202,7 +1215,7 @@
       document.getElementById("shinki-grid-left").innerHTML = "";
       document.getElementById("shinki-grid-right").innerHTML = "";
       document.getElementById("shinki-deal-overlay").style.display = "flex";
-      document.getElementById("shinki-voice-status").innerText = "🔊 （「カードを配る」を押してください）";
+      document.getElementById("shinki-voice-status").innerText = "🔊 （<span><span>「カードを配る」を押してください</span></span>）";
     }
 
     function dealShinkiCardsAndStart() {
