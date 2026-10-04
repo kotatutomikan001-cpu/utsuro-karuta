@@ -330,7 +330,7 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト (PC：左右に並べる) ★ */
+    /* ★ 神経衰弱用レイアウト ★ */
     #shinki-board-container {
       position: relative; width: 100%; max-width: 1300px; margin: 8px 0 0 0; z-index: 5;
       display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
@@ -344,10 +344,8 @@
     .shinki-side-title {
       font-size: 1.0rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 8px; text-shadow: 0 0 8px var(--neon-blue);
       flex-shrink: 0;
+      display: none; /* (PC)/(スマホ)の文字を非表示にしました */
     }
-
-    .pc-only-title { display: block; }
-    .sp-only-title { display: none; }
 
     .shinki-grid {
       display: grid; 
@@ -430,9 +428,6 @@
         height: auto; 
       }
       .shinki-side-area { width: 100%; }
-
-      .pc-only-title { display: none; }
-      .sp-only-title { display: block; }
 
       .shinki-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -619,15 +614,13 @@
 
       <!-- 左エリア / 上エリア -->
       <div class="shinki-side-area">
-        <div class="shinki-side-title pc-only-title">◀ 左エリア (PC)</div>
-        <div class="shinki-side-title sp-only-title">▲ 上エリア (スマホ)</div>
+        <div class="shinki-side-title">左エリア</div>
         <div id="shinki-grid-left" class="shinki-grid"></div>
       </div>
 
       <!-- 右エリア / 下エリア -->
       <div class="shinki-side-area">
-        <div class="shinki-side-title pc-only-title">右エリア (PC) ▶</div>
-        <div class="shinki-side-title sp-only-title">▼ 下エリア (スマホ)</div>
+        <div class="shinki-side-title">右エリア</div>
         <div id="shinki-grid-right" class="shinki-grid"></div>
       </div>
     </div>
@@ -655,7 +648,7 @@
       <div id="result-score-label">獲得結果</div>
       <div id="final-score" class="final-score-val">0 枚</div>
       <div id="penalty-info" style="color: #ff6666; font-size: 0.95rem; margin-bottom: 20px;"></div>
-      <p id="utsuro-comment"><span><span>「フッ…なかなか素早いじゃないか！見事だぞ！」</span></span></p>
+      <p id="utsuro-comment"><span><span><span>「フッ…なかなか素早いじゃないか！見事だぞ！」</span></span></span></p>
       <button id="result-retry-btn" class="retry-btn" onclick="openKarutaTitle()">もう一度あそぶ</button>
       <button class="cancel-btn" style="margin-top: 10px;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
     </div>
@@ -1331,11 +1324,12 @@
         isCheckingPair = true;
 
         if (firstCard.data.id === secondCard.data.id) {
-          playShinkiMatchSE();
-
           setTimeout(() => {
             showFeedback("correct", "〇 一致！ゲット！");
+            playShinkiMatchSE();
+          }, 1000);
 
+          setTimeout(() => {
             firstCard.element.classList.add("matched");
             secondCard.element.classList.add("matched");
 
@@ -1352,18 +1346,20 @@
             } else {
               document.getElementById("shinki-voice-status").innerText = "🔊 次のペアを探してください！";
             }
-          }, 800);
+          }, 1500); 
         } else {
-          playShinkiMissSE();
-
           setTimeout(() => {
             showFeedback("wrong", "❌ 不一致...");
+            playShinkiMissSE();
+          }, 1000);
+
+          setTimeout(() => {
             firstCard.element.classList.remove("flipped");
             secondCard.element.classList.remove("flipped");
 
             firstCard = null; secondCard = null; isCheckingPair = false;
             document.getElementById("shinki-voice-status").innerText = "🔊 残念！もう一度めくってください";
-          }, 1200);
+          }, 1800); 
         }
       }
     }
