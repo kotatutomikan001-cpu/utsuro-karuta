@@ -922,7 +922,7 @@
       { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/live/mM5Xw-2ESfo?si=VuxXaipry9FOspja&t=4989" },
       { id: 3, char: "ほ", voice: "ホントに私、結婚サブクエだと思う。でもそのサブクエがめっちゃおもろいって思ってる人も全然いいと思う。", title: "【朝活】コメントとの対話【雑談】", date: "2025.09.18", screenshot: "screenshot/utsuro_ss_003.png", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3", youtube: "https://www.youtube.com/live/JoqzOVhb-Y8?si=gKLgWZ_gD-285YJH&t=4427" },
       { id: 4, char: "き", voice: "汚い手で触るな！ヤメロッ！汚い手で触るな！わぁああん！", title: "【利用規約に同意したい】VTuber人生初泣きの一枠", date: "2026.01.11", screenshot: "screenshot/utsuro_ss_004.png", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3", youtube: "https://www.youtube.com/live/Kv8GowZmx9Q?si=C-M4RSbxPYMTsQVm&t=10168" },
-      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今、再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", screenshot: "screenshot/utsuro_ss_005.png", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/live/O-THeiYmD7s?si=BaVKrZzfgZWoyDqr&t=10084" },
+      { id: 5, char: "な", voice: "何やってんだよお前、傘ぐらい持って来いよ女だろ？", title: "【ときめきメモリアル】今,再びの藤崎【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.23", screenshot: "screenshot/utsuro_ss_005.png", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/live/O-THeiYmD7s?si=BaVKrZzfgZWoyDqr&t=10084" },
       { id: 6, char: "ま", voice: "松本って黒い虚閃（セロ）なんだ", title: "【BLEACH Rebirth of Souls】完全初見！隊長達大集合！愛染を倒す！【リバソル／氷室うつろ】", date: "2026.08.28", screenshot: "screenshot/utsuro_ss_006.png", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3", youtube: "https://www.youtube.com/live/yo8MpXv0aG8?si=7KcJiSAsZ99hgNeQ&t=4171" },
       { id: 7, char: "し", voice: "社会をなめるな、このカスがよ", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_007.png", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=lcrVc8rygNK4p4Yq&t=35746" },
       { id: 8, char: "う", voice: "うるさいうるさい！時の歌なんか覚えられるか！ごしゅとの思い出でいっぱいいっぱいなんだ私は！", title: "【ゼルダの伝説 ムジュラの仮面】完全初見！生活密着アドベンチャー【レトロゲーム／氷室うつろ】", date: "2026.05.27", screenshot: "screenshot/utsuro_ss_008.png", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3", youtube: "https://www.youtube.com/live/v2TKISC-lBQ?si=pApEpKF8YMOqXYFW&t=5981" },
@@ -1119,7 +1119,8 @@
 
       sortedData.forEach(card => {
         const isUnlocked = unlockedIds.includes(card.id);
-        if (isUnlocked && card.voice !== "未設定枠") unlockedCount++;
+        const isRealUnlocked = isUnlocked && card.voice !== "未設定枠";
+        if (isRealUnlocked) unlockedCount++;
 
         const cardEl = document.createElement("div");
         const ssImg = card.screenshot || card.img;
@@ -1129,21 +1130,40 @@
           cardEl.className = "album-card selectable";
           cardEl.onclick = () => selectCardForSlide(card.id);
 
-          cardEl.innerHTML = `
-            <div class="card-char-badge">${card.char || 'あ'}</div>
-            <div class="img-container-vertical">
-              <div class="thumbnail-wrapper">
-                <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Placeholder'">
+          const displayChar = isRealUnlocked ? (card.char || '？') : '？';
+          
+          if (isRealUnlocked) {
+            // 獲得済みカード：通常のサムネイルや配信名などをそのまま表示
+            cardEl.innerHTML = `
+              <div class="card-char-badge">${displayChar}</div>
+              <div class="img-container-vertical">
+                <div class="thumbnail-wrapper">
+                  <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
+                </div>
               </div>
-            </div>
-            <div class="card-info">
-              <div class="card-date">${card.date}</div>
-              <div class="card-title">${card.title}</div>
-            </div>
-            <div style="text-align: center; font-size: 0.75rem; color: ${isUnlocked && card.voice !== '未設定枠' ? '#ffd700' : '#00ffff'}; font-weight: bold; padding: 4px 0;">${isUnlocked && card.voice !== '未設定枠' ? 'このカードで遊ぶ 🎲' : '🎮 未獲得でも遊んでゲット'}</div>
-          `;
+              <div class="card-info">
+                <div class="card-date">${card.date}</div>
+                <div class="card-title">${card.title}</div>
+              </div>
+              <div style="text-align: center; font-size: 0.75rem; color: #00ffff; font-weight: bold; padding: 4px 0;">🎮 このカードで遊ぶ</div>
+            `;
+          } else {
+            // 未獲得カード：今までの未獲得表示（黒いプレースホルダー＋未獲得の札名）
+            cardEl.innerHTML = `
+              <div class="card-char-badge">？</div>
+              <div class="img-container-vertical">
+                <div class="thumbnail-wrapper" style="background: #222; aspect-ratio: 16/9; cursor: default;">
+                  <div style="font-size: 1.5rem; color: #666; margin: auto;">🔒 未獲得</div>
+                </div>
+              </div>
+              <div class="card-info">
+                <div class="card-date">????.??.??</div>
+                <div class="card-title">未獲得の札 (ID: ${card.id})</div>
+              </div>
+              <div style="text-align: center; font-size: 0.75rem; color: #00ffff; font-weight: bold; padding: 4px 0;">🎮 このカードで遊ぶ</div>
+            `;
+          }
         } else {
-          const isRealUnlocked = isUnlocked && card.voice !== "未設定枠";
           cardEl.className = `album-card ${isRealUnlocked ? 'unlocked' : 'locked'}`;
           if (isRealUnlocked) {
             cardEl.innerHTML = `
@@ -1762,7 +1782,7 @@
           stopCurrentNormalizedVoice();
           document.removeEventListener("click", forceStopHandler);
           clearTimeout(timeoutId);
-          showTimeUpScreen();
+          showTimeUpScore();
         };
 
         setTimeout(() => {
@@ -1771,7 +1791,7 @@
 
         const timeoutId = setTimeout(() => {
           document.removeEventListener("click", forceStopHandler);
-          showTimeUpScreen();
+          showTimeUpScore();
         }, 15000);
       }
     }
