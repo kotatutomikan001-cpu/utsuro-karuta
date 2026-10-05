@@ -222,7 +222,7 @@
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
       grid-auto-rows: max-content; 
-      align-items: start; /* ★同じ行の他のカードに引き延ばされないように上揃えにする */
+      align-items: start; 
       align-content: start; 
       gap: 12px;
       width: 100%; max-width: 1200px; height: 80vh; overflow-y: auto; padding: 10px; box-sizing: border-box;
@@ -643,7 +643,7 @@
       </div>
 
       <div id="current-mode-badge" class="mode-badge">NORMAL</div>
-      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️ リタイア</button>
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️️ リタイア</button>
     </div>
 
     <div id="board-container">
@@ -702,7 +702,7 @@
         </div>
       </div>
 
-      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️ リタイア</button>
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️️ リタイア</button>
     </div>
 
     <div id="puzzle-board-container">
@@ -862,8 +862,8 @@
           source.connect(gainNode);
           gainNode.connect(splitter);
 
-          splitter.connect(leftGain, 0);   
-          splitter.connect(rightGain, 1);  
+          splitter.connect(leftGain, 0);    
+          splitter.connect(rightGain, 1);   
 
           leftGain.connect(merger, 0, 0);
           rightGain.connect(merger, 0, 1);
@@ -1023,7 +1023,7 @@
     // ジグソーパズル変数
     let currentPuzzleCard = null;
     let puzzleTrayPieces = []; 
-    let puzzleSlots = [];     
+    let puzzleSlots = [];      
 
     // スライドパズル変数
     let currentSlideCard = null;
@@ -1037,7 +1037,7 @@
     function updatePuzzleInstructions() {
       const el = document.getElementById("puzzle-instructions");
       if (isMobileDevice()) {
-        el.innerHTML = "・ピースを長押しして盤面に移動させよう！<br>・ピースをタップすると90度ずつ回転します。<br>・盤面のピースをダブルタップでトレイに戻せます。";
+        el.innerHTML = "・ピースをタップすると90度ずつ回転します。<br>・長押ししてドラッグすると盤面に移動させられます。<br>・盤面のピースをダブルタップでトレイに戻せます。";
       } else {
         el.innerHTML = "・ピースをドラッグして盤面に配置しよう！<br>・ピースをクリックすると90度ずつ回転します。<br>・盤面のピースをダブルクリックでトレイに戻せます。";
       }
@@ -1610,7 +1610,7 @@
 
       isGameActive = true;
       if (isMobileDevice()) {
-        document.getElementById("puzzle-voice-status").innerText = "🧩 ピースを長押しして盤面に移動させよう！タップで回転。";
+        document.getElementById("puzzle-voice-status").innerText = "🧩 タップで回転！長押し＆ドラッグで盤面に移動しよう！";
       } else {
         document.getElementById("puzzle-voice-status").innerText = "🧩 ピースをドラッグ＆ドロップで盤面に配置・入れ替えしよう！";
       }
@@ -1701,23 +1701,31 @@
         e.dataTransfer.setData("text/plain", piece.uid);
       });
 
-      let touchTimeout = null;
+      let touchStartTime = 0;
+      let hasMoved = false;
+
       pieceEl.addEventListener("touchstart", (e) => {
-        touchTimeout = setTimeout(() => {
-          window.activeDraggedUid = piece.uid;
-          if (navigator.vibrate) navigator.vibrate(50);
-          showFeedback("correct", "🖐 つかみました！");
+        touchStartTime = new Date().getTime();
+        hasMoved = false;
+        // 長押しでドラッグ移動モードにする判定
+        setTimeout(() => {
+          if (!hasMoved) {
+            window.activeDraggedUid = piece.uid;
+            if (navigator.vibrate) navigator.vibrate(50);
+            showFeedback("correct", "🖐 つかみました！");
+          }
         }, 400);
       }, {passive: true});
 
       pieceEl.addEventListener("touchmove", () => {
-        if (touchTimeout) { clearTimeout(touchTimeout); touchTimeout = null; }
+        hasMoved = true;
       }, {passive: true});
 
-      pieceEl.addEventListener("touchend", () => {
-        if (touchTimeout) {
-          clearTimeout(touchTimeout);
-          touchTimeout = null;
+      pieceEl.addEventListener("touchend", (e) => {
+        const touchDuration = new Date().getTime() - touchStartTime;
+        // ドラッグ移動ではなく、その場でのタップ（かつ短時間）の場合のみ回転させる
+        if (!hasMoved && touchDuration < 250) {
+          e.preventDefault();
           piece.currentRotation = (piece.currentRotation + 90) % 360;
           renderPuzzleBoard();
           checkPuzzleCompletion();
