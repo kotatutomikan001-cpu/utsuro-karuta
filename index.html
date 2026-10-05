@@ -982,7 +982,7 @@
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
       { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい,あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
-      { id: 24, char: "い", voice: "一旦ぱふるか・・・ふふふ、すまんが一旦ぱふらせてもらうか・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=Uo-qzSpNJhiPE0aD&t=10039" },
+      { id: 24, char: "い", voice: "一旦ぱふるか・・・ふふふ,すまんが一旦ぱふらせてもらうか・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=Uo-qzSpNJhiPE0aD&t=10039" },
       { id: 25, char: "つ", voice: "付き合いたいよぉ・・・もう誰でもいいから付き合いたいよぉ・・・付き合いたいよぉ、もう美樹原でいいよぉ・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_025.png", img: "img/utsuro_thumb_025.jpg", audio: "audio/utsuro_voice_025.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=usAxewascBlX4Ns5&t=1797" },
       { id: 26, char: "く", voice: "くまたん・・・見た？見た？くまたん！見た？見た？くまたん！", title: "【単発枠/DON'T SCREAM】完全決着！叫ばないだけでクリア出来るゲーム【氷室うつろ】", date: "2026.09.28", screenshot: "screenshot/utsuro_ss_026.png", img: "img/utsuro_thumb_026.jpg", audio: "audio/utsuro_voice_026.mp3", youtube: "https://www.youtube.com/live/_zBxs7sQFMo?si=VklT0FnyV80FGmy5&t=5028" },
       { id: 27, char: "た", voice: "隊長なんだワビスケ、ワビスケがしゃべってる・・・しゃべってるしゃべってる、あまりにもワビスケすぎる、コイツ。", title: "【BLEACH Rebirth of Souls】今日から理解するBLEACH【リバソル／氷室うつろ】", date: "2026.07.07", screenshot: "screenshot/utsuro_ss_027.png", img: "img/utsuro_thumb_027.jpg", audio: "audio/utsuro_voice_027.mp3", youtube: "https://www.youtube.com/live/ZK8Zo0zdbQA?si=XhJ9xdvRHogjv6x3&t=9397" },
@@ -1558,7 +1558,6 @@
         isCheckingPair = true;
 
         if (firstCard.data.id === secondCard.data.id) {
-          // 判定表示時間とポップアップの演出（表示時間を長く変更：1.2秒後〜）
           setTimeout(() => {
             showFeedback("correct", "〇 一致！ゲット！");
             playShinkiMatchSE();
@@ -1571,7 +1570,6 @@
             shinkiMatchedPairs++;
             document.getElementById("shinki-score-display").innerText = `${shinkiMatchedPairs} / 12`;
 
-            // カード獲得ポップアップを表示
             showShinkiMatchPopup(cardData);
 
             firstCard = null; secondCard = null; isCheckingPair = false;
@@ -1584,7 +1582,6 @@
             }
           }, 2200); 
         } else {
-          // 不一致時の表示時間も延長
           setTimeout(() => {
             showFeedback("wrong", "❌ 不一致...");
             playShinkiMissSE();
@@ -1614,7 +1611,6 @@
 
       popup.style.display = "flex";
 
-      // 2秒後に自動でポップアップを閉じる（ゲーム終了時は結果画面が優先）
       setTimeout(() => {
         popup.style.display = "none";
         if (shinkiMatchedPairs >= 12) {
@@ -1764,11 +1760,13 @@
 
       let touchStartTime = 0;
       let hasMoved = false;
+      let touchTimeout = null;
 
       pieceEl.addEventListener("touchstart", (e) => {
         touchStartTime = new Date().getTime();
         hasMoved = false;
-        setTimeout(() => {
+        
+        touchTimeout = setTimeout(() => {
           if (!hasMoved) {
             window.activeDraggedUid = piece.uid;
             if (navigator.vibrate) navigator.vibrate(50);
@@ -1779,11 +1777,14 @@
 
       pieceEl.addEventListener("touchmove", () => {
         hasMoved = true;
+        if (touchTimeout) clearTimeout(touchTimeout);
       }, {passive: true});
 
       pieceEl.addEventListener("touchend", (e) => {
+        if (touchTimeout) clearTimeout(touchTimeout);
         const touchDuration = new Date().getTime() - touchStartTime;
-        if (!hasMoved && touchDuration < 250) {
+        
+        if (!hasMoved && touchDuration < 300 && !window.activeDraggedUid) {
           e.preventDefault();
           piece.currentRotation = (piece.currentRotation + 90) % 360;
           renderPuzzleBoard();
@@ -2076,7 +2077,7 @@
     function showFeedback(type, text) {
       const overlay = document.getElementById("feedback-overlay");
       overlay.innerText = text; overlay.className = type;
-      setTimeout(() => { overlay.className = ""; }, 1000); // 判定表示時間も少し長めに調整
+      setTimeout(() => { overlay.className = ""; }, 1000);
     }
 
     function showTimeUpScreen() {
@@ -2126,7 +2127,7 @@
         scoreLabelEl.innerText = "クリアしてカードを獲得！";
         scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "制限時間なし・じっくりクリア！";
-        retryBtn.onclick = openPuzzleTitle;
+        retryBtn.onclick = openSlideTitle;
       }
 
       document.getElementById("clear-modal").style.display = "flex";
