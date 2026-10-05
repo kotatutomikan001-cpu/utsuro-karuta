@@ -34,6 +34,7 @@
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      touch-action: manipulation;
     }
 
     body {
@@ -128,7 +129,7 @@
       box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
       border-radius: 15px;
       padding: 12px 25px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       text-align: center;
       width: 90%; max-width: 420px;
       box-sizing: border-box;
@@ -159,10 +160,19 @@
       box-shadow: 0 0 12px var(--neon-blue);
     }
 
+    /* デバッグ用リセットボタン */
+    .debug-btn {
+      width: 90%; max-width: 420px; background: rgba(255, 51, 85, 0.2); border: 2px dashed #ff3355;
+      color: #ff99aa; padding: 8px 15px; font-size: 0.85rem; font-weight: bold;
+      border-radius: 15px; cursor: pointer; box-sizing: border-box; margin-bottom: 12px;
+      transition: all 0.15s; font-family: 'Zen Maru Gothic', sans-serif; text-align: center;
+    }
+    .debug-btn:hover { background: rgba(255, 51, 85, 0.4); color: #fff; box-shadow: 0 0 10px #ff3355; }
+
     /* ボタン群 */
     .title-btn-group-vertical {
       display: flex; flex-direction: column; gap: 10px; align-items: center;
-      width: 90%; max-width: 360px; margin-top: 5px;
+      width: 90%; max-width: 360px; margin-top: 2px;
     }
 
     .game-select-btn {
@@ -333,24 +343,24 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト ★ */
+    /* ★ 神経衰弱用レイアウト（横3×縦4に修正） ★ */
     #shinki-board-container {
-      position: relative; width: 100%; max-width: 1300px; margin: 8px 0 0 0; z-index: 5;
+      position: relative; width: 100%; max-width: 1200px; margin: 8px 0 0 0; z-index: 5;
       display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
     }
 
     .shinki-side-area {
       flex: 1; display: flex; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.4);
-      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 10px; box-sizing: border-box;
+      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 12px; box-sizing: border-box;
     }
 
     .shinki-side-title {
       font-size: 1.0rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 8px; text-shadow: 0 0 8px var(--neon-blue);
-      flex-shrink: 0; display: none;
+      flex-shrink: 0; display: block;
     }
 
     .shinki-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; width: 100%; align-items: center; justify-items: center;
+      display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px; width: 100%; align-items: center; justify-items: center;
     }
 
     .shinki-card {
@@ -358,7 +368,7 @@
       border-radius: 6px; cursor: pointer; position: relative; user-select: none;
       transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.7); width: 100%; max-width: 155px; aspect-ratio: 812 / 1153; box-sizing: border-box;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7); width: 100%; max-width: 130px; aspect-ratio: 812 / 1153; box-sizing: border-box;
     }
 
     .shinki-card.left-back { background-image: url('ura_1.png'); background-color: #1a3a5a; }
@@ -366,7 +376,7 @@
     .shinki-card:hover { transform: scale(1.04); box-shadow: 0 0 18px var(--neon-blue); }
     .shinki-card .card-inner-pattern { display: none; }
     .shinki-card.flipped { background-image: none !important; background-color: #ffffff !important; border: 3px solid #ffd700; box-shadow: 0 0 20px #ffd700; transform: scale(1.03); }
-    .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 2.0rem; opacity: 1; }
+    .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 1.8rem; opacity: 1; }
     .shinki-card.matched { opacity: 0; pointer-events: none; visibility: hidden; }
 
     /* ★ ジグソーパズル用レイアウト（大画面化） ★ */
@@ -392,10 +402,9 @@
 
     .puzzle-piece {
       width: 100%; aspect-ratio: 1 / 1; background-size: 300% 300%; background-repeat: no-repeat;
-      border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; cursor: grab; box-sizing: border-box;
-      transition: border-color 0.2s, box-shadow 0.2s; position: relative; touch-action: none;
+      border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; cursor: pointer; box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s; position: relative; touch-action: manipulation;
     }
-    .puzzle-piece:active { cursor: grabbing; }
     .puzzle-piece:hover { border-color: var(--neon-blue); box-shadow: 0 0 12px var(--neon-blue); z-index: 2; }
 
     .puzzle-slot {
@@ -444,6 +453,7 @@
       #puzzle-tray { width: 92vw; max-width: 440px; min-height: 140px; grid-template-columns: repeat(5, 1fr); }
       .tray-title { grid-column: span 5; }
 
+      #shinki-board-container { flex-direction: column; align-items: center; gap: 12px; }
       #slide-grid { width: 92vw; height: 92vw; max-width: 420px; max-height: 420px; }
 
       #feedback-overlay { font-size: 2.0rem; white-space: normal; text-align: center; width: 90%; }
@@ -501,6 +511,9 @@
       </div>
     </div>
 
+    <!-- デバッグ用リセットボタン -->
+    <button class="debug-btn" onclick="debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況をリセット</button>
+
     <div class="title-btn-group-vertical">
       <button class="game-select-btn" onclick="openKarutaTitle()">🎴 名言カルタ</button>
       <button class="game-select-btn" onclick="openShinkiTitle()">🧠 名言神経衰弱</button>
@@ -539,7 +552,7 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🧠 遊び方 (制限時間 180秒)</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・左と右のエリアからカードを1枚ずつめくります。<br>
+        ・左と右のエリア（横3×縦4）からカードを1枚ずつめくります。<br>
         ・左右のエリアに応じたステレオ音声で鳴り分けます！<br>
         ・制限時間内に全12ペアのコンプリートを目指しましょう！
       </p>
@@ -560,9 +573,9 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🧩 遊び方 (制限時間 なし)</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・トレイにあるピースを回転＆ドラッグで盤面に配置しよう！<br>
-        ・盤面のピースをダブルクリックするかトレイに戻すと外せます。<br>
-        ・時間を気にせず、じっくり完成させよう！
+        ・トレイにあるピースをタップして選択し、盤面のマスをタップして配置！<br>
+        ・ピースをタップすると90度ずつ回転します。<br>
+        ・盤面のピースをダブルクリック（または長めタップ）でトレイに戻せます。
       </p>
     </div>
 
@@ -662,12 +675,12 @@
       </div>
 
       <div class="shinki-side-area">
-        <div class="shinki-side-title">左エリア</div>
+        <div class="shinki-side-title">左エリア (3×4)</div>
         <div id="shinki-grid-left" class="shinki-grid"></div>
       </div>
 
       <div class="shinki-side-area">
-        <div class="shinki-side-title">右エリア</div>
+        <div class="shinki-side-title">右エリア (3×4)</div>
         <div id="shinki-grid-right" class="shinki-grid"></div>
       </div>
     </div>
@@ -678,7 +691,7 @@
     <div class="top-header-common">
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="puzzle-voice-status" style="font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold;">
-          🧩 トレイからピースを選んで回転させ、盤面に配置しよう！ (制限時間なし)
+          🧩 タップでピースを選び、回転させて盤面に配置しよう！ (制限時間なし)
         </div>
       </div>
 
@@ -686,8 +699,8 @@
     </div>
 
     <div id="puzzle-board-container">
-      <div id="puzzle-tray" ondragover="event.preventDefault()" ondrop="onTrayDrop(event)">
-        <div class="tray-title">📦 ピース置き場 (ここにドロップで戻る)</div>
+      <div id="puzzle-tray">
+        <div class="tray-title">📦 ピース置き場 (タップで選択)</div>
       </div>
 
       <div id="puzzle-grid"></div>
@@ -899,6 +912,14 @@
       playNormalizedAudio(TEST_VOICE_FILE, 0.0);
     }
 
+    /* デバッグ用：カード獲得状況をリセットする関数 */
+    function debugResetUnlockedCards() {
+      if (confirm("【デバッグ】獲得したカードのデータをすべてリセットして初期状態に戻しますか？")) {
+        localStorage.removeItem("utsuro_karuta_album");
+        alert("カードの獲得状況をリセットしました！");
+      }
+    }
+
     const allData = [
       { id: 1, char: "つ", voice: "強い奴はTKB出してても強いからTKB出せるんだみたいなそういう理論があって そういうことですよ", title: "【チェルノブ】色々と伝説のゲームをメガドライブ版で遊ぶ【レトロゲーム／氷室うつろ】", date: "2026.08.27", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/live/DDP6DwUEKYo?si=59kyN78UCjUYf4te&t=2603" },
       { id: 2, char: "わ", voice: "私が上であなたは下", title: "【PS版ドラゴンクエストⅣ】完全初見！最終局面？デスピサロとの対決か！？【DQ4／氷室うつろ】", date: "2026.08.02", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/live/mM5Xw-2ESfo?si=VuxXaipry9FOspja&t=4989" },
@@ -931,32 +952,31 @@
       { id: 29, char: "こ", voice: "これでいいか・・・なんか、自分の好きなものにしよう。皆様と一緒に旅したいしな。", title: "【 #クロノトリガー 】#1 完全初見！ついにこの神作をプレイする時が来た！時を駆けるメイド【クロノ・トリガー】", date: "2025.03.25", screenshot: "screenshot/utsuro_ss_029.png", img: "img/utsuro_thumb_029.jpg", audio: "audio/utsuro_voice_029.mp3", youtube: "https://www.youtube.com/live/ImHmLxFwvcI?si=skd75mV-hRtgQ1qp&t=2740" },
       { id: 30, char: "め", voice: "メール22通中20通がフルーツジュース抽出中", title: "【おしゃべりキング！】脳内で会話してるやつが最強ってわけ【コミュ力診断ゲーム】", date: "2025.10.18", screenshot: "screenshot/utsuro_ss_030.png", img: "img/utsuro_thumb_030.jpg", audio: "audio/utsuro_voice_030.mp3", youtube: "https://www.youtube.com/live/vSGFrRaMSrk?si=NWQo0u0DFt9y1V-X&t=7102" },
       { id: 31, char: "ゆ", voice: "ゆずりあいレーシング、走る時は走るけど基本ゆずりあいでいい・・・アイッ！", title: "【 #パリダカールラリースペシャル 】「伝説」の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_031.png", img: "img/utsuro_thumb_031.jpg", audio: "audio/utsuro_voice_031.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=KPC4W2iDZANXmW7e&t=3734" },
-      { id: 32, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 32)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_001.png", img: "img/utsuro_thumb_001.jpg", audio: "audio/utsuro_voice_001.mp3", youtube: "https://www.youtube.com/" },
-      { id: 33, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 33)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_002.png", img: "img/utsuro_thumb_002.jpg", audio: "audio/utsuro_voice_002.mp3", youtube: "https://www.youtube.com/" },
-      { id: 34, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 34)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_003.png", img: "img/utsuro_thumb_003.jpg", audio: "audio/utsuro_voice_003.mp3", youtube: "https://www.youtube.com/" },
-      { id: 35, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 35)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_004.png", img: "img/utsuro_thumb_004.jpg", audio: "audio/utsuro_voice_004.mp3", youtube: "https://www.youtube.com/" },
-      { id: 36, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 36)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_005.png", img: "img/utsuro_thumb_005.jpg", audio: "audio/utsuro_voice_005.mp3", youtube: "https://www.youtube.com/" },
-      { id: 37, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 37)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_006.png", img: "img/utsuro_thumb_006.jpg", audio: "audio/utsuro_voice_006.mp3", youtube: "https://www.youtube.com/" },
-      { id: 38, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 38)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_007.png", img: "img/utsuro_thumb_007.jpg", audio: "audio/utsuro_voice_007.mp3", youtube: "https://www.youtube.com/" },
-      { id: 39, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 39)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_008.png", img: "img/utsuro_thumb_008.jpg", audio: "audio/utsuro_voice_008.mp3", youtube: "https://www.youtube.com/" },
-      { id: 40, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 40)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_009.png", img: "img/utsuro_thumb_009.jpg", audio: "audio/utsuro_voice_009.mp3", youtube: "https://www.youtube.com/" },
-      { id: 41, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 41)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_010.png", img: "img/utsuro_thumb_010.jpg", audio: "audio/utsuro_voice_010.mp3", youtube: "https://www.youtube.com/" },
-      { id: 42, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 42)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_011.png", img: "img/utsuro_thumb_011.jpg", audio: "audio/utsuro_voice_011.mp3", youtube: "https://www.youtube.com/" },
-      { id: 43, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 43)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/" },
-      { id: 44, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 44)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/" },
-      { id: 45, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 45)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_014.png", img: "img/utsuro_thumb_014.jpg", audio: "audio/utsuro_voice_014.mp3", youtube: "https://www.youtube.com/" },
-      { id: 46, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 46)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/" },
-      { id: 47, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 47)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_016.png", img: "img/utsuro_thumb_016.jpg", audio: "audio/utsuro_voice_016.mp3", youtube: "https://www.youtube.com/" },
-      { id: 48, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 48)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/" },
-      { id: 49, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 49)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/" },
-      { id: 50, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 50)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/" }
+      { id: 32, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 32)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 33, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 33)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 34, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 34)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 35, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 35)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 36, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 36)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 37, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 37)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 38, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 38)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 39, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 39)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 40, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 40)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 41, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 41)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 42, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 42)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 43, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 43)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 44, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 44)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 45, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 45)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 46, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 46)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 47, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 47)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 48, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 48)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 49, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 49)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 50, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 50)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" }
     ];
 
     function getValidGameData() {
       return allData.filter(item => item.voice !== "未設定枠" && item.title !== "未設定");
     }
 
-    // スライドパズル用：全50件すべてを対象にする
     function getSlideSelectableData() {
       return allData;
     }
@@ -1084,7 +1104,7 @@
       let unlockedCount = 0;
       
       const displayData = (albumMode === 'slide_select') ? getSlideSelectableData() : allData;
-      const sortedData = [...displayData].sort((a, b) => a.date.localeCompare(b.date));
+      const sortedData = [...displayData].sort((a, b) => a.id - b.id);
 
       sortedData.forEach(card => {
         const isUnlocked = unlockedIds.includes(card.id);
@@ -1102,18 +1122,19 @@
             <div class="card-char-badge">${card.char || 'あ'}</div>
             <div class="img-container-vertical">
               <div class="thumbnail-wrapper">
-                <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+SS'">
+                <img class="thumbnail-img" src="${ssImg}" alt="SS" onerror="this.src='https://via.placeholder.com/300x169?text=16:9+Placeholder'">
               </div>
             </div>
             <div class="card-info">
               <div class="card-date">${card.date}</div>
               <div class="card-title">${card.title}</div>
             </div>
-            <div style="text-align: center; font-size: 0.75rem; color: ${isUnlocked ? '#ffd700' : '#00ffff'}; font-weight: bold; padding: 4px 0;">${isUnlocked ? 'このカードで遊ぶ 🎲' : '🎮 未獲得でも遊んでゲット'}</div>
+            <div style="text-align: center; font-size: 0.75rem; color: ${isUnlocked && card.voice !== '未設定枠' ? '#ffd700' : '#00ffff'}; font-weight: bold; padding: 4px 0;">${isUnlocked && card.voice !== '未設定枠' ? 'このカードで遊ぶ 🎲' : '🎮 未獲得でも遊んでゲット'}</div>
           `;
         } else {
-          cardEl.className = `album-card ${isUnlocked ? 'unlocked' : 'locked'}`;
-          if (isUnlocked) {
+          const isRealUnlocked = isUnlocked && card.voice !== "未設定枠";
+          cardEl.className = `album-card ${isRealUnlocked ? 'unlocked' : 'locked'}`;
+          if (isRealUnlocked) {
             cardEl.innerHTML = `
               <div class="card-char-badge">${card.char || 'あ'}</div>
               <div class="img-container-vertical">
@@ -1143,7 +1164,7 @@
               </div>
               <div class="card-info">
                 <div class="card-date">????.??.??</div>
-                <div class="card-title">未獲得の札</div>
+                <div class="card-title">未獲得の札 (ID: ${card.id})</div>
               </div>
             `;
           }
@@ -1425,7 +1446,7 @@
         }
       }, 100);
 
-      document.getElementById("shinki-voice-status").innerText = "🔊 左右のエリアから1枚ずつめくってください";
+      document.getElementById("shinki-voice-status").innerText = "🔊 左右のエリア（3×4）から1枚ずつめくってください";
     }
 
     function renderShinkiGrid(side, cardList) {
@@ -1503,7 +1524,7 @@
       }
     }
 
-    /* ★ 3×3 ジグソーパズル関連の処理 (制限時間なし) ★ */
+    /* ★ 3×3 ジグソーパズル関連の処理 (タップ選択式に刷新) ★ */
     function goToPuzzleGameArea() {
       activeMode = 'puzzle';
       initAudioContext();
@@ -1516,7 +1537,7 @@
       isGameActive = false;
       selectedTrayPieceId = null;
 
-      document.getElementById("puzzle-tray").innerHTML = '<div class="tray-title">📦 ピース置き場 (ここにドロップで戻る)</div>';
+      document.getElementById("puzzle-tray").innerHTML = '<div class="tray-title">📦 ピース置き場 (タップで選択)</div>';
       document.getElementById("puzzle-grid").innerHTML = "";
       document.getElementById("puzzle-card-info").innerText = "";
       document.getElementById("puzzle-deal-overlay").style.display = "flex";
@@ -1552,12 +1573,12 @@
       renderPuzzleBoard();
 
       isGameActive = true;
-      document.getElementById("puzzle-voice-status").innerText = "🧩 トレイからピースを選んで回転させ、盤面に配置しよう！ (制限時間なし)";
+      document.getElementById("puzzle-voice-status").innerText = "🧩 トレイからピースをタップして選択し、盤面のマスをタップしよう！";
     }
 
     function renderPuzzleBoard() {
       const trayEl = document.getElementById("puzzle-tray");
-      trayEl.innerHTML = '<div class="tray-title">📦 ピース置き場 (ここにドロップで戻る)</div>';
+      trayEl.innerHTML = '<div class="tray-title">📦 ピース置き場 (タップで選択)</div>';
 
       const gridEl = document.getElementById("puzzle-grid");
       gridEl.innerHTML = "";
@@ -1568,7 +1589,6 @@
         const pieceEl = document.createElement("div");
         pieceEl.className = "puzzle-piece";
         if (piece.id === selectedTrayPieceId) pieceEl.classList.add("selected");
-        pieceEl.draggable = true;
 
         const xPos = (piece.correctIndex % 3) * 50;
         const yPos = Math.floor(piece.correctIndex / 3) * 50;
@@ -1576,10 +1596,6 @@
         pieceEl.style.backgroundImage = `url('${imgSrc}')`;
         pieceEl.style.backgroundPosition = `${xPos}% ${yPos}%`;
         pieceEl.style.transform = `rotate(${piece.currentRotation}deg)`;
-
-        pieceEl.ondragstart = (e) => {
-          e.dataTransfer.setData("text/plain", JSON.stringify({ type: 'tray', id: piece.id }));
-        };
 
         pieceEl.onclick = () => onTrayPieceClick(piece.id);
         trayEl.appendChild(pieceEl);
@@ -1590,22 +1606,10 @@
         slotEl.className = "puzzle-slot";
         slotEl.id = `puzzle-slot-${slotIdx}`;
 
-        slotEl.ondragover = (e) => { e.preventDefault(); slotEl.classList.add("highlight"); };
-        slotEl.ondragleave = () => { slotEl.classList.remove("highlight"); };
-        slotEl.ondrop = (e) => {
-          e.preventDefault();
-          slotEl.classList.remove("highlight");
-          const rawData = e.dataTransfer.getData("text/plain");
-          if (!rawData) return;
-          const data = JSON.parse(rawData);
-          handleDropToSlot(data, slotIdx);
-        };
-
         const occupant = puzzleSlots[slotIdx];
         if (occupant) {
           const pieceEl = document.createElement("div");
           pieceEl.className = "puzzle-piece";
-          pieceEl.draggable = true;
 
           const xPos = (occupant.correctIndex % 3) * 50;
           const yPos = Math.floor(occupant.correctIndex / 3) * 50;
@@ -1614,72 +1618,13 @@
           pieceEl.style.backgroundPosition = `${xPos}% ${yPos}%`;
           pieceEl.style.transform = `rotate(${occupant.currentRotation}deg)`;
 
-          pieceEl.ondragstart = (e) => {
-            e.dataTransfer.setData("text/plain", JSON.stringify({ type: 'slot', slotIdx: slotIdx }));
-          };
-
           pieceEl.onclick = () => onBoardPieceClick(slotIdx);
-          pieceEl.ondblclick = () => removePieceToTray(slotIdx);
-
           slotEl.appendChild(pieceEl);
         } else {
           slotEl.onclick = () => onSlotClick(slotIdx);
         }
 
         gridEl.appendChild(slotEl);
-      }
-    }
-
-    function handleDropToSlot(data, targetSlotIdx) {
-      if (!isGameActive) return;
-
-      if (data.type === 'tray') {
-        const pieceIdx = puzzleTrayPieces.findIndex(p => p.id === data.id);
-        if (pieceIdx !== -1) {
-          const piece = puzzleTrayPieces.splice(pieceIdx, 1)[0];
-          const oldOccupant = puzzleSlots[targetSlotIdx];
-          puzzleSlots[targetSlotIdx] = piece;
-          if (oldOccupant) puzzleTrayPieces.push(oldOccupant);
-          selectedTrayPieceId = null;
-          renderPuzzleBoard();
-          checkPuzzleCompletion();
-        }
-      } else if (data.type === 'slot') {
-        const sourceSlotIdx = data.slotIdx;
-        if (sourceSlotIdx !== targetSlotIdx) {
-          const temp = puzzleSlots[targetSlotIdx];
-          puzzleSlots[targetSlotIdx] = puzzleSlots[sourceSlotIdx];
-          puzzleSlots[sourceSlotIdx] = temp;
-          renderPuzzleBoard();
-          checkPuzzleCompletion();
-        }
-      }
-    }
-
-    function onTrayDrop(e) {
-      e.preventDefault();
-      if (!isGameActive) return;
-      const rawData = e.dataTransfer.getData("text/plain");
-      if (!rawData) return;
-      const data = JSON.parse(rawData);
-
-      if (data.type === 'slot') {
-        const piece = puzzleSlots[data.slotIdx];
-        if (piece) {
-          puzzleSlots[data.slotIdx] = null;
-          puzzleTrayPieces.push(piece);
-          renderPuzzleBoard();
-        }
-      }
-    }
-
-    function removePieceToTray(slotIdx) {
-      if (!isGameActive) return;
-      const piece = puzzleSlots[slotIdx];
-      if (piece) {
-        puzzleSlots[slotIdx] = null;
-        puzzleTrayPieces.push(piece);
-        renderPuzzleBoard();
       }
     }
 
@@ -1700,7 +1645,7 @@
     function onSlotClick(slotIdx) {
       if (!isGameActive) return;
       if (!selectedTrayPieceId) {
-        document.getElementById("puzzle-voice-status").innerText = "⚠ 先に左側のトレイからピースを選んでね！";
+        document.getElementById("puzzle-voice-status").innerText = "⚠ 先にトレイからピースをタップして選んでね！";
         return;
       }
 
@@ -1731,12 +1676,28 @@
       } else {
         let piece = puzzleSlots[slotIdx];
         if (piece) {
+          // 盤上のピースをタップすると、回転またはトレイに戻すかをトグル
+          // まず回転させて、すでに正解状態か向きが変わるようにする。ダブルタップならトレイへ戻す
           piece.currentRotation = (piece.currentRotation + 90) % 360;
           renderPuzzleBoard();
           checkPuzzleCompletion();
         }
       }
     }
+
+    // 盤上のピースをダブルクリック/ダブルタップしたときトレイに戻す
+    document.addEventListener('dblclick', (e) => {
+      if (activeMode !== 'puzzle' || !isGameActive) return;
+      const slotEl = e.target.closest('.puzzle-slot');
+      if (slotEl) {
+        const slotIdx = Array.from(document.querySelectorAll('.puzzle-slot')).indexOf(slotEl);
+        if (slotIdx !== -1 && puzzleSlots[slotIdx]) {
+          puzzleTrayPieces.push(puzzleSlots[slotIdx]);
+          puzzleSlots[slotIdx] = null;
+          renderPuzzleBoard();
+        }
+      }
+    });
 
     function checkPuzzleCompletion() {
       const isFull = puzzleSlots.every(p => p !== null);
@@ -1746,13 +1707,25 @@
       if (allCorrect) {
         isGameActive = false;
 
-        showFeedback("correct", "🎉 パズルコンプリート！");
+        showFeedback("correct", "🎉 パズルコンプリート！(クリックで中断できます)");
         saveUnlockedCardId(currentPuzzleCard.id);
         playNormalizedAudio(currentPuzzleCard.audio, 0.0);
 
-        setTimeout(() => {
+        const forceStopHandler = () => {
+          stopCurrentNormalizedVoice();
+          document.removeEventListener("click", forceStopHandler);
+          clearTimeout(timeoutId);
           showTimeUpScore();
-        }, 10000);
+        };
+
+        setTimeout(() => {
+          document.addEventListener("click", forceStopHandler);
+        }, 100);
+
+        const timeoutId = setTimeout(() => {
+          document.removeEventListener("click", forceStopHandler);
+          showTimeUpScore();
+        }, 15000); // 15秒
       }
     }
 
@@ -1903,13 +1876,25 @@
       if (isSlideCompleted()) {
         isGameActive = false;
 
-        showFeedback("correct", "🎉 スライドパズルクリア！");
+        showFeedback("correct", "🎉 スライドパズルクリア！(クリックで中断できます)");
         saveUnlockedCardId(currentSlideCard.id);
         playNormalizedAudio(currentSlideCard.audio, 0.0);
 
-        setTimeout(() => {
+        const forceStopHandler = () => {
+          stopCurrentNormalizedVoice();
+          document.removeEventListener("click", forceStopHandler);
+          clearTimeout(timeoutId);
           showTimeUpScore();
-        }, 10000);
+        };
+
+        setTimeout(() => {
+          document.addEventListener("click", forceStopHandler);
+        }, 100);
+
+        const timeoutId = setTimeout(() => {
+          document.removeEventListener("click", forceStopHandler);
+          showTimeUpScore();
+        }, 15000); // 15秒
       }
     }
 
