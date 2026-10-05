@@ -348,7 +348,7 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト（横3×縦4） ★ */
+    /* ★ 神経衰弱用レイアウト ★ */
     #shinki-board-container {
       position: relative; width: 100%; max-width: 1200px; margin: 8px 0 0 0; z-index: 5;
       display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
@@ -383,6 +383,23 @@
     .shinki-card.flipped { background-image: none !important; background-color: #ffffff !important; border: 3px solid #ffd700; box-shadow: 0 0 20px #ffd700; transform: scale(1.03); }
     .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 1.8rem; opacity: 1; }
     .shinki-card.matched { opacity: 0; pointer-events: none; visibility: hidden; }
+
+    /* 神経衰弱マッチ時ポップアップ演出用オーバーレイ */
+    #shinki-match-popup {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7); z-index: 1100; display: none;
+      flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+      animation: fadeIn 0.2s ease-out;
+    }
+    .popup-card-container {
+      background: #fff; color: #333; border-radius: 12px; padding: 12px; border: 4px solid #ffd700;
+      box-shadow: 0 0 40px #ffd700; width: 90%; max-width: 380px; display: flex; flex-direction: column;
+      box-sizing: border-box; transform: scale(0.8); animation: popScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes popScale {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
 
     /* ★ ジグソーパズル用レイアウト ★ */
     #puzzle-board-container {
@@ -684,12 +701,12 @@
       </div>
 
       <div class="shinki-side-area">
-        <div class="shinki-side-title">左エリア (3×4)</div>
+        <div class="shinki-side-title">左エリア</div>
         <div id="shinki-grid-left" class="shinki-grid"></div>
       </div>
 
       <div class="shinki-side-area">
-        <div class="shinki-side-title">右エリア (3×4)</div>
+        <div class="shinki-side-title">右エリア</div>
         <div id="shinki-grid-right" class="shinki-grid"></div>
       </div>
     </div>
@@ -741,6 +758,19 @@
       </div>
     </div>
     <div id="slide-card-info" style="margin-top: 4px; font-size: 1.05rem; color: var(--neon-light-blue); text-align: center; font-weight: bold;"></div>
+  </div>
+
+  <!-- 神経衰弱ペアそろった時用カードポップアップ表示オーバーレイ -->
+  <div id="shinki-match-popup">
+    <div class="popup-card-container">
+      <div style="position: absolute; top: 10px; right: 10px; width: 26px; height: 26px; background-color: #ffffff; border: 2px solid var(--karuta-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: #111; z-index: 2;" id="popup-char-badge">あ</div>
+      <div style="width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+        <img id="popup-card-img" src="" alt="Card Image" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div style="font-family: monospace; font-size: 0.72rem; color: #555; font-weight: 600; margin-bottom: 4px;" id="popup-card-date">2026.00.00</div>
+      <div style="font-weight: bold; font-size: 0.82rem; color: #111; line-height: 1.3; max-height: 2.6em; overflow: hidden; margin-bottom: 10px;" id="popup-card-title">タイトル</div>
+      <div style="text-align: center; font-size: 0.85rem; color: #008b8b; font-weight: bold;">✨ ペア達成！カード獲得！ ✨</div>
+    </div>
   </div>
 
   <!-- 判定エフェクト -->
@@ -952,7 +982,7 @@
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
       { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい,あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
-      { id: 24, char: "い", voice: "一旦ぱふるか・・・ふふふ,すまんが一旦ぱふらせてもらうか・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=Uo-qzSpNJhiPE0aD&t=10039" },
+      { id: 24, char: "い", voice: "一旦ぱふるか・・・ふふふ、すまんが一旦ぱふらせてもらうか・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=Uo-qzSpNJhiPE0aD&t=10039" },
       { id: 25, char: "つ", voice: "付き合いたいよぉ・・・もう誰でもいいから付き合いたいよぉ・・・付き合いたいよぉ、もう美樹原でいいよぉ・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_025.png", img: "img/utsuro_thumb_025.jpg", audio: "audio/utsuro_voice_025.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=usAxewascBlX4Ns5&t=1797" },
       { id: 26, char: "く", voice: "くまたん・・・見た？見た？くまたん！見た？見た？くまたん！", title: "【単発枠/DON'T SCREAM】完全決着！叫ばないだけでクリア出来るゲーム【氷室うつろ】", date: "2026.09.28", screenshot: "screenshot/utsuro_ss_026.png", img: "img/utsuro_thumb_026.jpg", audio: "audio/utsuro_voice_026.mp3", youtube: "https://www.youtube.com/live/_zBxs7sQFMo?si=VklT0FnyV80FGmy5&t=5028" },
       { id: 27, char: "た", voice: "隊長なんだワビスケ、ワビスケがしゃべってる・・・しゃべってるしゃべってる、あまりにもワビスケすぎる、コイツ。", title: "【BLEACH Rebirth of Souls】今日から理解するBLEACH【リバソル／氷室うつろ】", date: "2026.07.07", screenshot: "screenshot/utsuro_ss_027.png", img: "img/utsuro_thumb_027.jpg", audio: "audio/utsuro_voice_027.mp3", youtube: "https://www.youtube.com/live/ZK8Zo0zdbQA?si=XhJ9xdvRHogjv6x3&t=9397" },
@@ -1063,6 +1093,7 @@
       document.getElementById("retire-modal").style.display = "none";
       document.getElementById("clear-modal").style.display = "none";
       document.getElementById("image-modal").style.display = "none";
+      document.getElementById("shinki-match-popup").style.display = "none";
     }
 
     function openKarutaTitle() {
@@ -1527,10 +1558,11 @@
         isCheckingPair = true;
 
         if (firstCard.data.id === secondCard.data.id) {
+          // 判定表示時間とポップアップの演出（表示時間を長く変更：1.2秒後〜）
           setTimeout(() => {
             showFeedback("correct", "〇 一致！ゲット！");
             playShinkiMatchSE();
-          }, 1000);
+          }, 1200);
 
           setTimeout(() => {
             firstCard.element.classList.add("matched");
@@ -1538,30 +1570,57 @@
             saveUnlockedCardId(cardData.id);
             shinkiMatchedPairs++;
             document.getElementById("shinki-score-display").innerText = `${shinkiMatchedPairs} / 12`;
+
+            // カード獲得ポップアップを表示
+            showShinkiMatchPopup(cardData);
+
             firstCard = null; secondCard = null; isCheckingPair = false;
 
             if (shinkiMatchedPairs >= 12) {
               isGameActive = false;
               clearInterval(timerInterval);
-              setTimeout(() => { showTimeUpScreen(); }, 600);
             } else {
               document.getElementById("shinki-voice-status").innerText = "🔊 次のペアを探してください！";
             }
-          }, 1500); 
+          }, 2200); 
         } else {
+          // 不一致時の表示時間も延長
           setTimeout(() => {
             showFeedback("wrong", "❌ 不一致...");
             playShinkiMissSE();
-          }, 1000);
+          }, 1200);
 
           setTimeout(() => {
             firstCard.element.classList.remove("flipped");
             secondCard.element.classList.remove("flipped");
             firstCard = null; secondCard = null; isCheckingPair = false;
             document.getElementById("shinki-voice-status").innerText = "🔊 残念！もう一度めくってください";
-          }, 1800); 
+          }, 2400); 
         }
       }
+    }
+
+    function showShinkiMatchPopup(cardData) {
+      const popup = document.getElementById("shinki-match-popup");
+      const badge = document.getElementById("popup-char-badge");
+      const img = document.getElementById("popup-card-img");
+      const dateEl = document.getElementById("popup-card-date");
+      const titleEl = document.getElementById("popup-card-title");
+
+      badge.innerText = cardData.char || 'あ';
+      img.src = cardData.screenshot || cardData.img;
+      dateEl.innerText = cardData.date;
+      titleEl.innerText = cardData.title;
+
+      popup.style.display = "flex";
+
+      // 2秒後に自動でポップアップを閉じる（ゲーム終了時は結果画面が優先）
+      setTimeout(() => {
+        popup.style.display = "none";
+        if (shinkiMatchedPairs >= 12) {
+          showTimeUpScreen();
+        }
+      }, 2000);
     }
 
     /* ★ 3×3 ジグソーパズル関連の処理 ★ */
@@ -2017,7 +2076,7 @@
     function showFeedback(type, text) {
       const overlay = document.getElementById("feedback-overlay");
       overlay.innerText = text; overlay.className = type;
-      setTimeout(() => { overlay.className = ""; }, 600);
+      setTimeout(() => { overlay.className = ""; }, 1000); // 判定表示時間も少し長めに調整
     }
 
     function showTimeUpScreen() {
