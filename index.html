@@ -219,7 +219,12 @@
     .album-progress { font-size: 1.0rem; color: var(--neon-light-blue); background: rgba(0, 0, 0, 0.6); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--neon-blue); }
 
     #album-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+      grid-auto-rows: max-content; 
+      align-items: start; /* ★同じ行の他のカードに引き延ばされないように上揃えにする */
+      align-content: start; 
+      gap: 12px;
       width: 100%; max-width: 1200px; height: 80vh; overflow-y: auto; padding: 10px; box-sizing: border-box;
       background: rgba(255, 255, 255, 0.05); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);
     }
@@ -388,11 +393,15 @@
     #puzzle-tray {
       width: 320px; min-height: 620px; background: rgba(0, 0, 0, 0.7);
       border: 2px dashed var(--neon-blue); border-radius: 12px; padding: 15px;
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; align-content: start; justify-items: center;
+      display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: minmax(0, auto); gap: 12px; align-content: start; justify-items: center;
       box-sizing: border-box; box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.2);
     }
 
     .tray-title { grid-column: span 2; font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold; text-align: center; margin-bottom: 2px; }
+
+    .tray-slot {
+      width: 100%; aspect-ratio: 1 / 1; border-radius: 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; position: relative;
+    }
 
     #puzzle-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px;
@@ -937,7 +946,7 @@
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ！ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
       { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾やった！rocket launcherウテルノ！？", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
       { id: 19, char: "こ", voice: "〇すぞ・・・〇すぞ・・・（スゥ～ッ）ふぅ～～っ・・・〇すぞ・・・マジで・・・マジでがっかりだ美樹原ホントに・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=Yw9emN7k1A_8zrZy&t=4105" },
-      { id: 20, char: "よ", voice: "妖精が「ｲｴ~~ﾝ!!!」って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
+      { id: 20, char: "よ", voice: "妖精がｲｴ~~ﾝ!!!って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
       { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい,あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
@@ -1133,7 +1142,6 @@
           const displayChar = isRealUnlocked ? (card.char || '？') : '？';
           
           if (isRealUnlocked) {
-            // 獲得済みカード：通常のサムネイルや配信名などをそのまま表示
             cardEl.innerHTML = `
               <div class="card-char-badge">${displayChar}</div>
               <div class="img-container-vertical">
@@ -1148,12 +1156,11 @@
               <div style="text-align: center; font-size: 0.75rem; color: #00ffff; font-weight: bold; padding: 4px 0;">🎮 このカードで遊ぶ</div>
             `;
           } else {
-            // 未獲得カード：今までの未獲得表示（黒いプレースホルダー＋未獲得の札名）
             cardEl.innerHTML = `
               <div class="card-char-badge">？</div>
               <div class="img-container-vertical">
                 <div class="thumbnail-wrapper" style="background: #222; aspect-ratio: 16/9; cursor: default;">
-                  <div style="font-size: 1.5rem; color: #666; margin: auto;">🔒 未獲得</div>
+                  <div style="font-size: 1.5rem; color: #888; margin: auto;">🔒</div>
                 </div>
               </div>
               <div class="card-info">
@@ -1190,7 +1197,7 @@
               <div class="card-char-badge">？</div>
               <div class="img-container-vertical">
                 <div class="thumbnail-wrapper" style="background: #222; aspect-ratio: 16/9; cursor: default;">
-                  <div style="font-size: 1.5rem; color: #666; margin: auto;">🔒 未獲得</div>
+                  <div style="font-size: 1.5rem; color: #888; margin: auto;">🔒</div>
                 </div>
               </div>
               <div class="card-info">
@@ -1291,7 +1298,7 @@
       document.getElementById("board").innerHTML = "";
       document.getElementById("deal-overlay").style.display = "flex";
       document.getElementById("target-voice").innerText = "『準備はいいでございますか？』";
-      document.getElementById("voice-status").innerText = "🔊 （<span><span>「札を配る」を押してください</span></span>）";
+      document.getElementById("voice-status").innerText = "🔊 （「札を配る」を押してください）";
     }
 
     function dealCardsAndStart() {
@@ -1571,7 +1578,7 @@
       document.getElementById("puzzle-grid").innerHTML = "";
       document.getElementById("puzzle-card-info").innerText = "";
       document.getElementById("puzzle-deal-overlay").style.display = "flex";
-      document.getElementById("puzzle-voice-status").innerText = "🔊 （<span><span>「パズルを始める」を押してください</span></span>）";
+      document.getElementById("puzzle-voice-status").innerText = "🔊 （「パズルを始める」を押してください）";
     }
 
     function dealPuzzleCardsAndStart() {
@@ -1588,9 +1595,9 @@
 
       puzzleTrayPieces = [];
       for (let i = 0; i < 9; i++) {
-        let randomRot = [90, 180, 270][Math.floor(Math.random() * 3)];
+        let randomRot = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
         puzzleTrayPieces.push({
-          id: `piece-${i}-${Math.random().toString(36).substr(2, 5)}`,
+          uid: 'p-' + i + '-' + Math.random().toString(36).substr(2, 6),
           correctIndex: i,
           currentRotation: randomRot
         });
@@ -1605,22 +1612,44 @@
       if (isMobileDevice()) {
         document.getElementById("puzzle-voice-status").innerText = "🧩 ピースを長押しして盤面に移動させよう！タップで回転。";
       } else {
-        document.getElementById("puzzle-voice-status").innerText = "🧩 ピースをドラッグ＆ドロップで盤面に配置しよう！";
+        document.getElementById("puzzle-voice-status").innerText = "🧩 ピースをドラッグ＆ドロップで盤面に配置・入れ替えしよう！";
       }
     }
 
     function renderPuzzleBoard() {
-      document.getElementById("puzzle-tray").innerHTML = '<div class="tray-title">📦 ピース置き場</div>';
       const trayEl = document.getElementById("puzzle-tray");
+      trayEl.innerHTML = '<div class="tray-title">📦 ピース置き場</div>';
 
       const gridEl = document.getElementById("puzzle-grid");
       gridEl.innerHTML = "";
 
       const imgSrc = currentPuzzleCard.screenshot || currentPuzzleCard.img;
 
-      puzzleTrayPieces.forEach(piece => {
-        const pieceEl = createPuzzlePieceElement(piece, imgSrc);
-        trayEl.appendChild(pieceEl);
+      puzzleTrayPieces.forEach((piece, trayIdx) => {
+        const slotEl = document.createElement("div");
+        slotEl.className = "tray-slot";
+        slotEl.id = `tray-slot-${trayIdx}`;
+
+        slotEl.addEventListener("dragover", (e) => { e.preventDefault(); });
+        slotEl.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const uid = e.dataTransfer.getData("text/plain");
+          placePieceIntoTraySlot(uid, trayIdx);
+        });
+
+        slotEl.addEventListener("touchend", (e) => {
+          if (window.activeDraggedUid) {
+            e.preventDefault();
+            placePieceIntoTraySlot(window.activeDraggedUid, trayIdx);
+            window.activeDraggedUid = null;
+          }
+        });
+
+        if (piece) {
+          const pieceEl = createPuzzlePieceElement(piece, imgSrc);
+          slotEl.appendChild(pieceEl);
+        }
+        trayEl.appendChild(slotEl);
       });
 
       for (let slotIdx = 0; slotIdx < 9; slotIdx++) {
@@ -1633,15 +1662,15 @@
         slotEl.addEventListener("drop", (e) => {
           e.preventDefault();
           slotEl.classList.remove("highlight");
-          const pieceId = e.dataTransfer.getData("text/plain");
-          placePieceIntoSlot(pieceId, slotIdx);
+          const uid = e.dataTransfer.getData("text/plain");
+          placePieceIntoSlot(uid, slotIdx);
         });
 
         slotEl.addEventListener("touchend", (e) => {
-          if (window.activeDraggedPieceId) {
+          if (window.activeDraggedUid) {
             e.preventDefault();
-            placePieceIntoSlot(window.activeDraggedPieceId, slotIdx);
-            window.activeDraggedPieceId = null;
+            placePieceIntoSlot(window.activeDraggedUid, slotIdx);
+            window.activeDraggedUid = null;
           }
         });
 
@@ -1659,7 +1688,7 @@
       const pieceEl = document.createElement("div");
       pieceEl.className = "puzzle-piece";
       pieceEl.draggable = true;
-      pieceEl.id = piece.id;
+      pieceEl.id = piece.uid;
 
       const xPos = (piece.correctIndex % 3) * 50;
       const yPos = Math.floor(piece.correctIndex / 3) * 50;
@@ -1669,13 +1698,13 @@
       pieceEl.style.transform = `rotate(${piece.currentRotation}deg)`;
 
       pieceEl.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", piece.id);
+        e.dataTransfer.setData("text/plain", piece.uid);
       });
 
       let touchTimeout = null;
       pieceEl.addEventListener("touchstart", (e) => {
         touchTimeout = setTimeout(() => {
-          window.activeDraggedPieceId = piece.id;
+          window.activeDraggedUid = piece.uid;
           if (navigator.vibrate) navigator.vibrate(50);
           showFeedback("correct", "🖐 つかみました！");
         }, 400);
@@ -1691,6 +1720,7 @@
           touchTimeout = null;
           piece.currentRotation = (piece.currentRotation + 90) % 360;
           renderPuzzleBoard();
+          checkPuzzleCompletion();
         }
       });
 
@@ -1698,39 +1728,75 @@
         if (!isMobileDevice()) {
           piece.currentRotation = (piece.currentRotation + 90) % 360;
           renderPuzzleBoard();
+          checkPuzzleCompletion();
         }
       };
 
       return pieceEl;
     }
 
-    function placePieceIntoSlot(pieceId, slotIdx) {
+    function placePieceIntoSlot(uid, targetSlotIdx) {
       if (!isGameActive) return;
 
-      let pieceIndex = puzzleTrayPieces.findIndex(p => p.id === pieceId);
-      let foundPiece = null;
+      let sourceTrayIdx = puzzleTrayPieces.findIndex(p => p && p.uid === uid);
+      let sourceSlotIdx = puzzleSlots.findIndex(p => p && p.uid === uid);
 
-      if (pieceIndex !== -1) {
-        foundPiece = puzzleTrayPieces.splice(pieceIndex, 1)[0];
-      } else {
-        for (let i = 0; i < 9; i++) {
-          if (puzzleSlots[i] && puzzleSlots[i].id === pieceId) {
-            foundPiece = puzzleSlots[i];
-            puzzleSlots[i] = null;
-            break;
-          }
+      let movingPiece = null;
+      if (sourceTrayIdx !== -1) {
+        movingPiece = puzzleTrayPieces[sourceTrayIdx];
+        puzzleTrayPieces[sourceTrayIdx] = null;
+      } else if (sourceSlotIdx !== -1) {
+        movingPiece = puzzleSlots[sourceSlotIdx];
+        puzzleSlots[sourceSlotIdx] = null;
+      }
+
+      if (!movingPiece) return;
+
+      const targetOccupant = puzzleSlots[targetSlotIdx];
+      puzzleSlots[targetSlotIdx] = movingPiece;
+
+      if (targetOccupant) {
+        if (sourceTrayIdx !== -1) {
+          puzzleTrayPieces[sourceTrayIdx] = targetOccupant;
+        } else if (sourceSlotIdx !== -1) {
+          puzzleSlots[sourceSlotIdx] = targetOccupant;
         }
       }
 
-      if (foundPiece) {
-        const oldOccupant = puzzleSlots[slotIdx];
-        puzzleSlots[slotIdx] = foundPiece;
-        if (oldOccupant) {
-          puzzleTrayPieces.push(oldOccupant);
-        }
-        renderPuzzleBoard();
-        checkPuzzleCompletion();
+      renderPuzzleBoard();
+      checkPuzzleCompletion();
+    }
+
+    function placePieceIntoTraySlot(uid, targetTrayIdx) {
+      if (!isGameActive) return;
+
+      let sourceTrayIdx = puzzleTrayPieces.findIndex(p => p && p.uid === uid);
+      let sourceSlotIdx = puzzleSlots.findIndex(p => p && p.uid === uid);
+
+      let movingPiece = null;
+      if (sourceTrayIdx !== -1) {
+        movingPiece = puzzleTrayPieces[sourceTrayIdx];
+        puzzleTrayPieces[sourceTrayIdx] = null;
+      } else if (sourceSlotIdx !== -1) {
+        movingPiece = puzzleSlots[sourceSlotIdx];
+        puzzleSlots[sourceSlotIdx] = null;
       }
+
+      if (!movingPiece) return;
+
+      const targetOccupant = puzzleTrayPieces[targetTrayIdx];
+      puzzleTrayPieces[targetTrayIdx] = movingPiece;
+
+      if (targetOccupant) {
+        if (sourceTrayIdx !== -1) {
+          puzzleTrayPieces[sourceTrayIdx] = targetOccupant;
+        } else if (sourceSlotIdx !== -1) {
+          puzzleSlots[sourceSlotIdx] = targetOccupant;
+        }
+      }
+
+      renderPuzzleBoard();
+      checkPuzzleCompletion();
     }
 
     document.addEventListener('dblclick', (e) => {
@@ -1739,8 +1805,15 @@
       if (slotEl) {
         const slotIdx = Array.from(document.querySelectorAll('.puzzle-slot')).indexOf(slotEl);
         if (slotIdx !== -1 && puzzleSlots[slotIdx]) {
-          puzzleTrayPieces.push(puzzleSlots[slotIdx]);
+          const pieceToReturn = puzzleSlots[slotIdx];
           puzzleSlots[slotIdx] = null;
+          
+          let emptyTrayIdx = puzzleTrayPieces.findIndex(p => p === null);
+          if (emptyTrayIdx !== -1) {
+            puzzleTrayPieces[emptyTrayIdx] = pieceToReturn;
+          } else {
+            puzzleTrayPieces.push(pieceToReturn);
+          }
           renderPuzzleBoard();
         }
       }
@@ -1756,8 +1829,15 @@
         if (tapLength < 300 && tapLength > 0) {
           const slotIdx = Array.from(document.querySelectorAll('.puzzle-slot')).indexOf(slotEl);
           if (slotIdx !== -1 && puzzleSlots[slotIdx]) {
-            puzzleTrayPieces.push(puzzleSlots[slotIdx]);
+            const pieceToReturn = puzzleSlots[slotIdx];
             puzzleSlots[slotIdx] = null;
+
+            let emptyTrayIdx = puzzleTrayPieces.findIndex(p => p === null);
+            if (emptyTrayIdx !== -1) {
+              puzzleTrayPieces[emptyTrayIdx] = pieceToReturn;
+            } else {
+              puzzleTrayPieces.push(pieceToReturn);
+            }
             renderPuzzleBoard();
             e.preventDefault();
           }
@@ -1770,7 +1850,7 @@
       const isFull = puzzleSlots.every(p => p !== null);
       if (!isFull) return;
 
-      const allCorrect = puzzleSlots.every((p, idx) => p.correctIndex === idx && p.currentRotation === 0);
+      const allCorrect = puzzleSlots.every((p, idx) => p.correctIndex === idx && (p.currentRotation % 360) === 0);
       if (allCorrect) {
         isGameActive = false;
 
@@ -1782,7 +1862,7 @@
           stopCurrentNormalizedVoice();
           document.removeEventListener("click", forceStopHandler);
           clearTimeout(timeoutId);
-          showTimeUpScore();
+          showTimeUpScreen();
         };
 
         setTimeout(() => {
@@ -1791,8 +1871,8 @@
 
         const timeoutId = setTimeout(() => {
           document.removeEventListener("click", forceStopHandler);
-          showTimeUpScore();
-        }, 15000);
+          showTimeUpScreen();
+        }, 20000);
       }
     }
 
@@ -1961,7 +2041,7 @@
         const timeoutId = setTimeout(() => {
           document.removeEventListener("click", forceStopHandler);
           showTimeUpScreen();
-        }, 15000);
+        }, 20000);
       }
     }
 
