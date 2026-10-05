@@ -343,7 +343,7 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト（横3×縦4に修正） ★ */
+    /* ★ 神経衰弱用レイアウト（横3×縦4） ★ */
     #shinki-board-container {
       position: relative; width: 100%; max-width: 1200px; margin: 8px 0 0 0; z-index: 5;
       display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
@@ -379,7 +379,7 @@
     .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 1.8rem; opacity: 1; }
     .shinki-card.matched { opacity: 0; pointer-events: none; visibility: hidden; }
 
-    /* ★ ジグソーパズル用レイアウト（大画面化） ★ */
+    /* ★ ジグソーパズル用レイアウト ★ */
     #puzzle-board-container {
       position: relative; width: 100%; max-width: 1250px; margin: 10px auto; z-index: 5;
       display: flex; gap: 25px; justify-content: center; align-items: flex-start; box-sizing: border-box; padding: 0 10px 20px 10px;
@@ -403,7 +403,8 @@
     .puzzle-piece {
       width: 100%; aspect-ratio: 1 / 1; background-size: 300% 300%; background-repeat: no-repeat;
       border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; cursor: pointer; box-sizing: border-box;
-      transition: border-color 0.2s, box-shadow 0.2s; position: relative; touch-action: manipulation;
+      transition: border-color 0.2s, box-shadow 0.2s; position: relative;
+      touch-action: none;
     }
     .puzzle-piece:hover { border-color: var(--neon-blue); box-shadow: 0 0 12px var(--neon-blue); z-index: 2; }
 
@@ -412,9 +413,8 @@
       border-radius: 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; position: relative; transition: background 0.2s;
     }
     .puzzle-slot.highlight { background: rgba(0, 255, 255, 0.3); border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
-    .puzzle-piece.selected { border-color: #ffd700 !important; box-shadow: 0 0 18px #ffd700 !important; transform: scale(1.05); z-index: 10; }
 
-    /* ★ スライドパズル用レイアウト（大画面化） ★ */
+    /* ★ スライドパズル用レイアウト ★ */
     #slide-board-container {
       position: relative; width: 100%; max-width: 700px; margin: 10px auto; z-index: 5;
       display: flex; flex-direction: column; align-items: center; box-sizing: border-box; padding: 0 10px 20px 10px;
@@ -572,10 +572,8 @@
 
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🧩 遊び方 (制限時間 なし)</div>
-      <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・トレイにあるピースをタップして選択し、盤面のマスをタップして配置！<br>
-        ・ピースをタップすると90度ずつ回転します。<br>
-        ・盤面のピースをダブルクリック（または長めタップ）でトレイに戻せます。
+      <p id="puzzle-instructions" style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
+        <!-- JSでPC/スマホ分岐して挿入 -->
       </p>
     </div>
 
@@ -691,7 +689,7 @@
     <div class="top-header-common">
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="puzzle-voice-status" style="font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold;">
-          🧩 タップでピースを選び、回転させて盤面に配置しよう！ (制限時間なし)
+          🧩 ピースをドラッグして盤面に配置し、ダブルクリックで戻そう！ (制限時間なし)
         </div>
       </div>
 
@@ -700,7 +698,7 @@
 
     <div id="puzzle-board-container">
       <div id="puzzle-tray">
-        <div class="tray-title">📦 ピース置き場 (タップで選択)</div>
+        <div class="tray-title">📦 ピース置き場</div>
       </div>
 
       <div id="puzzle-grid"></div>
@@ -789,7 +787,7 @@
     let fallbackAudioObj = null;
     let masterVolume = 0.6;
     let modalAudioPath = "";
-    let albumMode = 'normal'; // 'normal' または 'slide_select'
+    let albumMode = 'normal'; 
 
     function initAudioContext() {
       if (!audioCtx) {
@@ -912,7 +910,6 @@
       playNormalizedAudio(TEST_VOICE_FILE, 0.0);
     }
 
-    /* デバッグ用：カード獲得状況をリセットする関数 */
     function debugResetUnlockedCards() {
       if (confirm("【デバッグ】獲得したカードのデータをすべてリセットして初期状態に戻しますか？")) {
         localStorage.removeItem("utsuro_karuta_album");
@@ -1018,11 +1015,24 @@
     let currentPuzzleCard = null;
     let puzzleTrayPieces = []; 
     let puzzleSlots = [];     
-    let selectedTrayPieceId = null; 
 
     // スライドパズル変数
     let currentSlideCard = null;
     let slideTiles = [];
+
+    // モバイル判定
+    function isMobileDevice() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 820;
+    }
+
+    function updatePuzzleInstructions() {
+      const el = document.getElementById("puzzle-instructions");
+      if (isMobileDevice()) {
+        el.innerHTML = "・ピースを長押しして盤面に移動させよう！<br>・ピースをタップすると90度ずつ回転します。<br>・盤面のピースをダブルタップでトレイに戻せます。";
+      } else {
+        el.innerHTML = "・ピースをドラッグして盤面に配置しよう！<br>・ピースをクリックすると90度ずつ回転します。<br>・盤面のピースをダブルクリックでトレイに戻せます。";
+      }
+    }
 
     function showMainTitleScreen() {
       clearInterval(timerInterval);
@@ -1061,6 +1071,7 @@
     function openPuzzleTitle() {
       stopCurrentNormalizedVoice();
       showMainTitleScreen();
+      updatePuzzleInstructions();
       document.getElementById("main-title-screen").style.display = "none";
       document.getElementById("puzzle-title-screen").style.display = "flex";
     }
@@ -1524,7 +1535,7 @@
       }
     }
 
-    /* ★ 3×3 ジグソーパズル関連の処理 (タップ選択式に刷新) ★ */
+    /* ★ 3×3 ジグソーパズル関連の処理 ★ */
     function goToPuzzleGameArea() {
       activeMode = 'puzzle';
       initAudioContext();
@@ -1535,9 +1546,8 @@
 
       clearInterval(timerInterval);
       isGameActive = false;
-      selectedTrayPieceId = null;
 
-      document.getElementById("puzzle-tray").innerHTML = '<div class="tray-title">📦 ピース置き場 (タップで選択)</div>';
+      document.getElementById("puzzle-tray").innerHTML = '<div class="tray-title">📦 ピース置き場</div>';
       document.getElementById("puzzle-grid").innerHTML = "";
       document.getElementById("puzzle-card-info").innerText = "";
       document.getElementById("puzzle-deal-overlay").style.display = "flex";
@@ -1568,17 +1578,20 @@
       puzzleTrayPieces.sort(() => Math.random() - 0.5);
 
       puzzleSlots = new Array(9).fill(null);
-      selectedTrayPieceId = null;
 
       renderPuzzleBoard();
 
       isGameActive = true;
-      document.getElementById("puzzle-voice-status").innerText = "🧩 トレイからピースをタップして選択し、盤面のマスをタップしよう！";
+      if (isMobileDevice()) {
+        document.getElementById("puzzle-voice-status").innerText = "🧩 ピースを長押しして盤面に移動させよう！タップで回転。";
+      } else {
+        document.getElementById("puzzle-voice-status").innerText = "🧩 ピースをドラッグ＆ドロップで盤面に配置しよう！";
+      }
     }
 
     function renderPuzzleBoard() {
+      document.getElementById("puzzle-tray").innerHTML = '<div class="tray-title">📦 ピース置き場</div>';
       const trayEl = document.getElementById("puzzle-tray");
-      trayEl.innerHTML = '<div class="tray-title">📦 ピース置き場 (タップで選択)</div>';
 
       const gridEl = document.getElementById("puzzle-grid");
       gridEl.innerHTML = "";
@@ -1586,18 +1599,7 @@
       const imgSrc = currentPuzzleCard.screenshot || currentPuzzleCard.img;
 
       puzzleTrayPieces.forEach(piece => {
-        const pieceEl = document.createElement("div");
-        pieceEl.className = "puzzle-piece";
-        if (piece.id === selectedTrayPieceId) pieceEl.classList.add("selected");
-
-        const xPos = (piece.correctIndex % 3) * 50;
-        const yPos = Math.floor(piece.correctIndex / 3) * 50;
-
-        pieceEl.style.backgroundImage = `url('${imgSrc}')`;
-        pieceEl.style.backgroundPosition = `${xPos}% ${yPos}%`;
-        pieceEl.style.transform = `rotate(${piece.currentRotation}deg)`;
-
-        pieceEl.onclick = () => onTrayPieceClick(piece.id);
+        const pieceEl = createPuzzlePieceElement(piece, imgSrc);
         trayEl.appendChild(pieceEl);
       });
 
@@ -1606,86 +1608,111 @@
         slotEl.className = "puzzle-slot";
         slotEl.id = `puzzle-slot-${slotIdx}`;
 
+        slotEl.addEventListener("dragover", (e) => { e.preventDefault(); slotEl.classList.add("highlight"); });
+        slotEl.addEventListener("dragleave", () => { slotEl.classList.remove("highlight"); });
+        slotEl.addEventListener("drop", (e) => {
+          e.preventDefault();
+          slotEl.classList.remove("highlight");
+          const pieceId = e.dataTransfer.getData("text/plain");
+          placePieceIntoSlot(pieceId, slotIdx);
+        });
+
+        slotEl.addEventListener("touchend", (e) => {
+          if (window.activeDraggedPieceId) {
+            e.preventDefault();
+            placePieceIntoSlot(window.activeDraggedPieceId, slotIdx);
+            window.activeDraggedPieceId = null;
+          }
+        });
+
         const occupant = puzzleSlots[slotIdx];
         if (occupant) {
-          const pieceEl = document.createElement("div");
-          pieceEl.className = "puzzle-piece";
-
-          const xPos = (occupant.correctIndex % 3) * 50;
-          const yPos = Math.floor(occupant.correctIndex / 3) * 50;
-
-          pieceEl.style.backgroundImage = `url('${imgSrc}')`;
-          pieceEl.style.backgroundPosition = `${xPos}% ${yPos}%`;
-          pieceEl.style.transform = `rotate(${occupant.currentRotation}deg)`;
-
-          pieceEl.onclick = () => onBoardPieceClick(slotIdx);
+          const pieceEl = createPuzzlePieceElement(occupant, imgSrc);
           slotEl.appendChild(pieceEl);
-        } else {
-          slotEl.onclick = () => onSlotClick(slotIdx);
         }
 
         gridEl.appendChild(slotEl);
       }
     }
 
-    function onTrayPieceClick(pieceId) {
-      if (!isGameActive) return;
+    function createPuzzlePieceElement(piece, imgSrc) {
+      const pieceEl = document.createElement("div");
+      pieceEl.className = "puzzle-piece";
+      pieceEl.draggable = true;
+      pieceEl.id = piece.id;
 
-      if (selectedTrayPieceId === pieceId) {
-        let piece = puzzleTrayPieces.find(p => p.id === pieceId);
-        if (piece) {
+      const xPos = (piece.correctIndex % 3) * 50;
+      const yPos = Math.floor(piece.correctIndex / 3) * 50;
+
+      pieceEl.style.backgroundImage = `url('${imgSrc}')`;
+      pieceEl.style.backgroundPosition = `${xPos}% ${yPos}%`;
+      pieceEl.style.transform = `rotate(${piece.currentRotation}deg)`;
+
+      pieceEl.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", piece.id);
+      });
+
+      let touchTimeout = null;
+      pieceEl.addEventListener("touchstart", (e) => {
+        touchTimeout = setTimeout(() => {
+          window.activeDraggedPieceId = piece.id;
+          if (navigator.vibrate) navigator.vibrate(50);
+          showFeedback("correct", "🖐 つかみました！");
+        }, 400);
+      }, {passive: true});
+
+      pieceEl.addEventListener("touchmove", () => {
+        if (touchTimeout) { clearTimeout(touchTimeout); touchTimeout = null; }
+      }, {passive: true});
+
+      pieceEl.addEventListener("touchend", () => {
+        if (touchTimeout) {
+          clearTimeout(touchTimeout);
+          touchTimeout = null;
           piece.currentRotation = (piece.currentRotation + 90) % 360;
+          renderPuzzleBoard();
         }
-      } else {
-        selectedTrayPieceId = pieceId;
-      }
-      renderPuzzleBoard();
+      });
+
+      pieceEl.onclick = (e) => {
+        if (!isMobileDevice()) {
+          piece.currentRotation = (piece.currentRotation + 90) % 360;
+          renderPuzzleBoard();
+        }
+      };
+
+      return pieceEl;
     }
 
-    function onSlotClick(slotIdx) {
+    function placePieceIntoSlot(pieceId, slotIdx) {
       if (!isGameActive) return;
-      if (!selectedTrayPieceId) {
-        document.getElementById("puzzle-voice-status").innerText = "⚠ 先にトレイからピースをタップして選んでね！";
-        return;
+
+      let pieceIndex = puzzleTrayPieces.findIndex(p => p.id === pieceId);
+      let foundPiece = null;
+
+      if (pieceIndex !== -1) {
+        foundPiece = puzzleTrayPieces.splice(pieceIndex, 1)[0];
+      } else {
+        for (let i = 0; i < 9; i++) {
+          if (puzzleSlots[i] && puzzleSlots[i].id === pieceId) {
+            foundPiece = puzzleSlots[i];
+            puzzleSlots[i] = null;
+            break;
+          }
+        }
       }
 
-      const pieceIdx = puzzleTrayPieces.findIndex(p => p.id === selectedTrayPieceId);
-      if (pieceIdx !== -1) {
-        const piece = puzzleTrayPieces.splice(pieceIdx, 1)[0];
-        puzzleSlots[slotIdx] = piece;
-        selectedTrayPieceId = null;
+      if (foundPiece) {
+        const oldOccupant = puzzleSlots[slotIdx];
+        puzzleSlots[slotIdx] = foundPiece;
+        if (oldOccupant) {
+          puzzleTrayPieces.push(oldOccupant);
+        }
         renderPuzzleBoard();
         checkPuzzleCompletion();
       }
     }
 
-    function onBoardPieceClick(slotIdx) {
-      if (!isGameActive) return;
-
-      if (selectedTrayPieceId) {
-        const trayPieceIdx = puzzleTrayPieces.findIndex(p => p.id === selectedTrayPieceId);
-        if (trayPieceIdx !== -1) {
-          const trayPiece = puzzleTrayPieces.splice(trayPieceIdx, 1)[0];
-          const boardPiece = puzzleSlots[slotIdx];
-          puzzleSlots[slotIdx] = trayPiece;
-          if (boardPiece) puzzleTrayPieces.push(boardPiece);
-          selectedTrayPieceId = null;
-          renderPuzzleBoard();
-          checkPuzzleCompletion();
-        }
-      } else {
-        let piece = puzzleSlots[slotIdx];
-        if (piece) {
-          // 盤上のピースをタップすると、回転またはトレイに戻すかをトグル
-          // まず回転させて、すでに正解状態か向きが変わるようにする。ダブルタップならトレイへ戻す
-          piece.currentRotation = (piece.currentRotation + 90) % 360;
-          renderPuzzleBoard();
-          checkPuzzleCompletion();
-        }
-      }
-    }
-
-    // 盤上のピースをダブルクリック/ダブルタップしたときトレイに戻す
     document.addEventListener('dblclick', (e) => {
       if (activeMode !== 'puzzle' || !isGameActive) return;
       const slotEl = e.target.closest('.puzzle-slot');
@@ -1696,6 +1723,26 @@
           puzzleSlots[slotIdx] = null;
           renderPuzzleBoard();
         }
+      }
+    });
+
+    let lastTapTime = 0;
+    document.addEventListener('touchend', (e) => {
+      if (activeMode !== 'puzzle' || !isGameActive) return;
+      const slotEl = e.target.closest('.puzzle-slot');
+      if (slotEl) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        if (tapLength < 300 && tapLength > 0) {
+          const slotIdx = Array.from(document.querySelectorAll('.puzzle-slot')).indexOf(slotEl);
+          if (slotIdx !== -1 && puzzleSlots[slotIdx]) {
+            puzzleTrayPieces.push(puzzleSlots[slotIdx]);
+            puzzleSlots[slotIdx] = null;
+            renderPuzzleBoard();
+            e.preventDefault();
+          }
+        }
+        lastTapTime = currentTime;
       }
     });
 
@@ -1715,7 +1762,7 @@
           stopCurrentNormalizedVoice();
           document.removeEventListener("click", forceStopHandler);
           clearTimeout(timeoutId);
-          showTimeUpScore();
+          showTimeUpScreen();
         };
 
         setTimeout(() => {
@@ -1724,8 +1771,8 @@
 
         const timeoutId = setTimeout(() => {
           document.removeEventListener("click", forceStopHandler);
-          showTimeUpScore();
-        }, 15000); // 15秒
+          showTimeUpScreen();
+        }, 15000);
       }
     }
 
@@ -1774,7 +1821,7 @@
       } else {
         document.getElementById("slide-grid").innerHTML = "";
         document.getElementById("slide-deal-overlay").style.display = "flex";
-        document.getElementById("slide-voice-status").innerText = "🔊 （<span><span>「パズルを始める」を押してください</span></span>）";
+        document.getElementById("slide-voice-status").innerText = "🔊 （「パズルを始める」を押してください）";
       }
     }
 
@@ -1884,7 +1931,7 @@
           stopCurrentNormalizedVoice();
           document.removeEventListener("click", forceStopHandler);
           clearTimeout(timeoutId);
-          showTimeUpScore();
+          showTimeUpScreen();
         };
 
         setTimeout(() => {
@@ -1893,8 +1940,8 @@
 
         const timeoutId = setTimeout(() => {
           document.removeEventListener("click", forceStopHandler);
-          showTimeUpScore();
-        }, 15000); // 15秒
+          showTimeUpScreen();
+        }, 15000);
       }
     }
 
@@ -1912,7 +1959,7 @@
       setTimeout(() => { overlay.className = ""; }, 600);
     }
 
-    function showTimeUpScore() {
+    function showTimeUpScreen() {
       stopCurrentNormalizedVoice();
 
       const titleEl = document.getElementById("result-title");
@@ -1959,7 +2006,7 @@
         scoreLabelEl.innerText = "クリアしてカードを獲得！";
         scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "制限時間なし・じっくりクリア！";
-        retryBtn.onclick = openSlideTitle;
+        retryBtn.onclick = openPuzzleTitle;
       }
 
       document.getElementById("clear-modal").style.display = "flex";
