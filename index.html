@@ -348,24 +348,25 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト ★ */
+    /* ★ 神経衰弱用レイアウト（スマホ対応修正） ★ */
     #shinki-board-container {
-      position: relative; width: 100%; max-width: 1200px; margin: 8px 0 0 0; z-index: 5;
-      display: flex; gap: 20px; justify-content: center; box-sizing: border-box; padding-bottom: 20px;
+      position: relative; width: 100%; max-width: 1200px; margin: 8px auto 0 auto; z-index: 5;
+      display: flex; flex-direction: row; gap: 8px; justify-content: center; box-sizing: border-box; padding: 0 4px 20px 4px;
     }
 
     .shinki-side-area {
       flex: 1; display: flex; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.4);
-      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 12px; box-sizing: border-box;
+      border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 12px; padding: 8px 4px; box-sizing: border-box;
+      min-width: 0;
     }
 
     .shinki-side-title {
-      font-size: 1.0rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 8px; text-shadow: 0 0 8px var(--neon-blue);
+      font-size: 0.85rem; font-weight: bold; color: var(--neon-light-blue); margin-bottom: 6px; text-shadow: 0 0 8px var(--neon-blue);
       flex-shrink: 0; display: block;
     }
 
     .shinki-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px; width: 100%; align-items: center; justify-items: center;
+      display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 4px; width: 100%; align-items: center; justify-items: center;
     }
 
     .shinki-card {
@@ -373,7 +374,7 @@
       border-radius: 6px; cursor: pointer; position: relative; user-select: none;
       transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.7); width: 100%; max-width: 130px; aspect-ratio: 812 / 1153; box-sizing: border-box;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7); width: 100%; max-width: 95px; aspect-ratio: 812 / 1153; box-sizing: border-box;
     }
 
     .shinki-card.left-back { background-image: url('ura_1.png'); background-color: #1a3a5a; }
@@ -381,7 +382,7 @@
     .shinki-card:hover { transform: scale(1.04); box-shadow: 0 0 18px var(--neon-blue); }
     .shinki-card .card-inner-pattern { display: none; }
     .shinki-card.flipped { background-image: none !important; background-color: #ffffff !important; border: 3px solid #ffd700; box-shadow: 0 0 20px #ffd700; transform: scale(1.03); }
-    .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 1.8rem; opacity: 1; }
+    .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 1.5rem; opacity: 1; }
     .shinki-card.matched { opacity: 0; pointer-events: none; visibility: hidden; }
 
     /* 神経衰弱マッチ時ポップアップ演出用オーバーレイ */
@@ -479,7 +480,6 @@
       #puzzle-tray { width: 92vw; max-width: 440px; min-height: 140px; grid-template-columns: repeat(5, 1fr); }
       .tray-title { grid-column: span 5; }
 
-      #shinki-board-container { flex-direction: column; align-items: center; gap: 12px; }
       #slide-grid { width: 92vw; height: 92vw; max-width: 420px; max-height: 420px; }
 
       #feedback-overlay { font-size: 2.0rem; white-space: normal; text-align: center; width: 90%; }
@@ -973,7 +973,7 @@
       { id: 12, char: "も", voice: "もしかしてこれさぁ、あれなんじゃない？未来の悟飯ちゃんなんじゃない？悟飯ちゃん最終的にこうなるんじゃない？もしかして。なんかよくわかんないけど反抗期で髪の毛染めた悟飯ちゃんなんじゃない？コレ。", title: "【＃ドラゴンボールZ KAKAROT】人造人間編開始！サムネの人は誰でございますか？【＃完全初見】", date: "2025.01.24", screenshot: "screenshot/utsuro_ss_012.png", img: "img/utsuro_thumb_012.jpg", audio: "audio/utsuro_voice_012.mp3", youtube: "https://www.youtube.com/live/4MCEmLoXNp4?si=bDIVrLkHQS2h-85_&t=614" },
       { id: 13, char: "ぱ", voice: "パリ・ダカールラリーの車ってさぁ、弾出るんだ・・・", title: "【 #パリダカールラリースペシャル 】伝説の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_013.png", img: "img/utsuro_thumb_013.jpg", audio: "audio/utsuro_voice_013.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=LSPFyGLIH7bhjFVV&t=5747" },
       { id: 14, char: "な", voice: "なんか聖水って今ではすっかり叡智な意味になっちゃって、ビックリでございます～", title: "【 ＃メタルスラッグ2】おねえちゃんが一番楽しいこと見せてやろうね【＃レトロゲーム】", date: "2025.04.18", screenshot: "screenshot/utsuro_ss_014.png", img: "img/utsuro_thumb_014.jpg", audio: "audio/utsuro_voice_014.mp3", youtube: "https://www.youtube.com/live/ZD_DvzvH0cY?si=h0eg7ffY2BCbyB5O&t=862" },
-      { id: 15, char: "も", voice: "もうだめだぁ・・・おしまいだぁ・・・ガンバンドーン！", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=CKG1DFvOfj5k9Upr" },
+      { id: 15, char: "も", voice: "もうだめだぁ・・・おしまいだぁ・・・岩盤ドーン！", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=CKG1DFvOfj5k9Upr" },
       { id: 16, char: "み", voice: "見たっていう事実を積み重ねて人生を厚くしていくんだろうなと思って・・・", title: "【雑談】今日の夜休みだから朝活【朝活】", date: "2026.04.06", screenshot: "screenshot/utsuro_ss_016.png", img: "img/utsuro_thumb_016.jpg", audio: "audio/utsuro_voice_016.mp3", youtube: "https://www.youtube.com/live/qpnTkfTr5Kw?si=eGGpm3ahP3_sWAL9&t=3389" },
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ！ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
       { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾、やった！rocket launcherｳﾃﾙﾉ!?", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
@@ -1897,7 +1897,7 @@
       }
     }
 
-    /* ★ 3×3 スライドパズル関連の処理 (制限時間なし) ★ */
+    /* ★ 3×3 スライドパズル関連の処理 ★ */
     function goToSlideGameArea(cardData = null) {
       activeMode = 'slide';
       initAudioContext();
