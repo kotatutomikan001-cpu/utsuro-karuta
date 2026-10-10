@@ -154,7 +154,7 @@
       font-family: 'Zen Maru Gothic', sans-serif; flex: 1;
     }
 
-    .opt-btn:hover, .opt-btn.gamepad-selected { border-color: var(--neon-blue); color: var(--neon-light-blue); }
+    .opt-btn:hover { border-color: var(--neon-blue); color: var(--neon-light-blue); }
     .opt-btn.active {
       background: var(--neon-blue); color: #000; border-color: var(--neon-blue);
       box-shadow: 0 0 12px var(--neon-blue);
@@ -167,7 +167,7 @@
       border-radius: 15px; cursor: pointer; box-sizing: border-box; margin-bottom: 12px;
       transition: all 0.15s; font-family: 'Zen Maru Gothic', sans-serif; text-align: center;
     }
-    .debug-btn:hover, .debug-btn.gamepad-selected { background: rgba(255, 51, 85, 0.4); color: #fff; box-shadow: 0 0 10px #ff3355; }
+    .debug-btn:hover { background: rgba(255, 51, 85, 0.4); color: #fff; box-shadow: 0 0 10px #ff3355; }
 
     /* ボタン群 */
     .title-btn-group-vertical {
@@ -183,7 +183,7 @@
       text-align: center;
     }
 
-    .game-select-btn:hover, .game-select-btn.gamepad-selected { transform: scale(1.05); box-shadow: 0 0 35px var(--neon-blue), 0 0 15px #fff; outline: 3px solid #fff; }
+    .game-select-btn:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--neon-blue), 0 0 15px #fff; outline: 3px solid #fff; }
 
     .action-btn {
       background: var(--neon-blue); color: #000; border: none;
@@ -192,7 +192,7 @@
       transition: transform 0.15s, box-shadow 0.15s; font-family: 'Zen Maru Gothic', sans-serif;
     }
 
-    .action-btn:hover, .action-btn.gamepad-selected { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-blue), 0 0 15px #fff; outline: 3px solid #fff; }
+    .action-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-blue), 0 0 15px #fff; outline: 3px solid #fff; }
 
     .album-btn {
       width: 100%; background: rgba(255, 215, 0, 0.2); border: 2px solid #ffd700;
@@ -201,7 +201,7 @@
       transition: all 0.15s; font-family: 'Zen Maru Gothic', sans-serif; text-align: center;
     }
 
-    .album-btn:hover, .album-btn.gamepad-selected { transform: scale(1.05); background: #ffd700; color: #000; box-shadow: 0 0 30px #ffd700; outline: 3px solid #fff; }
+    .album-btn:hover { transform: scale(1.05); background: #ffd700; color: #000; box-shadow: 0 0 30px #ffd700; outline: 3px solid #fff; }
 
     /* アルバム画面 */
     #album-screen {
@@ -240,9 +240,9 @@
 
     .album-card.locked { filter: grayscale(100%) brightness(0.35); border-color: #555; cursor: not-allowed; }
     .album-card.selectable { cursor: pointer; filter: none !important; }
-    .album-card.selectable:hover, .album-card.gamepad-selected { transform: scale(1.04); box-shadow: 0 0 20px #ffd700; border-color: #ffd700; outline: 3px solid #ffd700; }
+    .album-card.selectable:hover { transform: scale(1.04); box-shadow: 0 0 20px #ffd700; border-color: #ffd700; outline: 3px solid #ffd700; }
     .album-card.unlocked { cursor: pointer; }
-    .album-card.unlocked:hover, .album-card.unlocked.gamepad-selected { transform: scale(1.04); box-shadow: 0 0 20px #ffd700; border-color: #ffd700; outline: 3px solid #ffd700; }
+    .album-card.unlocked:hover { transform: scale(1.04); box-shadow: 0 0 20px #ffd700; border-color: #ffd700; outline: 3px solid #ffd700; }
 
     .album-card .card-char-badge {
       position: absolute; top: 6px; right: 6px; width: 24px; height: 24px;
@@ -272,7 +272,7 @@
     .album-act-btn.voice { background: var(--karuta-green); color: #fff; }
 
     /* ゲームエリア共通 */
-    #game-container, #shinki-container, #puzzle-container, #slide-container {
+    #game-container, #shinki-container, #puzzle-container, #slide-container, #breakout-container {
       width: 100%; min-height: 100vh; display: none; flex-direction: column; align-items: center; box-sizing: border-box; padding: 6px 8px 30px 8px; overflow-y: auto;
     }
 
@@ -314,7 +314,7 @@
       padding: 6px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; backdrop-filter: blur(4px);
       transition: all 0.15s; flex-shrink: 0; font-family: 'Zen Maru Gothic', sans-serif; display: flex; align-items: center;
     }
-    .retire-btn-common:hover, .retire-btn-common.gamepad-selected { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; outline: 2px solid #fff; }
+    .retire-btn-common:hover { background: #ff3355; color: #fff; box-shadow: 0 0 15px #ff3355; outline: 2px solid #fff; }
 
     /* かるた盤面 */
     #board-container {
@@ -323,7 +323,7 @@
 
     #board { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; width: 100%; height: 100%; }
 
-    #deal-overlay, #shinki-deal-overlay, #puzzle-deal-overlay, #slide-deal-overlay {
+    #deal-overlay, #shinki-deal-overlay, #puzzle-deal-overlay, #slide-deal-overlay, #breakout-deal-overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); border-radius: 15px;
       display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(2px); z-index: 50;
     }
@@ -333,10 +333,10 @@
       background: #fff; color: #333; border-radius: 6px; padding: 4px; border: 3px solid var(--karuta-green);
       box-shadow: 0 5px 10px rgba(0,0,0,0.5); user-select: none; transition: transform 0.15s, box-shadow 0.15s;
       display: flex; flex-direction: column; position: relative; box-sizing: border-box; overflow: hidden;
+      cursor: pointer;
     }
 
     .card:hover { transform: scale(1.03) translateY(-2px); box-shadow: 0 0 20px rgba(0, 255, 255, 0.9); }
-    .card.gamepad-selected { transform: scale(1.03) translateY(-2px); box-shadow: 0 0 25px rgba(0, 255, 255, 0.9); border-color: var(--neon-blue); outline: 3px solid var(--neon-blue); z-index: 10; }
 
     .card-char-badge {
       position: absolute; top: 5px; right: 5px; width: 26px; height: 26px; background-color: #ffffff;
@@ -351,7 +351,27 @@
     .card .card-date { color: #555; font-family: monospace; font-size: 0.68rem; font-weight: 600; line-height: 1.1; margin-bottom: 2px; }
     .card .card-title { font-weight: bold; font-size: 0.75rem; line-height: 1.2; color: #111; word-break: break-all; overflow-y: auto; flex: 1; }
 
-    /* ★ 神経衰弱用レイアウト ★ */
+    /* ブロック崩し用レイアウト */
+    #breakout-board-container {
+      position: relative; width: 100%; max-width: 800px; margin: 10px auto; z-index: 5;
+      display: flex; flex-direction: column; align-items: center; box-sizing: border-box; padding: 0 10px 20px 10px;
+    }
+
+    #breakout-canvas-wrapper {
+      position: relative; width: 640px; height: 480px; background: #000; border: 3px solid var(--neon-blue);
+      border-radius: 12px; box-sizing: border-box; box-shadow: 0 0 25px rgba(0,255,255,0.4); overflow: hidden;
+      cursor: crosshair;
+    }
+
+    #breakout-bg-img {
+      position: absolute; top: 0; left: 0; width: 640px; height: 480px; object-fit: contain; opacity: 1; z-index: 1; pointer-events: none; background: #000;
+    }
+
+    #breakout-canvas {
+      position: absolute; top: 0; left: 0; width: 640px; height: 480px; z-index: 2; display: block;
+    }
+
+    /* 神経衰弱用レイアウト */
     #shinki-board-container {
       position: relative; width: 100%; max-width: 1200px; margin: 8px auto 0 auto; z-index: 5;
       display: flex; flex-direction: row; gap: 8px; justify-content: center; box-sizing: border-box; padding: 0 4px 20px 4px;
@@ -384,7 +404,6 @@
     .shinki-card.left-back { background-image: url('ura_1.png'); background-color: #1a3a5a; }
     .shinki-card.right-back { background-image: url('ura_2.png'); background-color: #5a1a2a; }
     .shinki-card:hover { transform: scale(1.04); box-shadow: 0 0 18px var(--neon-blue); }
-    .shinki-card.gamepad-selected { transform: scale(1.06); box-shadow: 0 0 25px var(--neon-blue); border-color: var(--neon-blue); outline: 3px solid var(--neon-blue); z-index: 10; }
     .shinki-card .card-inner-pattern { display: none; }
     .shinki-card.flipped { background-image: none !important; background-color: #ffffff !important; border: 3px solid #ffd700; box-shadow: 0 0 20px #ffd700; transform: scale(1.03); }
     .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 1.5rem; opacity: 1; }
@@ -407,7 +426,7 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* ★ ジグソーパズル用レイアウト ★ */
+    /* ジグソーパズル用レイアウト */
     #puzzle-board-container {
       position: relative; width: 100%; max-width: 1250px; margin: 10px auto; z-index: 5;
       display: flex; gap: 25px; justify-content: center; align-items: flex-start; box-sizing: border-box; padding: 0 10px 20px 10px;
@@ -425,7 +444,6 @@
     .tray-slot {
       width: 100%; aspect-ratio: 1 / 1; border-radius: 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; position: relative;
     }
-    .tray-slot.gamepad-selected { border: 2px solid var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); outline: 3px solid var(--neon-blue); z-index: 5; }
 
     #puzzle-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px;
@@ -440,16 +458,14 @@
       touch-action: none;
     }
     .puzzle-piece:hover { border-color: var(--neon-blue); box-shadow: 0 0 12px var(--neon-blue); z-index: 2; }
-    .puzzle-piece.gamepad-selected { border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); z-index: 2; outline: 3px solid var(--neon-blue); }
 
     .puzzle-slot {
       width: 100%; aspect-ratio: 1 / 1; background: rgba(255, 255, 255, 0.05); border: 2px dashed rgba(0, 255, 255, 0.4);
       border-radius: 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; position: relative; transition: background 0.2s;
     }
     .puzzle-slot.highlight { background: rgba(0, 255, 255, 0.3); border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
-    .puzzle-slot.gamepad-selected { background: rgba(0, 255, 255, 0.3); border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); outline: 3px solid var(--neon-blue); z-index: 5; }
 
-    /* ★ スライドパズル用レイアウト ★ */
+    /* スライドパズル用レイアウト */
     #slide-board-container {
       position: relative; width: 100%; max-width: 700px; margin: 10px auto; z-index: 5;
       display: flex; flex-direction: column; align-items: center; box-sizing: border-box; padding: 0 10px 20px 10px;
@@ -467,9 +483,7 @@
       transition: transform 0.1s, border-color 0.2s; display: flex; align-items: center; justify-content: center;
     }
     .slide-tile:hover { border-color: var(--neon-blue); box-shadow: 0 0 12px var(--neon-blue); }
-    .slide-tile.gamepad-selected { border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); outline: 3px solid var(--neon-blue); z-index: 5; }
     .slide-tile.empty { background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); cursor: default; box-shadow: none; }
-    .slide-tile.empty.gamepad-selected { border-color: var(--neon-blue); outline: 3px solid var(--neon-blue); }
 
     #feedback-overlay {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
@@ -491,6 +505,9 @@
       .tray-title { grid-column: span 5; }
 
       #slide-grid { width: 92vw; height: 92vw; max-width: 420px; max-height: 420px; }
+
+      #breakout-canvas-wrapper { width: 92vw; height: 69vw; max-width: 640px; max-height: 480px; }
+      #breakout-bg-img, #breakout-canvas { width: 100%; height: 100%; }
 
       #feedback-overlay { font-size: 2.0rem; white-space: normal; text-align: center; width: 90%; }
       #feedback-overlay.correct { transform: translate(-50%, -50%) scale(1.0); }
@@ -526,10 +543,8 @@
     .modal-btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
     .retry-btn { background: var(--neon-blue); color: #000; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; font-family: 'Zen Maru Gothic', sans-serif; }
     .retry-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-blue); }
-    .retry-btn.gamepad-selected { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-blue); outline: 3px solid #fff; }
     .cancel-btn { background: #444; color: #fff; border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: background 0.1s; font-family: 'Zen Maru Gothic', sans-serif; }
     .cancel-btn:hover { background: #666; }
-    .cancel-btn.gamepad-selected { background: #666; outline: 3px solid #fff; }
   </style>
 </head>
 <body onclick="handleGlobalClickToStopVoice()" onkeydown="handleGlobalKeyToStopVoice(event)">
@@ -543,21 +558,22 @@
     <div class="setting-box">
       <div class="setting-title">🔊 音量調整 (お試しボイス再生)</div>
       <div class="setting-options">
-        <button id="vol-low-btn" class="opt-btn gp-focusable" onclick="event.stopPropagation(); setMasterVolume(0.3)">小</button>
-        <button id="vol-mid-btn" class="opt-btn active gp-focusable" onclick="event.stopPropagation(); setMasterVolume(0.6)">中</button>
-        <button id="vol-high-btn" class="opt-btn gp-focusable" onclick="event.stopPropagation(); setMasterVolume(1.0)">大</button>
+        <button id="vol-low-btn" class="opt-btn" onclick="event.stopPropagation(); setMasterVolume(0.3)">小</button>
+        <button id="vol-mid-btn" class="opt-btn active" onclick="event.stopPropagation(); setMasterVolume(0.6)">中</button>
+        <button id="vol-high-btn" class="opt-btn" onclick="event.stopPropagation(); setMasterVolume(1.0)">大</button>
       </div>
     </div>
 
     <!-- デバッグ用リセットボタン -->
-    <button class="debug-btn gp-focusable" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況をリセット</button>
+    <button class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況をリセット</button>
 
     <div class="title-btn-group-vertical">
-      <button class="game-select-btn gp-focusable" onclick="event.stopPropagation(); openKarutaTitle()">🎴 名言カルタ</button>
-      <button class="game-select-btn gp-focusable" onclick="event.stopPropagation(); openShinkiTitle()">🧠 名言神経衰弱</button>
-      <button class="game-select-btn gp-focusable" onclick="event.stopPropagation(); openPuzzleTitle()">🧩 名言ジグソーパズル</button>
-      <button class="game-select-btn gp-focusable" onclick="event.stopPropagation(); openSlideTitle()">🔲 名言スライドパズル</button>
-      <button class="album-btn gp-focusable" style="margin-top: 4px;" onclick="event.stopPropagation(); openAlbumScreen('normal')">📖 カードアルバム</button>
+      <button class="game-select-btn" onclick="event.stopPropagation(); openKarutaTitle()">🎴 名言カルタ</button>
+      <button class="game-select-btn" onclick="event.stopPropagation(); openShinkiTitle()">🧠 名言神経衰弱</button>
+      <button class="game-select-btn" onclick="event.stopPropagation(); openPuzzleTitle()">🧩 名言ジグソーパズル</button>
+      <button class="game-select-btn" onclick="event.stopPropagation(); openSlideTitle()">🔲 名言スライドパズル</button>
+      <button class="game-select-btn" onclick="event.stopPropagation(); openBreakoutTitle()">🧱 名言ブロック崩し</button>
+      <button class="album-btn" style="margin-top: 4px;" onclick="event.stopPropagation(); openAlbumScreen('normal')">📖 カードアルバム</button>
     </div>
   </div>
 
@@ -570,14 +586,14 @@
     <div class="setting-box" style="margin-top: 10px;">
       <div class="setting-title">🎮 難易度を選択 (制限時間 60秒)</div>
       <div class="setting-options">
-        <button id="mode-normal-btn" class="opt-btn active gp-focusable" onclick="event.stopPropagation(); selectDifficulty('normal')">ノーマル (頭文字あり)</button>
-        <button id="mode-hard-btn" class="opt-btn gp-focusable" onclick="event.stopPropagation(); selectDifficulty('hard')">ハード (頭文字なし)</button>
+        <button id="mode-normal-btn" class="opt-btn active" onclick="event.stopPropagation(); selectDifficulty('normal')">ノーマル (頭文字あり)</button>
+        <button id="mode-hard-btn" class="opt-btn" onclick="event.stopPropagation(); selectDifficulty('hard')">ハード (頭文字なし)</button>
       </div>
     </div>
 
     <div class="title-btn-group-vertical" style="margin-top: 15px;">
-      <button class="action-btn gp-focusable" style="width: 100%;" onclick="event.stopPropagation(); goToGameArea()">ゲームスタート</button>
-      <button class="cancel-btn gp-focusable" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
+      <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation(); goToGameArea()">ゲームスタート</button>
+      <button class="cancel-btn" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
     </div>
   </div>
 
@@ -598,8 +614,8 @@
     </div>
 
     <div class="title-btn-group-vertical" style="margin-top: 15px;">
-      <button class="action-btn gp-focusable" style="width: 100%;" onclick="event.stopPropagation(); goToShinkiGameArea()">ゲームスタート</button>
-      <button class="cancel-btn gp-focusable" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
+      <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation(); goToShinkiGameArea()">ゲームスタート</button>
+      <button class="cancel-btn" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
     </div>
   </div>
 
@@ -613,14 +629,13 @@
       <div class="setting-title">🧩 遊び方 (制限時間 なし)</div>
       <p id="puzzle-instructions" style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
         ・ピースをドラッグ＆ドロップして配置しよう！クリックで90度回転。<br>
-        ・ゲームパッドの場合は十字キーで選び、Aボタンで掴む⇒別の場所でAボタンで配置（入れ替え）、Xボタンで回転！<br>
         ・完成したら名言カードを獲得できます！
       </p>
     </div>
 
     <div class="title-btn-group-vertical" style="margin-top: 15px;">
-      <button class="action-btn gp-focusable" style="width: 100%;" onclick="event.stopPropagation(); goToPuzzleGameArea()">ゲームスタート</button>
-      <button class="cancel-btn gp-focusable" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
+      <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation(); goToPuzzleGameArea()">ゲームスタート</button>
+      <button class="cancel-btn" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
     </div>
   </div>
 
@@ -641,23 +656,43 @@
     </div>
 
     <div class="title-btn-group-vertical" style="margin-top: 15px;">
-      <button class="action-btn gp-focusable" style="width: 100%;" onclick="event.stopPropagation(); startRandomSlideGame()">ランダムでスタート</button>
-      <button class="game-select-btn gp-focusable" style="width: 100%;" onclick="event.stopPropagation(); openAlbumScreen('slide_select')">🎴 カードを選んであそぶ</button>
-      <button class="cancel-btn gp-focusable" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
+      <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation(); startRandomSlideGame()">ランダムでスタート</button>
+      <button class="game-select-btn" style="width: 100%;" onclick="event.stopPropagation(); openAlbumScreen('slide_select')">🎴 カードを選んであそぶ</button>
+      <button class="cancel-btn" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
     </div>
   </div>
 
-  <!-- 6. カードアルバム画面 -->
+  <!-- 6. 名言ブロック崩しのタイトル＆説明画面 -->
+  <div id="breakout-title-screen" class="screen-overlay" style="display: none;" onclick="initAudioContext()">
+    <div class="sub-title-logo">
+      氷室うつろ配信 名言ブロック崩し
+    </div>
+
+    <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
+      <div class="setting-title">🧱 遊び方</div>
+      <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
+        ・パドルを動かしてボールを弾き返そう！機数無限でいつでも再挑戦可能。<br>
+        ・アイテム（🔴マルチボール / 🔵ロングバー / 🟢貫通弾）を活用して全てのブロックを壊し、カードをゲットしよう！
+      </p>
+    </div>
+
+    <div class="title-btn-group-vertical" style="margin-top: 15px;">
+      <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation(); goToBreakoutGameArea()">ゲームスタート</button>
+      <button class="cancel-btn" style="width: 100%; padding: 12px 20px; font-size: 1.1rem;" onclick="event.stopPropagation(); showMainTitleScreen()">タイトルへ戻る</button>
+    </div>
+  </div>
+
+  <!-- 7. カードアルバム画面 -->
   <div id="album-screen">
     <div class="album-header">
       <div id="album-title-text" class="album-title">📖 名言カードアルバム</div>
       <div class="album-progress">コンプリート率: <span id="album-progress-text">0/0 (0%)</span></div>
-      <button class="cancel-btn gp-focusable" onclick="closeAlbumScreen()">タイトルへ戻る</button>
+      <button class="cancel-btn" onclick="closeAlbumScreen()">タイトルへ戻る</button>
     </div>
     <div id="album-grid"></div>
   </div>
 
-  <!-- 7. かるたゲームエリア全体 -->
+  <!-- 8. かるたゲームエリア全体 -->
   <div id="game-container">
     <div class="top-header-common">
       <div class="stat-box">
@@ -670,24 +705,24 @@
         <div id="score-display" class="stat-display score-color">0枚</div>
       </div>
 
-      <div id="target-voice-container" class="gp-focusable" onclick="playCurrentVoice()">
+      <div id="target-voice-container" onclick="playCurrentVoice()">
         <div id="voice-status">🔊 （<span><span>「札を配る」を押してください</span></span>）</div>
         <div id="target-voice">『準備はいいでございますか？』</div>
       </div>
 
       <div id="current-mode-badge" class="mode-badge">NORMAL</div>
-      <button class="retire-btn-common gp-focusable" onclick="openRetireConfirm()">🏳 リタイア</button>
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳 リタイア</button>
     </div>
 
     <div id="board-container">
       <div id="deal-overlay">
-        <button class="action-btn gp-focusable" onclick="dealCardsAndStart()">札を配る</button>
+        <button class="action-btn" onclick="dealCardsAndStart()">札を配る</button>
       </div>
       <div id="board"></div>
     </div>
   </div>
 
-  <!-- 8. 神経衰弱ゲームエリア全体 -->
+  <!-- 9. 神経衰弱ゲームエリア全体 -->
   <div id="shinki-container">
     <div class="top-header-common">
       <div class="stat-box">
@@ -706,12 +741,12 @@
         </div>
       </div>
 
-      <button class="retire-btn-common gp-focusable" onclick="openRetireConfirm()">🏳️ リタイア</button>
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️ リタイア</button>
     </div>
 
     <div id="shinki-board-container">
       <div id="shinki-deal-overlay">
-        <button class="action-btn gp-focusable" onclick="dealShinkiCardsAndStart()">カードを配る</button>
+        <button class="action-btn" onclick="dealShinkiCardsAndStart()">カードを配る</button>
       </div>
 
       <div class="shinki-side-area">
@@ -726,7 +761,7 @@
     </div>
   </div>
 
-  <!-- 9. ジグソーパズルゲームエリア全体 -->
+  <!-- 10. ジグソーパズルゲームエリア全体 -->
   <div id="puzzle-container">
     <div class="top-header-common">
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
@@ -735,7 +770,7 @@
         </div>
       </div>
 
-      <button class="retire-btn-common gp-focusable" onclick="openRetireConfirm()">🏳 リタイア</button>
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳 リタイア</button>
     </div>
 
     <div id="puzzle-board-container">
@@ -746,13 +781,13 @@
       <div id="puzzle-grid"></div>
 
       <div id="puzzle-deal-overlay">
-        <button class="action-btn gp-focusable" onclick="dealPuzzleCardsAndStart()">パズルを始める</button>
+        <button class="action-btn" onclick="dealPuzzleCardsAndStart()">パズルを始める</button>
       </div>
     </div>
     <div id="puzzle-card-info" style="margin-top: 4px; font-size: 1.05rem; color: var(--neon-light-blue); text-align: center; font-weight: bold;"></div>
   </div>
 
-  <!-- 10. スライドパズルゲームエリア全体 -->
+  <!-- 11. スライドパズルゲームエリア全体 -->
   <div id="slide-container">
     <div class="top-header-common">
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
@@ -761,17 +796,42 @@
         </div>
       </div>
 
-      <button class="retire-btn-common gp-focusable" onclick="openRetireConfirm()">🏳️ リタイア</button>
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️ リタイア</button>
     </div>
 
     <div id="slide-board-container">
       <div id="slide-grid"></div>
 
       <div id="slide-deal-overlay">
-        <button class="action-btn gp-focusable" onclick="dealSlideCardsAndStart()">パズルを始める</button>
+        <button class="action-btn" onclick="dealSlideCardsAndStart()">パズルを始める</button>
       </div>
     </div>
     <div id="slide-card-info" style="margin-top: 4px; font-size: 1.05rem; color: var(--neon-light-blue); text-align: center; font-weight: bold;"></div>
+  </div>
+
+  <!-- 12. ブロック崩しゲームエリア全体 -->
+  <div id="breakout-container">
+    <div class="top-header-common">
+      <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
+        <div id="breakout-voice-status" style="font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold;">
+          🧱 ブロックを全て壊してスクショを暴き出せ！ (機数無限)
+        </div>
+      </div>
+
+      <button class="retire-btn-common" onclick="openRetireConfirm()">🏳️ リタイア</button>
+    </div>
+
+    <div id="breakout-board-container">
+      <div id="breakout-canvas-wrapper">
+        <img id="breakout-bg-img" src="" alt="Secret Screenshot">
+        <canvas id="breakout-canvas" width="640" height="480"></canvas>
+      </div>
+
+      <div id="breakout-deal-overlay">
+        <button class="action-btn" onclick="dealBreakoutCardsAndStart()">ゲームを始める</button>
+      </div>
+    </div>
+    <div id="breakout-card-info" style="margin-top: 4px; font-size: 1.05rem; color: var(--neon-light-blue); text-align: center; font-weight: bold;"></div>
   </div>
 
   <!-- 神経衰弱ペアそろった時用カードポップアップ表示オーバーレイ -->
@@ -796,8 +856,8 @@
       <h2 style="color: #ff6688;">リタイア確認</h2>
       <p style="margin: 20px 0; font-size: 1.1rem;">本当にリタイアしてタイトル画面に戻りますか？</p>
       <div class="modal-btn-group">
-        <button class="retry-btn gp-focusable" style="background: #ff3355; color: #fff;" onclick="showMainTitleScreen()">リタイアする</button>
-        <button class="cancel-btn gp-focusable" onclick="closeRetireConfirm()">ゲームを続ける</button>
+        <button class="retry-btn" style="background: #ff3355; color: #fff;" onclick="showMainTitleScreen()">リタイアする</button>
+        <button class="cancel-btn" onclick="closeRetireConfirm()">ゲームを続ける</button>
       </div>
     </div>
   </div>
@@ -810,8 +870,8 @@
       <div id="final-score" class="final-score-val">0 枚</div>
       <div id="penalty-info" style="color: #ff6666; font-size: 0.95rem; margin-bottom: 20px;"></div>
       <p id="utsuro-comment"><span><span><span><span>「フッ…なかなか素早いじゃないか！見事だぞ！」</span></span></span></span></p>
-      <button id="result-retry-btn" class="retry-btn gp-focusable" onclick="openKarutaTitle()">もう一度あそぶ</button>
-      <button class="cancel-btn gp-focusable" style="margin-top: 10px;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
+      <button id="result-retry-btn" class="retry-btn" onclick="openKarutaTitle()">もう一度あそぶ</button>
+      <button class="cancel-btn" style="margin-top: 10px;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
     </div>
   </div>
 
@@ -823,11 +883,11 @@
       <div id="modal-voice-text" style="font-size: clamp(0.85rem, 1.2vw, 1.1rem); color: #fff; font-weight: bold; text-align: center; width: 100%; line-height: 1.45; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; background: rgba(0,0,0,0.6); padding: 10px 16px; border-radius: 8px; border: 1px solid rgba(0,255,255,0.3); box-sizing: border-box;"></div>
 
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <button id="modal-yt-btn" class="album-act-btn yt gp-focusable" style="padding: 10px 20px; font-size: 1.0rem; border-radius: 20px; width: auto;" onclick="openModalYoutube()">▶ 配信へ</button>
-        <button id="modal-voice-btn" class="album-act-btn voice gp-focusable" style="padding: 10px 20px; font-size: 1.0rem; border-radius: 20px; width: auto;" onclick="playModalVoice()">🔊 ボイス再生</button>
+        <button id="modal-yt-btn" class="album-act-btn yt" style="padding: 10px 20px; font-size: 1.0rem; border-radius: 20px; width: auto;" onclick="openModalYoutube()">▶ 配信へ</button>
+        <button id="modal-voice-btn" class="album-act-btn voice" style="padding: 10px 20px; font-size: 1.0rem; border-radius: 20px; width: auto;" onclick="playModalVoice()">🔊 ボイス再生</button>
       </div>
 
-      <button class="gp-focusable" onclick="closeImageModal()" style="position: absolute; top: 12px; right: 12px; background: #ff3355; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;">×</button>
+      <button onclick="closeImageModal()" style="position: absolute; top: 12px; right: 12px; background: #ff3355; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;">×</button>
     </div>
   </div>
 
@@ -837,6 +897,7 @@
 
     const TEST_VOICE_FILE = "audio/utsuro_voice_000.mp3";
     const CARD_GET_SE_FILE = "audio/se_bam.mp3";
+    const BLOCK_HIT_SE_FILE = "audio/se_block.mp3"; // ブロック当たった時の効果音ファイル
     const SHINKI_MATCH_SE_FILE = "audio/se_match.mp3";
     const SHINKI_MISS_SE_FILE  = "audio/se_miss.mp3";
 
@@ -847,7 +908,6 @@
     let modalAudioPath = "";
     let modalYoutubeUrl = "";
     let albumMode = 'normal'; 
-    let activeInputType = 'gamepad'; // 'mouse' または 'gamepad'
     let puzzleClearTimeout = null; // パズルクリア後の画面遷移タイマー管理
     let isResultScreenActive = false; // 結果画面表示中かつボイス再生中のフラグ
 
@@ -989,6 +1049,14 @@
       se.play().catch(e => console.log("SE再生エラー:", e));
     }
 
+    // ブロック破壊時の効果音（audio/se_block.mp3）を再生
+    function playBlockHitSE() {
+      initAudioContext();
+      const se = new Audio(BLOCK_HIT_SE_FILE);
+      se.volume = masterVolume;
+      se.play().catch(e => console.log("ブロック破壊SE再生エラー:", e));
+    }
+
     function setMasterVolume(vol) {
       masterVolume = vol;
       document.getElementById("vol-low-btn").classList.remove("active");
@@ -1106,28 +1174,24 @@
     let currentPuzzleCard = null;
     let puzzleTrayPieces = []; 
     let puzzleSlots = [];      
-
     let heldPieceObj = null;
 
     let currentSlideCard = null;
     let slideTiles = [];
 
-    // ゲームパッド用カーソル位置管理
-    let gpCursorIndex = 0;
-    let gpSelectedShinkiSide = 'left';
-    let gpSelectedShinkiIndex = 0;
-    let gpPuzzleMode = 'tray';
-    let gpPuzzleTrayIndex = 0;
-    let gpPuzzleGridIndex = 0;
-
-    let lastGpState = {
-      up: false, down: false, left: false, right: false,
-      b0: false, b1: false, b2: false,
-      axisX: 0, axisY: 0
-    };
+    // ブロック崩し用変数
+    let breakoutCard = null;
+    let breakoutAnimId = null;
+    let breakoutPaddle = { x: 270, y: 440, width: 100, height: 12, dx: 0 };
+    let breakoutBalls = []; 
+    let breakoutBlocks = [];
+    let breakoutItems = []; 
+    let breakoutKeyLeft = false;
+    let breakoutKeyRight = false;
 
     function showMainTitleScreen() {
       clearInterval(timerInterval);
+      cancelAnimationFrame(breakoutAnimId);
       isGameActive = false;
       isResultScreenActive = false;
       stopCurrentNormalizedVoice();
@@ -1137,67 +1201,62 @@
       document.getElementById("shinki-title-screen").style.display = "none";
       document.getElementById("puzzle-title-screen").style.display = "none";
       document.getElementById("slide-title-screen").style.display = "none";
+      document.getElementById("breakout-title-screen").style.display = "none";
       document.getElementById("album-screen").style.display = "none";
       document.getElementById("game-container").style.display = "none";
       document.getElementById("shinki-container").style.display = "none";
       document.getElementById("puzzle-container").style.display = "none";
       document.getElementById("slide-container").style.display = "none";
+      document.getElementById("breakout-container").style.display = "none";
       document.getElementById("retire-modal").style.display = "none";
       document.getElementById("clear-modal").style.display = "none";
       document.getElementById("image-modal").style.display = "none";
       document.getElementById("shinki-match-popup").style.display = "none";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function openKarutaTitle() {
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
+      document.getElementById("clear-modal").style.display = "none";
       showMainTitleScreen();
       document.getElementById("main-title-screen").style.display = "none";
       document.getElementById("karuta-title-screen").style.display = "flex";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function openShinkiTitle() {
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
+      document.getElementById("clear-modal").style.display = "none";
       showMainTitleScreen();
       document.getElementById("main-title-screen").style.display = "none";
       document.getElementById("shinki-title-screen").style.display = "flex";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function openPuzzleTitle() {
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
+      document.getElementById("clear-modal").style.display = "none";
       showMainTitleScreen();
       document.getElementById("main-title-screen").style.display = "none";
       document.getElementById("puzzle-title-screen").style.display = "flex";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function openSlideTitle() {
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
+      document.getElementById("clear-modal").style.display = "none";
       showMainTitleScreen();
       document.getElementById("main-title-screen").style.display = "none";
       document.getElementById("slide-title-screen").style.display = "flex";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
+    }
+
+    function openBreakoutTitle() {
+      stopCurrentNormalizedVoice();
+      isResultScreenActive = false;
+      document.getElementById("clear-modal").style.display = "none";
+      showMainTitleScreen();
+      document.getElementById("main-title-screen").style.display = "none";
+      document.getElementById("breakout-title-screen").style.display = "flex";
     }
 
     function selectDifficulty(mode) {
@@ -1244,7 +1303,7 @@
         const safeVoice = card.voice.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
 
         if (albumMode === 'slide_select') {
-          cardEl.className = "album-card selectable gp-focusable";
+          cardEl.className = "album-card selectable";
           cardEl.onclick = () => selectCardForSlide(card.id);
 
           const displayChar = isRealUnlocked ? (card.char || '？') : '？';
@@ -1279,7 +1338,7 @@
             `;
           }
         } else {
-          cardEl.className = `album-card ${isRealUnlocked ? 'unlocked' : 'locked'} gp-focusable`;
+          cardEl.className = `album-card ${isRealUnlocked ? 'unlocked' : 'locked'}`;
           if (isRealUnlocked) {
             cardEl.onclick = () => openImageModal(ssImg, card.audio, safeVoice, card.youtube);
             cardEl.innerHTML = `
@@ -1297,8 +1356,8 @@
                 <div class="card-title">${card.title}</div>
               </div>
               <div class="album-btn-group">
-                <button class="album-act-btn yt gp-focusable" onclick="event.stopPropagation(); window.open('${card.youtube || 'https://youtube.com'}', '_blank')">▶ 配信へ</button>
-                <button class="album-act-btn voice gp-focusable" onclick="event.stopPropagation(); playNormalizedAudio('${card.audio}', 0.0)">🔊 ボイス</button>
+                <button class="album-act-btn yt" onclick="event.stopPropagation(); window.open('${card.youtube || 'https://youtube.com'}', '_blank')">▶ 配信へ</button>
+                <button class="album-act-btn voice" onclick="event.stopPropagation(); playNormalizedAudio('${card.audio}', 0.0)">🔊 ボイス</button>
               </div>
             `;
           } else {
@@ -1327,11 +1386,8 @@
       document.getElementById("shinki-title-screen").style.display = "none";
       document.getElementById("puzzle-title-screen").style.display = "none";
       document.getElementById("slide-title-screen").style.display = "none";
+      document.getElementById("breakout-title-screen").style.display = "none";
       document.getElementById("album-screen").style.display = "flex";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function closeAlbumScreen() {
@@ -1375,9 +1431,6 @@
       }
 
       modal.style.display = "flex";
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function playModalVoice() {
@@ -1391,24 +1444,17 @@
     function closeImageModal() {
       stopCurrentNormalizedVoice();
       document.getElementById("image-modal").style.display = "none";
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function openRetireConfirm() {
       stopCurrentNormalizedVoice();
+      cancelAnimationFrame(breakoutAnimId);
       isResultScreenActive = false;
       document.getElementById("retire-modal").style.display = "flex";
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function closeRetireConfirm() {
       document.getElementById("retire-modal").style.display = "none";
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function goToGameArea() {
@@ -1437,10 +1483,6 @@
       document.getElementById("deal-overlay").style.display = "flex";
       document.getElementById("target-voice").innerText = "『準備はいいでございますか？』";
       document.getElementById("voice-status").innerText = "🔊 （「札を配る」を押してください）";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function dealCardsAndStart() {
@@ -1460,8 +1502,6 @@
 
       renderBoard();
       isGameActive = true;
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
       let lastTimestamp = Date.now();
 
       timerInterval = setInterval(() => {
@@ -1493,7 +1533,6 @@
         const cardEl = document.createElement("div");
         cardEl.className = "card";
         cardEl.onclick = (e) => {
-          activeInputType = 'mouse';
           onCardClick(index, e);
         };
         const displayImg = card.screenshot || card.img;
@@ -1510,7 +1549,6 @@
         `;
         boardEl.appendChild(cardEl);
       });
-      updateGpSelection();
     }
 
     function playCurrentVoice() {
@@ -1565,7 +1603,6 @@
         }
 
         renderBoard();
-        gpCursorIndex = Math.min(gpCursorIndex, Math.max(0, currentBoard.length - 1));
         nextQuestion();
       } else {
         missCount++;
@@ -1603,12 +1640,6 @@
       document.getElementById("shinki-grid-right").innerHTML = "";
       document.getElementById("shinki-deal-overlay").style.display = "flex";
       document.getElementById("shinki-voice-status").innerText = "🔊 （「カードを配る」を押してください）";
-      
-      gpCursorIndex = 0;
-      gpSelectedShinkiSide = 'left';
-      gpSelectedShinkiIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function dealShinkiCardsAndStart() {
@@ -1629,9 +1660,6 @@
       renderShinkiGrid('right', shinkiRightCards);
 
       isGameActive = true;
-      gpSelectedShinkiSide = 'left';
-      gpSelectedShinkiIndex = 0;
-      activeInputType = 'gamepad';
       let lastTimestamp = Date.now();
 
       timerInterval = setInterval(() => {
@@ -1664,13 +1692,11 @@
         cardEl.className = `shinki-card ${backClass}`;
         cardEl.id = `shinki-card-${side}-${idx}`;
         cardEl.onclick = (e) => {
-          activeInputType = 'mouse';
           onShinkiCardClick(side, idx, cardData, e);
         };
         cardEl.innerHTML = `<div class="card-inner-pattern">🔊</div>`;
         gridEl.appendChild(cardEl);
       });
-      updateGpSelection();
     }
 
     function onShinkiCardClick(side, index, cardData, event) {
@@ -1756,7 +1782,7 @@
       }, 2000);
     }
 
-    /* ★ ジグソーパズル関連の処理 ★ */
+    /* ジグソーパズル関連の処理 */
     function goToPuzzleGameArea() {
       activeMode = 'puzzle';
       initAudioContext();
@@ -1774,14 +1800,6 @@
       document.getElementById("puzzle-card-info").innerText = "";
       document.getElementById("puzzle-deal-overlay").style.display = "flex";
       document.getElementById("puzzle-voice-status").innerText = "🔊 （📦 「パズルを始める」を押してください）";
-      
-      gpCursorIndex = 0;
-      gpPuzzleMode = 'tray';
-      gpPuzzleTrayIndex = 0;
-      gpPuzzleGridIndex = 0;
-      heldPieceObj = null;
-      activeInputType = 'gamepad';
-      updateGpSelection();
     }
 
     function dealPuzzleCardsAndStart() {
@@ -1814,11 +1832,7 @@
 
       isGameActive = true;
       isResultScreenActive = false;
-      gpPuzzleMode = 'tray';
-      gpPuzzleTrayIndex = 0;
-      gpPuzzleGridIndex = 0;
-      activeInputType = 'gamepad';
-      document.getElementById("puzzle-voice-status").innerText = "🧩 マウスでドラッグ＆ドロップ（クリックで回転）、またはゲームパッド（十字キー＆Aボタン）で操作できます！";
+      document.getElementById("puzzle-voice-status").innerText = "🧩 マウスでドラッグ＆ドロップ（クリックで回転）して配置しよう！";
     }
 
     function renderPuzzleBoard() {
@@ -1832,13 +1846,12 @@
 
       puzzleTrayPieces.forEach((piece, trayIdx) => {
         const slotEl = document.createElement("div");
-        slotEl.className = "tray-slot gp-focusable";
+        slotEl.className = "tray-slot";
         slotEl.id = `tray-slot-${trayIdx}`;
 
         slotEl.addEventListener("dragover", (e) => { e.preventDefault(); });
         slotEl.addEventListener("drop", (e) => {
           e.preventDefault();
-          activeInputType = 'mouse';
           const uid = e.dataTransfer.getData("text/plain");
           placePieceIntoTraySlot(uid, trayIdx);
         });
@@ -1850,7 +1863,6 @@
           slotEl.addEventListener("dragover", (e) => { e.preventDefault(); });
           slotEl.addEventListener("drop", (e) => {
             e.preventDefault();
-            activeInputType = 'mouse';
             const uid = e.dataTransfer.getData("text/plain");
             if (uid) placePieceIntoTraySlot(uid, trayIdx);
           });
@@ -1860,7 +1872,7 @@
 
       for (let slotIdx = 0; slotIdx < 9; slotIdx++) {
         const slotEl = document.createElement("div");
-        slotEl.className = "puzzle-slot gp-focusable";
+        slotEl.className = "puzzle-slot";
         slotEl.id = `puzzle-slot-${slotIdx}`;
 
         slotEl.addEventListener("dragover", (e) => { e.preventDefault(); slotEl.classList.add("highlight"); });
@@ -1868,7 +1880,6 @@
         slotEl.addEventListener("drop", (e) => {
           e.preventDefault();
           slotEl.classList.remove("highlight");
-          activeInputType = 'mouse';
           const uid = e.dataTransfer.getData("text/plain");
           placePieceIntoSlot(uid, slotIdx);
         });
@@ -1881,7 +1892,6 @@
 
         gridEl.appendChild(slotEl);
       }
-      updateGpSelection();
     }
 
     function createPuzzlePieceElement(piece, imgSrc) {
@@ -1898,13 +1908,11 @@
       pieceEl.style.transform = `rotate(${piece.currentRotation}deg)`;
 
       pieceEl.addEventListener("dragstart", (e) => {
-        activeInputType = 'mouse';
         e.dataTransfer.setData("text/plain", piece.uid);
       });
 
       pieceEl.onclick = (e) => {
         e.stopPropagation();
-        activeInputType = 'mouse';
         piece.currentRotation = (piece.currentRotation + 90) % 360;
         renderPuzzleBoard();
         checkPuzzleCompletion();
@@ -1985,6 +1993,7 @@
     }
 
     function checkPuzzleCompletion() {
+      if (!isGameActive) return;
       const isFull = puzzleSlots.every(p => p !== null);
       if (!isFull) return;
 
@@ -1995,16 +2004,15 @@
         showFeedback("correct", "🎉 パズルコンプリート！");
         saveUnlockedCardId(currentPuzzleCard.id);
         
-        showTimeUpScreen();
         isResultScreenActive = true;
-
         playNormalizedAudio(currentPuzzleCard.audio, 0.0, 20.0, () => {
           isResultScreenActive = false;
+          showTimeUpScreen();
         });
       }
     }
 
-    /* ★ スライドパズル関連の処理 ★ */
+    /* スライドパズル関連の処理 */
     function goToSlideGameArea(cardData = null) {
       activeMode = 'slide';
       initAudioContext();
@@ -2047,15 +2055,12 @@
         document.getElementById("slide-deal-overlay").style.display = "none";
         isGameActive = true;
         isResultScreenActive = false;
-        gpCursorIndex = slideTiles.indexOf(8);
-        activeInputType = 'gamepad';
         document.getElementById("slide-voice-status").innerText = "🔲 ピースを選んで動かそう！ (制限時間なし)";
       } else {
         document.getElementById("slide-grid").innerHTML = "";
         document.getElementById("slide-deal-overlay").style.display = "flex";
         document.getElementById("slide-voice-status").innerText = "🔊 （📦 「パズルを始める」を押してください）";
       }
-      updateGpSelection();
     }
 
     function startRandomSlideGame() {
@@ -2099,8 +2104,6 @@
 
       isGameActive = true;
       isResultScreenActive = false;
-      gpCursorIndex = slideTiles.indexOf(8);
-      activeInputType = 'gamepad';
       document.getElementById("slide-voice-status").innerText = "🔲 ピースを選んで動かそう！ (制限時間なし)";
     }
 
@@ -2122,7 +2125,7 @@
 
       slideTiles.forEach((tileNum, index) => {
         const tileEl = document.createElement("div");
-        tileEl.className = "slide-tile gp-focusable";
+        tileEl.className = "slide-tile";
 
         if (tileNum === 8) {
           tileEl.classList.add("empty");
@@ -2132,14 +2135,12 @@
           tileEl.style.backgroundImage = `url('${imgSrc}')`;
           tileEl.style.backgroundPosition = `${xPos}% ${yPos}%`;
           tileEl.onclick = () => {
-            activeInputType = 'mouse';
             onSlideTileClick(index);
           };
         }
 
         gridEl.appendChild(tileEl);
       });
-      updateGpSelection();
     }
 
     function onSlideTileClick(index) {
@@ -2150,7 +2151,6 @@
       if (neighbors.includes(index)) {
         slideTiles[emptyIdx] = slideTiles[index];
         slideTiles[index] = 8;
-        gpCursorIndex = index;
         renderSlideBoard();
         checkSlideCompletion();
       }
@@ -2161,19 +2161,307 @@
     }
 
     function checkSlideCompletion() {
+      if (!isGameActive) return;
       if (isSlideCompleted()) {
         isGameActive = false;
 
         showFeedback("correct", "🎉 スライドパズルクリア！");
         saveUnlockedCardId(currentSlideCard.id);
         
-        showTimeUpScreen();
         isResultScreenActive = true;
-
         playNormalizedAudio(currentSlideCard.audio, 0.0, 20.0, () => {
           isResultScreenActive = false;
+          showTimeUpScreen();
         });
       }
+    }
+
+    /* ブロック崩し関連の処理 */
+    function goToBreakoutGameArea() {
+      activeMode = 'breakout';
+      initAudioContext();
+      stopCurrentNormalizedVoice();
+      isResultScreenActive = false;
+
+      document.getElementById("breakout-title-screen").style.display = "none";
+      document.getElementById("breakout-container").style.display = "flex";
+
+      clearInterval(timerInterval);
+      cancelAnimationFrame(breakoutAnimId);
+      isGameActive = false;
+
+      document.getElementById("breakout-card-info").innerText = "";
+      document.getElementById("breakout-deal-overlay").style.display = "flex";
+      document.getElementById("breakout-voice-status").innerText = "🔊 （📦 「ゲームを始める」を押してください）";
+      
+      const canvas = document.getElementById("breakout-canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function dealBreakoutCardsAndStart() {
+      initAudioContext();
+      document.getElementById("breakout-deal-overlay").style.display = "none";
+
+      const validData = getValidGameData();
+      if (validData.length === 0) {
+        alert("有効な名言カードがありません！"); showMainTitleScreen(); return;
+      }
+
+      breakoutCard = validData[Math.floor(Math.random() * validData.length)];
+      document.getElementById("breakout-card-info").innerText = `テーマ: ${breakoutCard.title}`;
+      document.getElementById("breakout-bg-img").src = breakoutCard.screenshot || breakoutCard.img;
+
+      resetBreakoutPaddleAndBalls();
+
+      breakoutBlocks = [];
+      breakoutItems = [];
+      const rowCount = 8; 
+      const colCount = 8;
+      const blockWidth = 640 / colCount; 
+      const blockHeight = 25; 
+      const offsetTop = 10;   
+
+      const colors = ['#ff3366', '#ffcc00', '#00ffff', '#33ff66', '#cc66ff', '#ff66ff', '#33ccff', '#ffff33'];
+
+      for (let r = 0; r < rowCount; r++) {
+        for (let c = 0; c < colCount; c++) {
+          breakoutBlocks.push({
+            x: c * blockWidth,
+            y: offsetTop + r * blockHeight,
+            width: blockWidth,
+            height: blockHeight,
+            status: 1, 
+            color: colors[r % colors.length]
+          });
+        }
+      }
+
+      isGameActive = true;
+      isResultScreenActive = false;
+
+      const canvasWrapper = document.getElementById("breakout-canvas-wrapper");
+      canvasWrapper.onmousemove = (e) => {
+        if (!isGameActive) return;
+        const rect = canvasWrapper.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const scale = 640 / rect.width;
+        breakoutPaddle.x = (mouseX * scale) - (breakoutPaddle.width / 2);
+        if (breakoutPaddle.x < 0) breakoutPaddle.x = 0;
+        if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
+      };
+
+      window.onkeydown = (e) => {
+        if (e.key === "ArrowLeft" || e.key === "a") breakoutKeyLeft = true;
+        if (e.key === "ArrowRight" || e.key === "d") breakoutKeyRight = true;
+      };
+      window.onkeyup = (e) => {
+        if (e.key === "ArrowLeft" || e.key === "a") breakoutKeyLeft = false;
+        if (e.key === "ArrowRight" || e.key === "d") breakoutKeyRight = false;
+      };
+
+      runBreakoutLoop();
+    }
+
+    function resetBreakoutPaddleAndBalls() {
+      breakoutPaddle = { x: 270, y: 440, width: 100, height: 12, dx: 0 };
+      breakoutBalls = [{ x: 320, y: 300, radius: 7, dx: 2.5, dy: -2.5, speed: 3.5, piercing: false }];
+      breakoutItems = [];
+    }
+
+    function runBreakoutLoop() {
+      if (!isGameActive) return;
+
+      const canvas = document.getElementById("breakout-canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (breakoutKeyLeft) breakoutPaddle.x -= 7;
+      if (breakoutKeyRight) breakoutPaddle.x += 7;
+
+      if (breakoutPaddle.x < 0) breakoutPaddle.x = 0;
+      if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
+
+      for (let i = breakoutItems.length - 1; i >= 0; i--) {
+        let item = breakoutItems[i];
+        item.y += 3; 
+
+        if (
+          item.y + item.radius >= breakoutPaddle.y &&
+          item.y - item.radius <= breakoutPaddle.y + breakoutPaddle.height &&
+          item.x >= breakoutPaddle.x &&
+          item.x <= breakoutPaddle.x + breakoutPaddle.width
+        ) {
+          playGetCardSE();
+          if (item.type === 'multiball') {
+            showFeedback("correct", "🔴 マルチボール追加！");
+            let newBalls = [];
+            breakoutBalls.forEach(b => {
+              newBalls.push({ x: b.x, y: b.y, radius: 7, dx: -b.dx, dy: b.dy, speed: b.speed, piercing: b.piercing });
+            });
+            breakoutBalls = breakoutBalls.concat(newBalls);
+          } else if (item.type === 'longbar') {
+            showFeedback("correct", "🔵 ロングバー発動！（大幅延長）");
+            breakoutPaddle.width = Math.min(280, breakoutPaddle.width + 60);
+          } else if (item.type === 'pierce') {
+            showFeedback("correct", "🟢 貫通弾発動！全弾貫通！");
+            breakoutBalls.forEach(b => b.piercing = true); // すべてのボールを貫通状態に
+          }
+          breakoutItems.splice(i, 1);
+          continue;
+        }
+
+        if (item.y > 480) {
+          breakoutItems.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+        if (item.type === 'multiball') ctx.fillStyle = '#ff3366';
+        else if (item.type === 'longbar') ctx.fillStyle = '#33ccff';
+        else ctx.fillStyle = '#33ff66';
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      // サブステップ分割による貫通弾の処理（左右の壁では解除せず、天井のみで解除）
+      const SUBSTEPS = 4;
+      for (let i = breakoutBalls.length - 1; i >= 0; i--) {
+        let ball = breakoutBalls[i];
+
+        for (let step = 0; step < SUBSTEPS; step++) {
+          ball.x += ball.dx / SUBSTEPS;
+          ball.y += ball.dy / SUBSTEPS;
+
+          // 壁との衝突（左右の壁では貫通を解除せず反射のみ、上面の壁に当たったときだけ貫通解除）
+          if (ball.x - ball.radius < 0) { 
+            ball.x = ball.radius; 
+            ball.dx *= -1; 
+          }
+          if (ball.x + ball.radius > 640) { 
+            ball.x = 640 - ball.radius; 
+            ball.dx *= -1; 
+          }
+          if (ball.y - ball.radius < 0) { 
+            ball.y = ball.radius; 
+            ball.dy *= -1; 
+            ball.piercing = false; // 上面の壁に当たったときのみ通常弾に戻る
+          }
+
+          // パドル（操作バー）との衝突
+          if (
+            ball.y + ball.radius >= breakoutPaddle.y &&
+            ball.y - ball.radius <= breakoutPaddle.y + breakoutPaddle.height &&
+            ball.x >= breakoutPaddle.x &&
+            ball.x <= breakoutPaddle.x + breakoutPaddle.width
+          ) {
+            ball.y = breakoutPaddle.y - ball.radius;
+            let hitPoint = ball.x - (breakoutPaddle.x + breakoutPaddle.width / 2);
+            ball.dx = hitPoint * 0.15;
+            ball.dy *= -1;
+            break;
+          }
+
+          // ブロックとの衝突判定
+          let collided = false;
+          breakoutBlocks.forEach(b => {
+            if (b.status === 1) {
+              if (
+                ball.x + ball.radius > b.x &&
+                ball.x - ball.radius < b.x + b.width &&
+                ball.y + ball.radius > b.y &&
+                ball.y - ball.radius < b.y + b.height
+              ) {
+                b.status = 0;
+                playBlockHitSE(); // audio/se_block.mp3 を再生
+
+                // 20%でアイテムドロップ
+                if (Math.random() < 0.2) {
+                  let randType = Math.random();
+                  let itemType = randType < 0.35 ? 'multiball' : (randType < 0.7 ? 'longbar' : 'pierce');
+                  breakoutItems.push({
+                    x: b.x + b.width / 2,
+                    y: b.y + b.height / 2,
+                    radius: 9,
+                    type: itemType
+                  });
+                }
+
+                // 貫通弾の場合は反射させずにそのままブロックを突き抜けて破壊し続ける
+                if (!ball.piercing) {
+                  collided = true;
+                  let prevX = ball.x - (ball.dx / SUBSTEPS);
+                  let prevY = ball.y - (ball.dy / SUBSTEPS);
+                  if (prevX < b.x || prevX > b.x + b.width) {
+                    ball.dx *= -1;
+                  } else {
+                    ball.dy *= -1;
+                  }
+                }
+              }
+            }
+          });
+          if (collided) break;
+        }
+
+        // ボール落下判定（機数無限）
+        if (ball.y > 480) {
+          breakoutBalls.splice(i, 1);
+          if (breakoutBalls.length === 0) {
+            showFeedback("wrong", "❌ ボールが落ちたけど復活！");
+            breakoutBalls.push({ x: 320, y: 300, radius: 7, dx: (Math.random() > 0.5 ? 2.5 : -2.5), dy: -2.5, speed: 3.5, piercing: false });
+          }
+          continue;
+        }
+      }
+
+      // ブロックの描画と生存数チェック
+      let activeBlocksCount = 0;
+      breakoutBlocks.forEach(b => {
+        if (b.status === 1) {
+          activeBlocksCount++;
+        }
+        if (b.status === 1) {
+          ctx.fillStyle = b.color;
+          ctx.fillRect(b.x, b.y, b.width, b.height);
+          ctx.strokeStyle = '#111';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(b.x, b.y, b.width, b.height);
+        }
+      });
+
+      // クリア判定
+      if (activeBlocksCount === 0) {
+        isGameActive = false;
+        showFeedback("correct", "🎉 ブロック崩しクリア！");
+        saveUnlockedCardId(breakoutCard.id);
+
+        isResultScreenActive = true;
+        playNormalizedAudio(breakoutCard.audio, 0.0, 20.0, () => {
+          isResultScreenActive = false;
+          showTimeUpScreen();
+        });
+        return;
+      }
+
+      ctx.fillStyle = "var(--neon-blue)";
+      ctx.shadowColor = "#00ffff";
+      ctx.shadowBlur = 12;
+      ctx.fillRect(breakoutPaddle.x, breakoutPaddle.y, breakoutPaddle.width, breakoutPaddle.height);
+
+      breakoutBalls.forEach(ball => {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = ball.piercing ? "#33ff66" : "#ffffff";
+        ctx.shadowColor = ball.piercing ? "#33ff66" : "#ffffff";
+        ctx.shadowBlur = 15;
+        ctx.fill();
+        ctx.closePath();
+      });
+      ctx.shadowBlur = 0; 
+
+      breakoutAnimId = requestAnimationFrame(runBreakoutLoop);
     }
 
     function spawnHandIcon(x, y) {
@@ -2205,7 +2493,7 @@
         scoreLabelEl.innerText = "獲得枚数";
         scoreValEl.innerText = `${score} 枚`;
         penaltyEl.innerText = `お手つき回数: ${missCount}回 (-${missCount * 5}秒減算)`;
-        retryBtn.onclick = openKarutaTitle;
+        retryBtn.onclick = () => { openKarutaTitle(); };
 
         if (score >= 10) {
           commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターでございますね！」";
@@ -2223,509 +2511,34 @@
         scoreLabelEl.innerText = "獲得ペア数";
         scoreValEl.innerText = `${shinkiMatchedPairs} / 12`;
         penaltyEl.innerText = `残り時間: ${shinkiRemainingTime.toFixed(1)}秒`;
-        retryBtn.onclick = openShinkiTitle;
+        retryBtn.onclick = () => { openShinkiTitle(); };
       } else if (activeMode === 'puzzle') {
         titleEl.innerText = "🧩 PUZZLE COMPLETE! 🧩";
         commentEl.innerText = "「素晴らしい集中力でございます！見事にジグソーパズルを完成させましたね！」";
         scoreLabelEl.innerText = "クリアしてカードを獲得！";
         scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "制限時間なし・じっくりクリア！";
-        retryBtn.onclick = openPuzzleTitle;
-      } else {
+        retryBtn.onclick = () => { openPuzzleTitle(); };
+      } else if (activeMode === 'slide') {
         titleEl.innerText = "🔲 SLIDE COMPLETE! 🔲";
         commentEl.innerText = "「お見事！スライドパズルを完璧に解き明かしましたね！カードを獲得しました！」";
         scoreLabelEl.innerText = "クリアしてカードを獲得！";
         scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "制限時間なし・じっくりクリア！";
-        retryBtn.onclick = openSlideTitle;
+        retryBtn.onclick = () => { openSlideTitle(); };
+      } else {
+        titleEl.innerText = "🧱 BREAKOUT COMPLETE! 🧱";
+        commentEl.innerText = "「素晴らしいバッティングセンスでございます！すべてのブロックを崩して名言を暴き出しましたね！」";
+        scoreLabelEl.innerText = "クリアしてカードを獲得！";
+        scoreValEl.innerText = "大成功 ✨";
+        penaltyEl.innerText = "機数無限・爽快クリア！";
+        retryBtn.onclick = () => { openBreakoutTitle(); };
       }
 
       document.getElementById("clear-modal").style.display = "flex";
-      
-      gpCursorIndex = 0;
-      activeInputType = 'gamepad';
-      updateGpSelection();
-    }
-
-    // ── ゲームパッドポーリング制御 ──
-    function updateGpSelection() {
-      if (activeInputType !== 'gamepad') {
-        document.querySelectorAll(".gamepad-selected").forEach(el => el.classList.remove("gamepad-selected"));
-        return;
-      }
-
-      document.querySelectorAll(".gamepad-selected").forEach(el => el.classList.remove("gamepad-selected"));
-
-      if (document.getElementById("retire-modal").style.display === "flex") {
-        const focusables = document.querySelectorAll("#retire-modal .gp-focusable, #retire-modal button");
-        if (focusables.length > 0) {
-          gpCursorIndex = Math.max(0, Math.min(gpCursorIndex, focusables.length - 1));
-          focusables[gpCursorIndex].classList.add("gamepad-selected");
-        }
-        return;
-      }
-      if (document.getElementById("clear-modal").style.display === "flex") {
-        const focusables = document.querySelectorAll("#clear-modal .gp-focusable, #clear-modal button");
-        if (focusables.length > 0) {
-          gpCursorIndex = Math.max(0, Math.min(gpCursorIndex, focusables.length - 1));
-          focusables[gpCursorIndex].classList.add("gamepad-selected");
-        }
-        return;
-      }
-      if (document.getElementById("image-modal").style.display === "flex") {
-        const focusables = document.querySelectorAll("#image-modal .gp-focusable, #image-modal button");
-        if (focusables.length > 0) {
-          gpCursorIndex = Math.max(0, Math.min(gpCursorIndex, focusables.length - 1));
-          focusables[gpCursorIndex].classList.add("gamepad-selected");
-        }
-        return;
-      }
-
-      if (document.getElementById("album-screen").style.display === "flex") {
-        const cards = document.querySelectorAll("#album-grid .album-card");
-        const backBtn = document.querySelector("#album-screen .cancel-btn");
-        const total = cards.length + (backBtn ? 1 : 0);
-        gpCursorIndex = Math.max(0, Math.min(gpCursorIndex, total - 1));
-
-        if (gpCursorIndex < cards.length) {
-          cards[gpCursorIndex].classList.add("gamepad-selected");
-          cards[gpCursorIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        } else if (backBtn) {
-          backBtn.classList.add("gamepad-selected");
-        }
-        return;
-      }
-
-      const screens = ["main-title-screen", "karuta-title-screen", "shinki-title-screen", "puzzle-title-screen", "slide-title-screen"];
-      for (let sId of screens) {
-        const screen = document.getElementById(sId);
-        if (screen && screen.style.display === "flex") {
-          const focusables = screen.querySelectorAll(".gp-focusable, button");
-          if (focusables.length > 0) {
-            gpCursorIndex = Math.max(0, Math.min(gpCursorIndex, focusables.length - 1));
-            focusables[gpCursorIndex].classList.add("gamepad-selected");
-          }
-          return;
-        }
-      }
-
-      if (document.getElementById("game-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          const btn = dealOverlay.querySelector("button");
-          if (btn) btn.classList.add("gamepad-selected");
-          return;
-        }
-        if (isGameActive) {
-          const cards = document.querySelectorAll("#board .card");
-          if (cards.length > 0) {
-            gpCursorIndex = Math.max(0, Math.min(gpCursorIndex, cards.length - 1));
-            cards[gpCursorIndex].classList.add("gamepad-selected");
-          }
-        }
-      } else if (document.getElementById("shinki-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("shinki-deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          const btn = dealOverlay.querySelector("button");
-          if (btn) btn.classList.add("gamepad-selected");
-          return;
-        }
-        if (isGameActive) {
-          if (gpSelectedShinkiSide === 'left') {
-            const leftCards = document.querySelectorAll("#shinki-grid-left .shinki-card");
-            if (leftCards.length > 0) {
-              gpSelectedShinkiIndex = Math.max(0, Math.min(gpSelectedShinkiIndex, leftCards.length - 1));
-              leftCards[gpSelectedShinkiIndex].classList.add("gamepad-selected");
-            }
-          } else {
-            const rightCards = document.querySelectorAll("#shinki-grid-right .shinki-card");
-            if (rightCards.length > 0) {
-              gpSelectedShinkiIndex = Math.max(0, Math.min(gpSelectedShinkiIndex, rightCards.length - 1));
-              rightCards[gpSelectedShinkiIndex].classList.add("gamepad-selected");
-            }
-          }
-        }
-      } else if (document.getElementById("puzzle-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("puzzle-deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          const btn = dealOverlay.querySelector("button");
-          if (btn) btn.classList.add("gamepad-selected");
-          return;
-        }
-        if (isGameActive) {
-          if (gpPuzzleMode === 'tray') {
-            const slots = document.querySelectorAll("#puzzle-tray .tray-slot");
-            if (slots.length > 0) {
-              gpPuzzleTrayIndex = Math.max(0, Math.min(gpPuzzleTrayIndex, slots.length - 1));
-              slots[gpPuzzleTrayIndex].classList.add("gamepad-selected");
-            }
-          } else {
-            const slots = document.querySelectorAll("#puzzle-grid .puzzle-slot");
-            if (slots.length > 0) {
-              gpPuzzleGridIndex = Math.max(0, Math.min(gpPuzzleGridIndex, slots.length - 1));
-              slots[gpPuzzleGridIndex].classList.add("gamepad-selected");
-            }
-          }
-        }
-      } else if (document.getElementById("slide-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("slide-deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          const btn = dealOverlay.querySelector("button");
-          if (btn) btn.classList.add("gamepad-selected");
-          return;
-        }
-        if (isGameActive) {
-          const tiles = document.querySelectorAll("#slide-grid .slide-tile");
-          if (tiles.length > 0) {
-            gpCursorIndex = Math.max(0, Math.min(gpCursorIndex, tiles.length - 1));
-            tiles[gpCursorIndex].classList.add("gamepad-selected");
-          }
-        }
-      }
-    }
-
-    function pollGamepad() {
-      const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
-      let gp = null;
-      for (let i = 0; i < gamepads.length; i++) {
-        if (gamepads[i]) { gp = gamepads[i]; break; }
-      }
-
-      if (gp) {
-        const threshold = 0.5;
-        const axisX = gp.axes[0] !== undefined ? gp.axes[0] : 0;
-        const axisY = gp.axes[1] !== undefined ? gp.axes[1] : 0;
-
-        const dUp = gp.buttons[12] && gp.buttons[12].pressed || axisY < -threshold;
-        const dDown = gp.buttons[13] && gp.buttons[13].pressed || axisY > threshold;
-        const dLeft = gp.buttons[14] && gp.buttons[14].pressed || axisX < -threshold;
-        const dRight = gp.buttons[15] && gp.buttons[15].pressed || axisX > threshold;
-
-        const b0 = gp.buttons[0] && gp.buttons[0].pressed; // A (決定)
-        const b1 = gp.buttons[1] && gp.buttons[1].pressed; // B (キャンセル)
-        const b2 = gp.buttons[2] && gp.buttons[2].pressed; // X (補助)
-
-        if (dUp || dDown || dLeft || dRight || b0 || b1 || b2 || Math.abs(axisX) > threshold || Math.abs(axisY) > threshold) {
-          if (activeInputType !== 'gamepad') {
-            activeInputType = 'gamepad';
-            updateGpSelection();
-          }
-        }
-
-        if (activeInputType === 'gamepad') {
-          const pUp = dUp && !lastGpState.up;
-          const pDown = dDown && !lastGpState.down;
-          const pLeft = dLeft && !lastGpState.left;
-          const pRight = dRight && !lastGpState.right;
-          const pB0 = b0 && !lastGpState.b0;
-          const pB1 = b1 && !lastGpState.b1;
-          const pB2 = b2 && !lastGpState.b2;
-
-          lastGpState = { up: dUp, down: dDown, left: dLeft, right: dRight, b0, b1, b2, axisX, axisY };
-
-          if ((pB0 || pB1 || pB2) && isResultScreenActive) {
-            stopCurrentNormalizedVoice();
-            isResultScreenActive = false;
-            showMainTitleScreen();
-            return;
-          }
-
-          if ((pB0 || pB1 || pB2) && (currentSourceNode || fallbackAudioObj || puzzleClearTimeout)) {
-            stopCurrentNormalizedVoice();
-          }
-
-          if (pUp || pDown || pLeft || pRight) {
-            handleGamepadDirection(pUp, pDown, pLeft, pRight);
-            updateGpSelection();
-          }
-
-          if (pB0) handleGamepadButton0();
-          if (pB1) handleGamepadButton1();
-          if (pB2) handleGamepadButton2();
-        }
-      }
-
-      requestAnimationFrame(pollGamepad);
-    }
-
-    window.addEventListener('mousemove', () => {
-      if (activeInputType !== 'mouse') {
-        activeInputType = 'mouse';
-        updateGpSelection();
-      }
-    });
-
-    function handleGamepadDirection(up, down, left, right) {
-      if (activeInputType !== 'gamepad') return;
-
-      if (document.getElementById("retire-modal").style.display === "flex" ||
-          document.getElementById("clear-modal").style.display === "flex" ||
-          document.getElementById("image-modal").style.display === "flex") {
-        const activeModal = document.querySelector(".modal-overlay[style*='flex']");
-        if (activeModal) {
-          const focusables = activeModal.querySelectorAll(".gp-focusable, button");
-          if (up || left) gpCursorIndex--;
-          if (down || right) gpCursorIndex++;
-          if (focusables.length > 0) {
-            gpCursorIndex = (gpCursorIndex + focusables.length) % focusables.length;
-          }
-        }
-        return;
-      }
-
-      if (document.getElementById("album-screen").style.display === "flex") {
-        const cards = document.querySelectorAll("#album-grid .album-card");
-        const backBtn = document.querySelector("#album-screen .cancel-btn");
-        const total = cards.length + (backBtn ? 1 : 0);
-        const cols = 5;
-
-        if (up) gpCursorIndex = Math.max(0, gpCursorIndex - cols);
-        if (down) gpCursorIndex = Math.min(total - 1, gpCursorIndex + cols);
-        if (left) gpCursorIndex = Math.max(0, gpCursorIndex - 1);
-        if (right) gpCursorIndex = Math.min(total - 1, gpCursorIndex + 1);
-        return;
-      }
-
-      const screens = ["main-title-screen", "karuta-title-screen", "shinki-title-screen", "puzzle-title-screen", "slide-title-screen"];
-      for (let sId of screens) {
-        const screen = document.getElementById(sId);
-        if (screen && screen.style.display === "flex") {
-          const focusables = screen.querySelectorAll(".gp-focusable, button");
-          if (up || left) gpCursorIndex--;
-          if (down || right) gpCursorIndex++;
-          if (focusables.length > 0) {
-            gpCursorIndex = (gpCursorIndex + focusables.length) % focusables.length;
-          }
-          return;
-        }
-      }
-
-      if (document.getElementById("game-container").style.display === "flex" && isGameActive) {
-        const cols = 5;
-        const total = currentBoard.length;
-        if (up) gpCursorIndex = Math.max(0, gpCursorIndex - cols);
-        if (down) gpCursorIndex = Math.min(total - 1, gpCursorIndex + cols);
-        if (left) gpCursorIndex = Math.max(0, gpCursorIndex - 1);
-        if (right) gpCursorIndex = Math.min(total - 1, gpCursorIndex + 1);
-      } else if (document.getElementById("shinki-container").style.display === "flex" && isGameActive) {
-        if (left) gpSelectedShinkiSide = 'left';
-        else if (right) gpSelectedShinkiSide = 'right';
-        if (up) gpSelectedShinkiIndex = Math.max(0, gpSelectedShinkiIndex - 1);
-        if (down) gpSelectedShinkiIndex = Math.min(11, gpSelectedShinkiIndex + 1);
-      } else if (document.getElementById("puzzle-container").style.display === "flex" && isGameActive) {
-        if (gpPuzzleMode === 'tray') {
-          if (right) {
-            if (gpPuzzleTrayIndex % 2 === 1 || gpPuzzleTrayIndex >= puzzleTrayPieces.length - 1) {
-              gpPuzzleMode = 'grid';
-              gpPuzzleGridIndex = 0;
-            } else {
-              if (up) gpPuzzleTrayIndex = Math.max(0, gpPuzzleTrayIndex - 2);
-              if (down) gpPuzzleTrayIndex = Math.min(puzzleTrayPieces.length - 1, gpPuzzleTrayIndex + 2);
-              if (left) gpPuzzleTrayIndex = Math.max(0, gpPuzzleTrayIndex - 1);
-              if (right) gpPuzzleTrayIndex = Math.min(puzzleTrayPieces.length - 1, gpPuzzleTrayIndex + 1);
-            }
-          } else {
-            if (up) gpPuzzleTrayIndex = Math.max(0, gpPuzzleTrayIndex - 2);
-            if (down) gpPuzzleTrayIndex = Math.min(puzzleTrayPieces.length - 1, gpPuzzleTrayIndex + 2);
-            if (left) gpPuzzleTrayIndex = Math.max(0, gpPuzzleTrayIndex - 1);
-            if (right) gpPuzzleTrayIndex = Math.min(puzzleTrayPieces.length - 1, gpPuzzleTrayIndex + 1);
-          }
-        } else {
-          let r = Math.floor(gpPuzzleGridIndex / 3);
-          let c = gpPuzzleGridIndex % 3;
-          if (up) r = Math.max(0, r - 1);
-          if (down) r = Math.min(2, r + 1);
-          if (left) {
-            if (c > 0) c--;
-            else { gpPuzzleMode = 'tray'; gpPuzzleTrayIndex = 0; }
-          }
-          if (right) c = Math.min(2, c + 1);
-          gpPuzzleGridIndex = r * 3 + c;
-        }
-      } else if (document.getElementById("slide-container").style.display === "flex" && isGameActive) {
-        const cols = 3;
-        if (up) gpCursorIndex = Math.max(0, gpCursorIndex - cols);
-        if (down) gpCursorIndex = Math.min(8, gpCursorIndex + cols);
-        if (left) gpCursorIndex = Math.max(0, gpCursorIndex - 1);
-        if (right) gpCursorIndex = Math.min(8, gpCursorIndex + 1);
-      }
-    }
-
-    function handleGamepadButton0() {
-      if (activeInputType !== 'gamepad') return;
-
-      if (document.getElementById("retire-modal").style.display === "flex") {
-        const activeModal = document.querySelector(".modal-overlay[style*='flex']");
-        const focusables = activeModal.querySelectorAll(".gp-focusable, button");
-        if (focusables[gpCursorIndex]) focusables[gpCursorIndex].click();
-        return;
-      }
-      if (document.getElementById("clear-modal").style.display === "flex") {
-        const activeModal = document.querySelector(".modal-overlay[style*='flex']");
-        const focusables = activeModal.querySelectorAll(".gp-focusable, button");
-        if (focusables[gpCursorIndex]) focusables[gpCursorIndex].click();
-        return;
-      }
-      if (document.getElementById("image-modal").style.display === "flex") {
-        const activeModal = document.querySelector(".modal-overlay[style*='flex']");
-        const focusables = activeModal.querySelectorAll(".gp-focusable, button");
-        if (focusables[gpCursorIndex]) focusables[gpCursorIndex].click();
-        return;
-      }
-
-      if (document.getElementById("album-screen").style.display === "flex") {
-        const cards = document.querySelectorAll("#album-grid .album-card");
-        const backBtn = document.querySelector("#album-screen .cancel-btn");
-        if (gpCursorIndex < cards.length) {
-          cards[gpCursorIndex].click();
-        } else if (backBtn) {
-          backBtn.click();
-        }
-        return;
-      }
-
-      const screens = ["main-title-screen", "karuta-title-screen", "shinki-title-screen", "puzzle-title-screen", "slide-title-screen"];
-      for (let sId of screens) {
-        const screen = document.getElementById(sId);
-        if (screen && screen.style.display === "flex") {
-          const focusables = screen.querySelectorAll(".gp-focusable, button");
-          if (focusables[gpCursorIndex]) focusables[gpCursorIndex].click();
-          return;
-        }
-      }
-
-      if (document.getElementById("game-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          dealOverlay.querySelector("button").click();
-          return;
-        }
-        if (isGameActive) {
-          onCardClick(gpCursorIndex);
-        }
-      } else if (document.getElementById("shinki-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("shinki-deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          dealOverlay.querySelector("button").click();
-          return;
-        }
-        if (isGameActive) {
-          const cardList = (gpSelectedShinkiSide === 'left') ? shinkiLeftCards : shinkiRightCards;
-          if (cardList[gpSelectedShinkiIndex]) {
-            onShinkiCardClick(gpSelectedShinkiSide, gpSelectedShinkiIndex, cardList[gpSelectedShinkiIndex]);
-          }
-        }
-      } else if (document.getElementById("puzzle-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("puzzle-deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          dealOverlay.querySelector("button").click();
-          return;
-        }
-        if (isGameActive) {
-          if (heldPieceObj) {
-            if (gpPuzzleMode === 'tray') {
-              const targetTrayPiece = puzzleTrayPieces[gpPuzzleTrayIndex];
-              puzzleTrayPieces[gpPuzzleTrayIndex] = heldPieceObj;
-              heldPieceObj = targetTrayPiece || null;
-            } else {
-              const targetGridPiece = puzzleSlots[gpPuzzleGridIndex];
-              puzzleSlots[gpPuzzleGridIndex] = heldPieceObj;
-              heldPieceObj = targetGridPiece || null;
-            }
-            renderPuzzleBoard();
-            checkPuzzleCompletion();
-            
-            if (heldPieceObj) {
-              showFeedback("correct", "🔄 ピースを入れ替えました！");
-            } else {
-              showFeedback("correct", "🧩 ピースを配置しました！");
-            }
-          } else {
-            if (gpPuzzleMode === 'tray') {
-              const piece = puzzleTrayPieces[gpPuzzleTrayIndex];
-              if (piece) {
-                heldPieceObj = piece;
-                puzzleTrayPieces[gpPuzzleTrayIndex] = null; 
-                renderPuzzleBoard();
-                showFeedback("correct", "🖐 ピースを掴んだよ！配置先でAボタン");
-              }
-            } else {
-              const occupant = puzzleSlots[gpPuzzleGridIndex];
-              if (occupant) {
-                heldPieceObj = occupant;
-                puzzleSlots[gpPuzzleGridIndex] = null; 
-                renderPuzzleBoard();
-                showFeedback("correct", "🖐 盤面からピースを回収しました！");
-              }
-            }
-          }
-        }
-      } else if (document.getElementById("slide-container").style.display === "flex") {
-        const dealOverlay = document.getElementById("slide-deal-overlay");
-        if (dealOverlay && dealOverlay.style.display === "flex") {
-          dealOverlay.querySelector("button").click();
-          return;
-        }
-        if (isGameActive) {
-          onSlideTileClick(gpCursorIndex);
-        }
-      }
-    }
-
-    function handleGamepadButton1() {
-      if (activeInputType !== 'gamepad') return;
-
-      if (document.getElementById("retire-modal").style.display === "flex") {
-        closeRetireConfirm();
-        return;
-      }
-      if (document.getElementById("clear-modal").style.display === "flex") {
-        showMainTitleScreen();
-        return;
-      }
-      if (document.getElementById("image-modal").style.display === "flex") {
-        closeImageModal();
-        return;
-      }
-      if (document.getElementById("album-screen").style.display === "flex") {
-        closeAlbumScreen();
-        return;
-      }
-
-      if (isGameActive) {
-        if (document.getElementById("retire-modal").style.display !== "flex") {
-          openRetireConfirm();
-        }
-      }
-    }
-
-    function handleGamepadButton2() {
-      if (activeInputType !== 'gamepad') return;
-
-      if (activeMode === 'karuta' && isGameActive) {
-        playCurrentVoice();
-      } else if (activeMode === 'puzzle' && isGameActive) {
-        let targetPiece = heldPieceObj;
-
-        if (!targetPiece) {
-          if (gpPuzzleMode === 'tray') {
-            targetPiece = puzzleTrayPieces[gpPuzzleTrayIndex];
-          } else {
-            targetPiece = puzzleSlots[gpPuzzleGridIndex];
-          }
-        }
-
-        if (targetPiece) {
-          targetPiece.currentRotation = (targetPiece.currentRotation + 90) % 360;
-          renderPuzzleBoard();
-          checkPuzzleCompletion();
-            showFeedback("correct", "🔄 回転しました");
-        }
-      }
     }
 
     showMainTitleScreen();
-    requestAnimationFrame(pollGamepad);
   </script>
 </body>
 </html>
