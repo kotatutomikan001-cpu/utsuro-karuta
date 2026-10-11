@@ -357,8 +357,9 @@
       display: flex; flex-direction: column; align-items: center; box-sizing: border-box; padding: 0 10px 20px 10px;
     }
 
+    /* キャンバス全体の高さを 480px から 540px に拡大して余白領域を拡張 */
     #breakout-canvas-wrapper {
-      position: relative; width: 640px; height: 480px; background: #000; border: 3px solid var(--neon-blue);
+      position: relative; width: 640px; height: 540px; background: #000; border: 3px solid var(--neon-blue);
       border-radius: 12px; box-sizing: border-box; box-shadow: 0 0 25px rgba(0,255,255,0.4); overflow: hidden;
       cursor: crosshair; touch-action: none;
     }
@@ -368,10 +369,10 @@
     }
 
     #breakout-canvas {
-      position: absolute; top: 0; left: 0; width: 640px; height: 480px; z-index: 2; display: block;
+      position: absolute; top: 0; left: 0; width: 640px; height: 540px; z-index: 2; display: block;
     }
 
-    /* スマホ用タッチ操作エリア（ゲーム画面下部に追加） */
+    /* スマホ用タッチ操作エリア（ゲーム画面下部） */
     #breakout-touch-pad {
       display: none;
       width: 100%; max-width: 640px; height: 75px;
@@ -517,8 +518,9 @@
 
       #slide-grid { width: 92vw; height: 92vw; max-width: 420px; max-height: 420px; }
 
-      #breakout-canvas-wrapper { width: 92vw; height: 69vw; max-width: 640px; max-height: 480px; }
-      #breakout-bg-img { width: 100%; height: 75%; }
+      /* スマホ表示でのアスペクト比調整 (640:540 -> 77.6vw) */
+      #breakout-canvas-wrapper { width: 92vw; height: 77.6vw; max-width: 640px; max-height: 540px; }
+      #breakout-bg-img { width: 100%; height: 66.6%; }
       #breakout-canvas { width: 100%; height: 100%; }
       #breakout-touch-pad { display: flex; width: 92vw; max-width: 640px; }
 
@@ -719,7 +721,7 @@
       </div>
 
       <div id="target-voice-container" onclick="playCurrentVoice()">
-        <div id="voice-status">🔊 （<span><span>「札を配る」を押してください</span></span>）</div>
+        <div id="voice-status">🔊 （<span>「札を配る」を押してください</span>）</div>
         <div id="target-voice">『準備はいいでございますか？』</div>
       </div>
 
@@ -837,7 +839,8 @@
     <div id="breakout-board-container">
       <div id="breakout-canvas-wrapper">
         <img id="breakout-bg-img" src="" alt="Secret Screenshot">
-        <canvas id="breakout-canvas" width="640" height="480"></canvas>
+        <!-- キャンバスの高さ（height）を 480 から 540 に拡張 -->
+        <canvas id="breakout-canvas" width="640" height="540"></canvas>
       </div>
       <!-- スマホ用スワイプ操作エリア -->
       <div id="breakout-touch-pad">👈 ここをスワイプしてパドルを操作 👉</div>
@@ -884,7 +887,7 @@
       <div id="result-score-label">獲得結果</div>
       <div id="final-score" class="final-score-val">0 枚</div>
       <div id="penalty-info" style="color: #ff6666; font-size: 0.95rem; margin-bottom: 20px;"></div>
-      <p id="utsuro-comment"><span><span><span><span>「フッ…なかなか素早いじゃないか！見事だぞ！」</span></span></span></span></p>
+      <p id="utsuro-comment">「フッ…なかなか素早いじゃないか！見事だぞ！」</p>
       <button id="result-retry-btn" class="retry-btn" onclick="openKarutaTitle()">もう一度あそぶ</button>
       <button class="cancel-btn" style="margin-top: 10px;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
     </div>
@@ -949,12 +952,11 @@
       }
     }
 
-    // 画面のどこをクリック/タップしても再生中の音声を即座に中断できるようにする
     function handleGlobalClickToStopVoice() {
       if (isResultScreenActive) {
         stopCurrentNormalizedVoice();
         isResultScreenActive = false;
-        showTimeUpScreen(); // タイトル画面へ直行せずクリア結果画面（リザルト画面）を表示
+        showTimeUpScreen();
         return;
       }
       if (currentSourceNode || fallbackAudioObj) {
@@ -967,7 +969,7 @@
         if (isResultScreenActive) {
           stopCurrentNormalizedVoice();
           isResultScreenActive = false;
-          showTimeUpScreen(); // タイトル画面へ直行せずクリア結果画面を表示
+          showTimeUpScreen();
           return;
         }
         stopCurrentNormalizedVoice();
@@ -1064,7 +1066,6 @@
       se.play().catch(e => console.log("SE再生エラー:", e));
     }
 
-    // ブロック破壊時の効果音（audio/se_block.mp3）を再生
     function playBlockHitSE() {
       initAudioContext();
       const se = new Audio(BLOCK_HIT_SE_FILE);
@@ -1194,10 +1195,10 @@
     let currentSlideCard = null;
     let slideTiles = [];
 
-    // ブロック崩し用変数
+    // ブロック崩し用変数（キャンバス高さ 540px 対応）
     let breakoutCard = null;
     let breakoutAnimId = null;
-    let breakoutPaddle = { x: 270, y: 440, width: 100, height: 12, dx: 0 };
+    let breakoutPaddle = { x: 270, y: 490, width: 100, height: 12, dx: 0 };
     let breakoutBalls = []; 
     let breakoutBlocks = [];
     let breakoutItems = []; 
@@ -2234,7 +2235,6 @@
       const rowCount = 8; 
       const colCount = 8;
       const blockWidth = 640 / colCount; 
-      // スクショ領域（高さ360px）を8行のブロックでちょうど覆い尽くすよう修正 (360 / 8 = 45px)
       const blockHeight = 45; 
       const offsetTop = 0;   
 
@@ -2270,7 +2270,7 @@
         if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
       };
 
-      // スマホ用：画面下の専用スワイプエリアでパドルを操作
+      // スマホ用スワイプ操作
       let touchStartX = null;
       let paddleStartX = null;
 
@@ -2315,8 +2315,9 @@
     }
 
     function resetBreakoutPaddleAndBalls() {
-      breakoutPaddle = { x: 270, y: 440, width: 100, height: 12, dx: 0 };
-      breakoutBalls = [{ x: 320, y: 380, radius: 7, dx: 2.5, dy: -2.5, speed: 3.5, piercing: false }];
+      // 高さ540pxの領域に合わせてパドル(y: 490)・ボール(y: 430)を配置
+      breakoutPaddle = { x: 270, y: 490, width: 100, height: 12, dx: 0 };
+      breakoutBalls = [{ x: 320, y: 430, radius: 7, dx: 2.5, dy: -2.5, speed: 3.5, piercing: false }];
       breakoutItems = [];
     }
 
@@ -2362,7 +2363,7 @@
           continue;
         }
 
-        if (item.y > 480) {
+        if (item.y > 540) {
           breakoutItems.splice(i, 1);
           continue;
         }
@@ -2376,7 +2377,7 @@
         ctx.closePath();
       }
 
-      // サブステップ分割による貫通弾の処理（左右の壁では解除せず、天井のみで解除）
+      // サブステップ分割による物理演算（判定高さ 540px）
       const SUBSTEPS = 4;
       for (let i = breakoutBalls.length - 1; i >= 0; i--) {
         let ball = breakoutBalls[i];
@@ -2385,7 +2386,7 @@
           ball.x += ball.dx / SUBSTEPS;
           ball.y += ball.dy / SUBSTEPS;
 
-          // 壁との衝突（左右の壁では貫通を解除せず反射のみ、上面の壁に当たったときだけ貫通解除）
+          // 壁との衝突
           if (ball.x - ball.radius < 0) { 
             ball.x = ball.radius; 
             ball.dx *= -1; 
@@ -2456,11 +2457,11 @@
         }
 
         // ボール落下判定（機数無限）
-        if (ball.y > 480) {
+        if (ball.y > 540) {
           breakoutBalls.splice(i, 1);
           if (breakoutBalls.length === 0) {
             showFeedback("wrong", "❌ ボールが落ちたけど復活！");
-            breakoutBalls.push({ x: 320, y: 380, radius: 7, dx: (Math.random() > 0.5 ? 2.5 : -2.5), dy: -2.5, speed: 3.5, piercing: false });
+            breakoutBalls.push({ x: 320, y: 430, radius: 7, dx: (Math.random() > 0.5 ? 2.5 : -2.5), dy: -2.5, speed: 3.5, piercing: false });
           }
           continue;
         }
