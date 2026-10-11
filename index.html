@@ -360,7 +360,7 @@
     #breakout-canvas-wrapper {
       position: relative; width: 640px; height: 480px; background: #000; border: 3px solid var(--neon-blue);
       border-radius: 12px; box-sizing: border-box; box-shadow: 0 0 25px rgba(0,255,255,0.4); overflow: hidden;
-      cursor: crosshair;
+      cursor: crosshair; touch-action: none;
     }
 
     #breakout-bg-img {
@@ -671,7 +671,7 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🧱 遊び方</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・パドルを動かしてボールを弾き返そう！機数無限でいつでも再挑戦可能。<br>
+        ・パドルをスワイプしてボールを弾き返そう！機数無限でいつでも再挑戦可能。<br>
         ・アイテム（🔴マルチボール / 🔵ロングバー / 🟢貫通弾）を活用して全てのブロックを壊し、カードをゲットしよう！
       </p>
     </div>
@@ -897,7 +897,7 @@
 
     const TEST_VOICE_FILE = "audio/utsuro_voice_000.mp3";
     const CARD_GET_SE_FILE = "audio/se_bam.mp3";
-    const BLOCK_HIT_SE_FILE = "audio/se_block.mp3"; // ブロック当たった時の効果音ファイル
+    const BLOCK_HIT_SE_FILE = "audio/se_block.mp3"; 
     const SHINKI_MATCH_SE_FILE = "audio/se_match.mp3";
     const SHINKI_MISS_SE_FILE  = "audio/se_miss.mp3";
 
@@ -2241,6 +2241,11 @@
       isResultScreenActive = false;
 
       const canvasWrapper = document.getElementById("breakout-canvas-wrapper");
+      
+      // マウス・タッチ操作の改善（スワイプ/ドラッグに追従）
+      let touchStartX = null;
+      let paddleStartX = null;
+
       canvasWrapper.onmousemove = (e) => {
         if (!isGameActive) return;
         const rect = canvasWrapper.getBoundingClientRect();
@@ -2249,6 +2254,34 @@
         breakoutPaddle.x = (mouseX * scale) - (breakoutPaddle.width / 2);
         if (breakoutPaddle.x < 0) breakoutPaddle.x = 0;
         if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
+      };
+
+      canvasWrapper.ontouchstart = (e) => {
+        if (!isGameActive) return;
+        if (e.touches.length > 0) {
+          const rect = canvasWrapper.getBoundingClientRect();
+          touchStartX = e.touches[0].clientX - rect.left;
+          paddleStartX = breakoutPaddle.x;
+        }
+      };
+
+      canvasWrapper.ontouchmove = (e) => {
+        if (!isGameActive || touchStartX === null) return;
+        if (e.touches.length > 0) {
+          const rect = canvasWrapper.getBoundingClientRect();
+          const currentX = e.touches[0].clientX - rect.left;
+          const scale = 640 / rect.width;
+          const deltaX = (currentX - touchStartX) * scale;
+          
+          breakoutPaddle.x = paddleStartX + deltaX;
+          if (breakoutPaddle.x < 0) breakoutPaddle.x = 0;
+          if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
+        }
+      };
+
+      canvasWrapper.ontouchend = () => {
+        touchStartX = null;
+        paddleStartX = null;
       };
 
       window.onkeydown = (e) => {
