@@ -371,6 +371,18 @@
       position: absolute; top: 0; left: 0; width: 640px; height: 480px; z-index: 2; display: block;
     }
 
+    /* スマホ用タッチ操作エリア（ゲーム画面下部に追加） */
+    #breakout-touch-pad {
+      display: none;
+      width: 100%; max-width: 640px; height: 75px;
+      background: rgba(0, 255, 255, 0.12);
+      border: 2px dashed var(--neon-blue); border-radius: 12px;
+      margin-top: 10px; align-items: center; justify-content: center;
+      text-align: center; color: var(--neon-light-blue); font-weight: bold;
+      font-size: 0.95rem; user-select: none; touch-action: none;
+      box-shadow: 0 0 15px rgba(0,255,255,0.2); backdrop-filter: blur(4px);
+    }
+
     /* 神経衰弱用レイアウト */
     #shinki-board-container {
       position: relative; width: 100%; max-width: 1200px; margin: 8px auto 0 auto; z-index: 5;
@@ -404,7 +416,6 @@
     .shinki-card.left-back { background-image: url('ura_1.png'); background-color: #1a3a5a; }
     .shinki-card.right-back { background-image: url('ura_2.png'); background-color: #5a1a2a; }
     .shinki-card:hover { transform: scale(1.04); box-shadow: 0 0 18px var(--neon-blue); }
-    .shinki-card .card-inner-pattern { display: none; }
     .shinki-card.flipped { background-image: none !important; background-color: #ffffff !important; border: 3px solid #ffd700; box-shadow: 0 0 20px #ffd700; transform: scale(1.03); }
     .shinki-card.flipped .card-inner-pattern { display: block; color: var(--karuta-green); font-size: 1.5rem; opacity: 1; }
     .shinki-card.matched { opacity: 0; pointer-events: none; visibility: hidden; }
@@ -508,6 +519,7 @@
 
       #breakout-canvas-wrapper { width: 92vw; height: 69vw; max-width: 640px; max-height: 480px; }
       #breakout-bg-img, #breakout-canvas { width: 100%; height: 100%; }
+      #breakout-touch-pad { display: flex; width: 92vw; max-width: 640px; }
 
       #feedback-overlay { font-size: 2.0rem; white-space: normal; text-align: center; width: 90%; }
       #feedback-overlay.correct { transform: translate(-50%, -50%) scale(1.0); }
@@ -671,7 +683,7 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🧱 遊び方</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・パドルをスワイプしてボールを弾き返そう！機数無限でいつでも再挑戦可能。<br>
+        ・画面下のスワイプエリアでパドルを動かしてボールを弾き返そう！<br>
         ・アイテム（🔴マルチボール / 🔵ロングバー / 🟢貫通弾）を活用して全てのブロックを壊し、カードをゲットしよう！
       </p>
     </div>
@@ -826,6 +838,8 @@
         <img id="breakout-bg-img" src="" alt="Secret Screenshot">
         <canvas id="breakout-canvas" width="640" height="480"></canvas>
       </div>
+      <!-- スマホ用スワイプ操作エリア -->
+      <div id="breakout-touch-pad">👈 ここをスワイプしてパドルを操作 👉</div>
 
       <div id="breakout-deal-overlay">
         <button class="action-btn" onclick="dealBreakoutCardsAndStart()">ゲームを始める</button>
@@ -2241,11 +2255,9 @@
       isResultScreenActive = false;
 
       const canvasWrapper = document.getElementById("breakout-canvas-wrapper");
+      const touchPad = document.getElementById("breakout-touch-pad");
       
-      // マウス・タッチ操作の改善（スワイプ/ドラッグに追従）
-      let touchStartX = null;
-      let paddleStartX = null;
-
+      // パソコン用マウス移動
       canvasWrapper.onmousemove = (e) => {
         if (!isGameActive) return;
         const rect = canvasWrapper.getBoundingClientRect();
@@ -2256,19 +2268,23 @@
         if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
       };
 
-      canvasWrapper.ontouchstart = (e) => {
+      // スマホ用：画面下の専用スワイプエリアでパドルを操作
+      let touchStartX = null;
+      let paddleStartX = null;
+
+      touchPad.ontouchstart = (e) => {
         if (!isGameActive) return;
         if (e.touches.length > 0) {
-          const rect = canvasWrapper.getBoundingClientRect();
+          const rect = touchPad.getBoundingClientRect();
           touchStartX = e.touches[0].clientX - rect.left;
           paddleStartX = breakoutPaddle.x;
         }
       };
 
-      canvasWrapper.ontouchmove = (e) => {
+      touchPad.ontouchmove = (e) => {
         if (!isGameActive || touchStartX === null) return;
         if (e.touches.length > 0) {
-          const rect = canvasWrapper.getBoundingClientRect();
+          const rect = touchPad.getBoundingClientRect();
           const currentX = e.touches[0].clientX - rect.left;
           const scale = 640 / rect.width;
           const deltaX = (currentX - touchStartX) * scale;
@@ -2279,7 +2295,7 @@
         }
       };
 
-      canvasWrapper.ontouchend = () => {
+      touchPad.ontouchend = () => {
         touchStartX = null;
         paddleStartX = null;
       };
