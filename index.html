@@ -357,9 +357,9 @@
       display: flex; flex-direction: column; align-items: center; box-sizing: border-box; padding: 0 10px 20px 10px;
     }
 
-    /* キャンバス全体の高さを 480px から 540px に拡大して余白領域を拡張 */
+    /* キャンバス全体の高さを 540px から 660px に大きく拡大して下の余白部分をさらに拡張 */
     #breakout-canvas-wrapper {
-      position: relative; width: 640px; height: 540px; background: #000; border: 3px solid var(--neon-blue);
+      position: relative; width: 640px; height: 660px; background: #000; border: 3px solid var(--neon-blue);
       border-radius: 12px; box-sizing: border-box; box-shadow: 0 0 25px rgba(0,255,255,0.4); overflow: hidden;
       cursor: crosshair; touch-action: none;
     }
@@ -369,7 +369,7 @@
     }
 
     #breakout-canvas {
-      position: absolute; top: 0; left: 0; width: 640px; height: 540px; z-index: 2; display: block;
+      position: absolute; top: 0; left: 0; width: 640px; height: 660px; z-index: 2; display: block;
     }
 
     /* スマホ用タッチ操作エリア（ゲーム画面下部） */
@@ -518,9 +518,9 @@
 
       #slide-grid { width: 92vw; height: 92vw; max-width: 420px; max-height: 420px; }
 
-      /* スマホ表示でのアスペクト比調整 (640:540 -> 77.6vw) */
-      #breakout-canvas-wrapper { width: 92vw; height: 77.6vw; max-width: 640px; max-height: 540px; }
-      #breakout-bg-img { width: 100%; height: 66.6%; }
+      /* スマホ表示でのアスペクト比調整 (640:660 -> 94.8vw) */
+      #breakout-canvas-wrapper { width: 92vw; height: 94.8vw; max-width: 640px; max-height: 660px; }
+      #breakout-bg-img { width: 100%; height: 54.5%; }
       #breakout-canvas { width: 100%; height: 100%; }
       #breakout-touch-pad { display: flex; width: 92vw; max-width: 640px; }
 
@@ -839,8 +839,8 @@
     <div id="breakout-board-container">
       <div id="breakout-canvas-wrapper">
         <img id="breakout-bg-img" src="" alt="Secret Screenshot">
-        <!-- キャンバスの高さ（height）を 480 から 540 に拡張 -->
-        <canvas id="breakout-canvas" width="640" height="540"></canvas>
+        <!-- キャンバスの高さ（height）を 660 に大きく拡張 -->
+        <canvas id="breakout-canvas" width="640" height="660"></canvas>
       </div>
       <!-- スマホ用スワイプ操作エリア -->
       <div id="breakout-touch-pad">👈 ここをスワイプしてパドルを操作 👉</div>
@@ -1195,10 +1195,10 @@
     let currentSlideCard = null;
     let slideTiles = [];
 
-    // ブロック崩し用変数（キャンバス高さ 540px 対応）
+    // ブロック崩し用変数（キャンバス高さ 660px 対応）
     let breakoutCard = null;
     let breakoutAnimId = null;
-    let breakoutPaddle = { x: 270, y: 490, width: 100, height: 12, dx: 0 };
+    let breakoutPaddle = { x: 270, y: 600, width: 100, height: 12, dx: 0 };
     let breakoutBalls = []; 
     let breakoutBlocks = [];
     let breakoutItems = []; 
@@ -2315,9 +2315,9 @@
     }
 
     function resetBreakoutPaddleAndBalls() {
-      // 高さ540pxの領域に合わせてパドル(y: 490)・ボール(y: 430)を配置
-      breakoutPaddle = { x: 270, y: 490, width: 100, height: 12, dx: 0 };
-      breakoutBalls = [{ x: 320, y: 430, radius: 7, dx: 2.5, dy: -2.5, speed: 3.5, piercing: false }];
+      // 高さ660pxの領域に合わせてパドル(y: 600)・ボール(y: 530)を初期配置
+      breakoutPaddle = { x: 270, y: 600, width: 100, height: 12, dx: 0 };
+      breakoutBalls = [{ x: 320, y: 530, radius: 7, dx: 2.5, dy: -2.5, speed: 3.5, piercing: false }];
       breakoutItems = [];
     }
 
@@ -2363,7 +2363,7 @@
           continue;
         }
 
-        if (item.y > 540) {
+        if (item.y > 660) {
           breakoutItems.splice(i, 1);
           continue;
         }
@@ -2377,7 +2377,7 @@
         ctx.closePath();
       }
 
-      // サブステップ分割による物理演算（判定高さ 540px）
+      // サブステップ分割による物理演算（判定高さ 660px）
       const SUBSTEPS = 4;
       for (let i = breakoutBalls.length - 1; i >= 0; i--) {
         let ball = breakoutBalls[i];
@@ -2457,11 +2457,11 @@
         }
 
         // ボール落下判定（機数無限）
-        if (ball.y > 540) {
+        if (ball.y > 660) {
           breakoutBalls.splice(i, 1);
           if (breakoutBalls.length === 0) {
             showFeedback("wrong", "❌ ボールが落ちたけど復活！");
-            breakoutBalls.push({ x: 320, y: 430, radius: 7, dx: (Math.random() > 0.5 ? 2.5 : -2.5), dy: -2.5, speed: 3.5, piercing: false });
+            breakoutBalls.push({ x: 320, y: 530, radius: 7, dx: (Math.random() > 0.5 ? 2.5 : -2.5), dy: -2.5, speed: 3.5, piercing: false });
           }
           continue;
         }
@@ -2577,7 +2577,7 @@
         retryBtn.onclick = () => { openSlideTitle(); };
       } else {
         titleEl.innerText = "🧱 BREAKOUT COMPLETE! 🧱";
-        commentEl.innerText = "「素晴らしいバッティングセンスでございます！すべてのブロックを崩して名言を暴き出しましたね！」";
+        commentEl.innerText = "「素晴らしいブロック破壊のセンスをお持ちでございます！すべてのブロックを破壊して名言を暴き出しましたね！」";
         scoreLabelEl.innerText = "クリアしてカードを獲得！";
         scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "機数無限・爽快クリア！";
