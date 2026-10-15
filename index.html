@@ -357,7 +357,6 @@
       display: flex; flex-direction: column; align-items: center; box-sizing: border-box; padding: 0 10px 20px 10px;
     }
 
-    /* キャンバス全体の高さを 540px から 660px に大きく拡大して下の余白部分をさらに拡張 */
     #breakout-canvas-wrapper {
       position: relative; width: 640px; height: 660px; background: #000; border: 3px solid var(--neon-blue);
       border-radius: 12px; box-sizing: border-box; box-shadow: 0 0 25px rgba(0,255,255,0.4); overflow: hidden;
@@ -518,7 +517,6 @@
 
       #slide-grid { width: 92vw; height: 92vw; max-width: 420px; max-height: 420px; }
 
-      /* スマホ表示でのアスペクト比調整 (640:660 -> 94.8vw) */
       #breakout-canvas-wrapper { width: 92vw; height: 94.8vw; max-width: 640px; max-height: 660px; }
       #breakout-bg-img { width: 100%; height: 54.5%; }
       #breakout-canvas { width: 100%; height: 100%; }
@@ -839,7 +837,6 @@
     <div id="breakout-board-container">
       <div id="breakout-canvas-wrapper">
         <img id="breakout-bg-img" src="" alt="Secret Screenshot">
-        <!-- キャンバスの高さ（height）を 660 に大きく拡張 -->
         <canvas id="breakout-canvas" width="640" height="660"></canvas>
       </div>
       <!-- スマホ用スワイプ操作エリア -->
@@ -926,8 +923,8 @@
     let modalAudioPath = "";
     let modalYoutubeUrl = "";
     let albumMode = 'normal'; 
-    let puzzleClearTimeout = null; // パズルクリア後の画面遷移タイマー管理
-    let isResultScreenActive = false; // クリアボイス再生中フラグ
+    let puzzleClearTimeout = null; 
+    let isResultScreenActive = false; 
 
     function initAudioContext() {
       if (!audioCtx) {
@@ -1125,7 +1122,7 @@
       { id: 29, char: "こ", voice: "これでいいか・・・なんか、自分の好きなものにしよう。皆様と一緒に旅したいしな。", title: "【 #クロノトリガー 】#1 完全初見！ついにこの神作をプレイする時が来た！時を駆けるメイド【クロノ・トリガー】", date: "2025.03.25", screenshot: "screenshot/utsuro_ss_029.png", img: "img/utsuro_thumb_029.jpg", audio: "audio/utsuro_voice_029.mp3", youtube: "https://www.youtube.com/live/ImHmLxFwvcI?si=skd75mV-hRtgQ1qp&t=2740" },
       { id: 30, char: "め", voice: "メール22通中20通がフルーツジュース抽出中、メール22通中20通がフルーツジュース抽出中", title: "【おしゃべりキング！】脳内で会話してるやつが最強ってわけ【コミュ力診断ゲーム】", date: "2025.10.18", screenshot: "screenshot/utsuro_ss_030.png", img: "img/utsuro_thumb_030.jpg", audio: "audio/utsuro_voice_030.mp3", youtube: "https://www.youtube.com/live/vSGFrRaMSrk?si=NWQo0u0DFt9y1V-X&t=7102" },
       { id: 31, char: "ゆ", voice: "ゆずりあいレーシング、走る時は走るけど基本ゆずりあいでいい・・・アイッ！", title: "【 #パリダカールラリースペシャル 】「伝説」の闇鍋ゲー、パリ・ダカール・ラリー・スペシャルを遊ぶ【＃レトロゲーム】", date: "2025.03.19", screenshot: "screenshot/utsuro_ss_031.png", img: "img/utsuro_thumb_031.jpg", audio: "audio/utsuro_voice_031.mp3", youtube: "https://www.youtube.com/live/ZC4cEr8CGNA?si=KPC4W2iDZANXmW7e&t=3734" },
-      { id: 32, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 32)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
+      { id: 32, char: "く", voice: "ｸﾋﾟｸﾋﾟｸﾋﾟｸﾋﾟ…ｳﾂﾛﾁｬﾝｸﾙｼｲ…ｸﾋﾟｸﾋﾟｸﾋﾟｸﾋﾟ…飲むのやめなさい！じゃあ・・・", title: "【ペプシマン】なぜか超プレミアのついている謎のゲームを遊ぶ【PEPSIMAN】", date: "2025.09.11", screenshot: "screenshot/utsuro_ss_032.png", img: "img/utsuro_thumb_032.jpg", audio: "audio/utsuro_voice_032.mp3", youtube: "https://www.youtube.com/live/kNQn5ldhRN4?si=MZCPxWaBOYeKU6RC&t=5120" },
       { id: 33, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 33)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
       { id: 34, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 34)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
       { id: 35, char: "？", voice: "未設定枠", title: "未獲得のカード (ID: 35)", date: "2026.08.23", screenshot: "screenshot/utsuro_ss_000.png", img: "img/utsuro_thumb_000.jpg", audio: "audio/utsuro_voice_000.mp3", youtube: "https://www.youtube.com/" },
@@ -2225,20 +2222,25 @@
       }
 
       breakoutCard = validData[Math.floor(Math.random() * validData.length)];
-      document.getElementById("breakout-card-info").innerText = `テーマ: ${breakoutCard.title}`;
+      document.getElementById("breakout-card-info").innerText = ""; // ネタバレ防止のためテーマ非表示
       document.getElementById("breakout-bg-img").src = breakoutCard.screenshot || breakoutCard.img;
 
       resetBreakoutPaddleAndBalls();
 
       breakoutBlocks = [];
       breakoutItems = [];
-      const rowCount = 8; 
+      const rowCount = 16; // ブロックの厚みを半分（22px）にして16段に拡張
       const colCount = 8;
-      const blockWidth = 640 / colCount; 
-      const blockHeight = 45; 
+      const blockWidth = 640 / colCount; // 80px
+      const blockHeight = 22; // 厚み 22px
       const offsetTop = 0;   
 
-      const colors = ['#ff3366', '#ffcc00', '#00ffff', '#33ff66', '#cc66ff', '#ff66ff', '#33ccff', '#ffff33'];
+      const colors = [
+        '#ff3366', '#ff5533', '#ffcc00', '#ffee33',
+        '#00ffff', '#33ccff', '#33ff66', '#00ffaa',
+        '#cc66ff', '#ff66ff', '#ff33cc', '#ff6699',
+        '#33ccff', '#ffff33', '#00ffcc', '#ff9900'
+      ];
 
       for (let r = 0; r < rowCount; r++) {
         for (let c = 0; c < colCount; c++) {
@@ -2315,7 +2317,6 @@
     }
 
     function resetBreakoutPaddleAndBalls() {
-      // 高さ660pxの領域に合わせてパドル(y: 600)・ボール(y: 530)を初期配置
       breakoutPaddle = { x: 270, y: 600, width: 100, height: 12, dx: 0 };
       breakoutBalls = [{ x: 320, y: 530, radius: 7, dx: 2.5, dy: -2.5, speed: 3.5, piercing: false }];
       breakoutItems = [];
@@ -2377,7 +2378,7 @@
         ctx.closePath();
       }
 
-      // サブステップ分割による物理演算（判定高さ 660px）
+      // サブステップ分割による物理演算（高さ 660px）
       const SUBSTEPS = 4;
       for (let i = breakoutBalls.length - 1; i >= 0; i--) {
         let ball = breakoutBalls[i];
@@ -2467,7 +2468,7 @@
         }
       }
 
-      // ブロックの描画と生存数チェック
+      // ブロック描画
       let activeBlocksCount = 0;
       breakoutBlocks.forEach(b => {
         if (b.status === 1) {
@@ -2494,11 +2495,13 @@
         return;
       }
 
+      // パドル描画（ネオンブルー固定）
       ctx.fillStyle = "var(--neon-blue)";
       ctx.shadowColor = "#00ffff";
       ctx.shadowBlur = 12;
       ctx.fillRect(breakoutPaddle.x, breakoutPaddle.y, breakoutPaddle.width, breakoutPaddle.height);
 
+      // ボール描画
       breakoutBalls.forEach(ball => {
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -2545,17 +2548,17 @@
         retryBtn.onclick = () => { openKarutaTitle(); };
 
         if (score >= 10) {
-          commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターでございますね！」";
+          commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターを名乗っても差し支えありませんね！」";
         } else {
-          commentEl.innerText = "「ふふふ…なかなかの速さじゃないですか！お見事です！」";
+          commentEl.innerText = "「ふふふ…なかなかの速さでございますね！お見事でございます！」";
         }
       } else if (activeMode === 'shinki') {
         if (shinkiMatchedPairs >= 12) {
           titleEl.innerText = "🎉 COMPLETE! 🎉";
-          commentEl.innerText = "「お見事でございます！すべての名言ペアを記憶してそろえるとは…さすがの記憶力でございます！」";
+          commentEl.innerText = "「お見事でございます！すべての名言ペアを記憶して引き当てるとは…さすがの記憶力でございますね！」";
         } else {
           titleEl.innerText = "⌛ TIME UP! ⌛";
-          commentEl.innerText = "「惜しかったでございますね！耳をすませてボイスを覚えるのがそろえるコツでございますよ！」";
+          commentEl.innerText = "「惜しかったでございますね…！耳をすませてボイスの鳴り分けを聞き取るのがコツでございますよ！」";
         }
         scoreLabelEl.innerText = "獲得ペア数";
         scoreValEl.innerText = `${shinkiMatchedPairs} / 12`;
@@ -2563,24 +2566,24 @@
         retryBtn.onclick = () => { openShinkiTitle(); };
       } else if (activeMode === 'puzzle') {
         titleEl.innerText = "🧩 PUZZLE COMPLETE! 🧩";
-        commentEl.innerText = "「素晴らしい集中力でございます！見事にジグソーパズルを完成させましたね！」";
-        scoreLabelEl.innerText = "クリアしてカードを獲得！";
+        commentEl.innerText = "「素晴らしい集中力でございます！見事にピースを組み上げて完成させましたね！」";
+        scoreLabelEl.innerText = "クリア結果";
         scoreValEl.innerText = "大成功 ✨";
-        penaltyEl.innerText = "制限時間なし・じっくりクリア！";
+        penaltyEl.innerText = "カードを獲得しました！";
         retryBtn.onclick = () => { openPuzzleTitle(); };
       } else if (activeMode === 'slide') {
         titleEl.innerText = "🔲 SLIDE COMPLETE! 🔲";
-        commentEl.innerText = "「お見事！スライドパズルを完璧に解き明かしましたね！カードを獲得しました！」";
-        scoreLabelEl.innerText = "クリアしてカードを獲得！";
+        commentEl.innerText = "「お見事！スライドパズルを完璧に解き明かしてくださいましたね！」";
+        scoreLabelEl.innerText = "クリア結果";
         scoreValEl.innerText = "大成功 ✨";
-        penaltyEl.innerText = "制限時間なし・じっくりクリア！";
+        penaltyEl.innerText = "カードを獲得しました！";
         retryBtn.onclick = () => { openSlideTitle(); };
       } else {
         titleEl.innerText = "🧱 BREAKOUT COMPLETE! 🧱";
-        commentEl.innerText = "「素晴らしいブロック破壊のセンスをお持ちでございます！すべてのブロックを破壊して名言を暴き出しましたね！」";
-        scoreLabelEl.innerText = "クリアしてカードを獲得！";
+        commentEl.innerText = "「素晴らしいブロック崩しでございました！全てのブロックを崩してスクショを暴き出しましたね！」";
+        scoreLabelEl.innerText = "クリア結果";
         scoreValEl.innerText = "大成功 ✨";
-        penaltyEl.innerText = "機数無限・爽快クリア！";
+        penaltyEl.innerText = "カードを獲得しました！";
         retryBtn.onclick = () => { openBreakoutTitle(); };
       }
 
