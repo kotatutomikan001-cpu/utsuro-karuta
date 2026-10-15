@@ -218,6 +218,21 @@
     .album-title { font-size: 1.6rem; color: #ffd700; font-weight: bold; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
     .album-progress { font-size: 1.0rem; color: var(--neon-light-blue); background: rgba(0, 0, 0, 0.6); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--neon-blue); }
 
+    /* ソートボタン群 */
+    .album-sort-group {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 10px; width: 100%; max-width: 1200px; flex-wrap: wrap;
+    }
+    .sort-btn {
+      background: rgba(255, 255, 255, 0.1); color: #fff; border: 2px solid #555;
+      padding: 6px 14px; font-size: 0.8rem; font-weight: bold; border-radius: 20px; cursor: pointer;
+      font-family: 'Zen Maru Gothic', sans-serif; transition: all 0.15s;
+    }
+    .sort-btn:hover { border-color: var(--neon-blue); color: var(--neon-light-blue); }
+    .sort-btn.active {
+      background: var(--neon-blue); color: #000; border-color: var(--neon-blue);
+      box-shadow: 0 0 10px var(--neon-blue);
+    }
+
     #album-grid {
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
@@ -225,7 +240,7 @@
       align-items: start; 
       align-content: start; 
       gap: 12px;
-      width: 100%; max-width: 1200px; height: 80vh; overflow-y: auto; padding: 10px; box-sizing: border-box;
+      width: 100%; max-width: 1200px; height: 74vh; overflow-y: auto; padding: 10px; box-sizing: border-box;
       background: rgba(255, 255, 255, 0.05); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -702,6 +717,15 @@
       <div class="album-progress">コンプリート率: <span id="album-progress-text">0/0 (0%)</span></div>
       <button class="cancel-btn" onclick="closeAlbumScreen()">タイトルへ戻る</button>
     </div>
+
+    <!-- ソート切り替えボタン群 -->
+    <div id="album-sort-container" class="album-sort-group">
+      <span style="font-size: 0.85rem; color: var(--neon-light-blue); font-weight: bold;">並び替え:</span>
+      <button id="sort-date-new-btn" class="sort-btn active" onclick="changeAlbumSort('date_new')">📅 配信日付 (新しい順)</button>
+      <button id="sort-date-old-btn" class="sort-btn" onclick="changeAlbumSort('date_old')">📅 配信日付 (古い順)</button>
+      <button id="sort-char-btn" class="sort-btn" onclick="changeAlbumSort('char')">あ 五十音順</button>
+    </div>
+
     <div id="album-grid"></div>
   </div>
 
@@ -884,7 +908,7 @@
       <div id="result-score-label">獲得結果</div>
       <div id="final-score" class="final-score-val">0 枚</div>
       <div id="penalty-info" style="color: #ff6666; font-size: 0.95rem; margin-bottom: 20px;"></div>
-      <p id="utsuro-comment">「フッ…なかなか素早いじゃないか！見事だぞ！」</p>
+      <p id="utsuro-comment">("フッ…なかなか素早いじゃないか！見事だぞ！")</p>
       <button id="result-retry-btn" class="retry-btn" onclick="openKarutaTitle()">もう一度あそぶ</button>
       <button class="cancel-btn" style="margin-top: 10px;" onclick="showMainTitleScreen()">タイトルへ戻る</button>
     </div>
@@ -923,6 +947,7 @@
     let modalAudioPath = "";
     let modalYoutubeUrl = "";
     let albumMode = 'normal'; 
+    let albumSortOrder = 'date_new'; // デフォルトは配信日付(新しい順) ('date_new', 'date_old', 'char')
     let puzzleClearTimeout = null; 
     let isResultScreenActive = false; 
 
@@ -1289,6 +1314,45 @@
         gtag('event', 'view_album');
       }
 
+      // スライド選択モード時はソート切り替えボタンを非表示にする
+      const sortContainer = document.getElementById("album-sort-container");
+      if (sortContainer) {
+        sortContainer.style.display = (albumMode === 'slide_select') ? 'none' : 'flex';
+      }
+
+      renderAlbumGrid();
+
+      document.getElementById("main-title-screen").style.display = "none";
+      document.getElementById("karuta-title-screen").style.display = "none";
+      document.getElementById("shinki-title-screen").style.display = "none";
+      document.getElementById("puzzle-title-screen").style.display = "none";
+      document.getElementById("slide-title-screen").style.display = "none";
+      document.getElementById("breakout-title-screen").style.display = "none";
+      document.getElementById("album-screen").style.display = "flex";
+    }
+
+    function changeAlbumSort(order) {
+      albumSortOrder = order;
+      const newBtn = document.getElementById("sort-date-new-btn");
+      const oldBtn = document.getElementById("sort-date-old-btn");
+      const charBtn = document.getElementById("sort-char-btn");
+
+      newBtn.classList.remove("active");
+      oldBtn.classList.remove("active");
+      charBtn.classList.remove("active");
+
+      if (order === 'date_new') {
+        newBtn.classList.add("active");
+      } else if (order === 'date_old') {
+        oldBtn.classList.add("active");
+      } else {
+        charBtn.classList.add("active");
+      }
+
+      renderAlbumGrid();
+    }
+
+    function renderAlbumGrid() {
       const unlockedIds = getUnlockedCardIds();
       const albumGrid = document.getElementById("album-grid");
       const titleTextEl = document.getElementById("album-title-text");
@@ -1304,7 +1368,27 @@
       let unlockedCount = 0;
       
       const displayData = (albumMode === 'slide_select') ? getSlideSelectableData() : allData;
-      const sortedData = [...displayData].sort((a, b) => a.id - b.id);
+      
+      // ソート処理
+      let sortedData = [...displayData];
+      if (albumMode !== 'slide_select') {
+        if (albumSortOrder === 'date_new') {
+          // 配信日付順（新しい順）
+          sortedData.sort((a, b) => new Date(b.date.replace(/\./g, '/')) - new Date(a.date.replace(/\./g, '/')));
+        } else if (albumSortOrder === 'date_old') {
+          // 配信日付順（古い順）
+          sortedData.sort((a, b) => new Date(a.date.replace(/\./g, '/')) - new Date(b.date.replace(/\./g, '/')));
+        } else if (albumSortOrder === 'char') {
+          // 五十音順（バッジの文字順。未設定「？」は最後尾）
+          sortedData.sort((a, b) => {
+            if (a.char === '？') return 1;
+            if (b.char === '？') return -1;
+            return a.char.localeCompare(b.char, 'ja');
+          });
+        }
+      } else {
+        sortedData.sort((a, b) => a.id - b.id);
+      }
 
       sortedData.forEach(card => {
         const isUnlocked = unlockedIds.includes(card.id);
@@ -1393,14 +1477,6 @@
 
       const percent = Math.floor((unlockedCount / validData.length) * 100);
       document.getElementById("album-progress-text").innerText = `${unlockedCount}/${validData.length} (${percent}%)`;
-      
-      document.getElementById("main-title-screen").style.display = "none";
-      document.getElementById("karuta-title-screen").style.display = "none";
-      document.getElementById("shinki-title-screen").style.display = "none";
-      document.getElementById("puzzle-title-screen").style.display = "none";
-      document.getElementById("slide-title-screen").style.display = "none";
-      document.getElementById("breakout-title-screen").style.display = "none";
-      document.getElementById("album-screen").style.display = "flex";
     }
 
     function closeAlbumScreen() {
@@ -1495,7 +1571,7 @@
       document.getElementById("board").innerHTML = "";
       document.getElementById("deal-overlay").style.display = "flex";
       document.getElementById("target-voice").innerText = "『準備はいいでございますか？』";
-      document.getElementById("voice-status").innerText = "🔊 （「札を配る」を押してください）";
+      document.getElementById("voice-status").innerText = "🔊 （🎵 「札を配る」を押してください）";
     }
 
     function dealCardsAndStart() {
@@ -1652,7 +1728,7 @@
       document.getElementById("shinki-grid-left").innerHTML = "";
       document.getElementById("shinki-grid-right").innerHTML = "";
       document.getElementById("shinki-deal-overlay").style.display = "flex";
-      document.getElementById("shinki-voice-status").innerText = "🔊 （「カードを配る」を押してください）";
+      document.getElementById("shinki-voice-status").innerText = "🔊 （🎵 「カードを配る」を押してください）";
     }
 
     function dealShinkiCardsAndStart() {
@@ -2222,17 +2298,17 @@
       }
 
       breakoutCard = validData[Math.floor(Math.random() * validData.length)];
-      document.getElementById("breakout-card-info").innerText = ""; // ネタバレ防止のためテーマ非表示
+      document.getElementById("breakout-card-info").innerText = ""; 
       document.getElementById("breakout-bg-img").src = breakoutCard.screenshot || breakoutCard.img;
 
       resetBreakoutPaddleAndBalls();
 
       breakoutBlocks = [];
       breakoutItems = [];
-      const rowCount = 16; // ブロックの厚みを半分（22px）にして16段に拡張
+      const rowCount = 16; 
       const colCount = 8;
-      const blockWidth = 640 / colCount; // 80px
-      const blockHeight = 22; // 厚み 22px
+      const blockWidth = 640 / colCount; 
+      const blockHeight = 22; 
       const offsetTop = 0;   
 
       const colors = [
@@ -2261,7 +2337,6 @@
       const canvasWrapper = document.getElementById("breakout-canvas-wrapper");
       const touchPad = document.getElementById("breakout-touch-pad");
       
-      // パソコン用マウス移動
       canvasWrapper.onmousemove = (e) => {
         if (!isGameActive) return;
         const rect = canvasWrapper.getBoundingClientRect();
@@ -2272,7 +2347,6 @@
         if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
       };
 
-      // スマホ用スワイプ操作
       let touchStartX = null;
       let paddleStartX = null;
 
@@ -2378,7 +2452,6 @@
         ctx.closePath();
       }
 
-      // サブステップ分割による物理演算（高さ 660px）
       const SUBSTEPS = 4;
       for (let i = breakoutBalls.length - 1; i >= 0; i--) {
         let ball = breakoutBalls[i];
@@ -2387,7 +2460,6 @@
           ball.x += ball.dx / SUBSTEPS;
           ball.y += ball.dy / SUBSTEPS;
 
-          // 壁との衝突
           if (ball.x - ball.radius < 0) { 
             ball.x = ball.radius; 
             ball.dx *= -1; 
@@ -2402,7 +2474,6 @@
             ball.piercing = false;
           }
 
-          // パドル（操作バー）との衝突
           if (
             ball.y + ball.radius >= breakoutPaddle.y &&
             ball.y - ball.radius <= breakoutPaddle.y + breakoutPaddle.height &&
@@ -2416,7 +2487,6 @@
             break;
           }
 
-          // ブロックとの衝突判定
           let collided = false;
           breakoutBlocks.forEach(b => {
             if (b.status === 1) {
@@ -2429,7 +2499,6 @@
                 b.status = 0;
                 playBlockHitSE();
 
-                // 20%でアイテムドロップ
                 if (Math.random() < 0.2) {
                   let randType = Math.random();
                   let itemType = randType < 0.35 ? 'multiball' : (randType < 0.7 ? 'longbar' : 'pierce');
@@ -2457,7 +2526,6 @@
           if (collided) break;
         }
 
-        // ボール落下判定（機数無限）
         if (ball.y > 660) {
           breakoutBalls.splice(i, 1);
           if (breakoutBalls.length === 0) {
@@ -2468,7 +2536,6 @@
         }
       }
 
-      // ブロック描画
       let activeBlocksCount = 0;
       breakoutBlocks.forEach(b => {
         if (b.status === 1) {
@@ -2481,7 +2548,6 @@
         }
       });
 
-      // クリア判定
       if (activeBlocksCount === 0) {
         isGameActive = false;
         showFeedback("correct", "🎉 ブロック崩しクリア！");
@@ -2495,13 +2561,11 @@
         return;
       }
 
-      // パドル描画（ネオンブルー固定）
       ctx.fillStyle = "var(--neon-blue)";
       ctx.shadowColor = "#00ffff";
       ctx.shadowBlur = 12;
       ctx.fillRect(breakoutPaddle.x, breakoutPaddle.y, breakoutPaddle.width, breakoutPaddle.height);
 
-      // ボール描画
       breakoutBalls.forEach(ball => {
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -2573,7 +2637,7 @@
         retryBtn.onclick = () => { openPuzzleTitle(); };
       } else if (activeMode === 'slide') {
         titleEl.innerText = "🔲 SLIDE COMPLETE! 🔲";
-        commentEl.innerText = "「お見事！スライドパズルを完璧に解き明かしてくださいましたね！」";
+        commentEl.innerText = "順調なお手並みでございましたね！パズル制覇おめでとうございます！";
         scoreLabelEl.innerText = "クリア結果";
         scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "カードを獲得しました！";
