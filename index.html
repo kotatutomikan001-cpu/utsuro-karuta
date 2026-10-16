@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>氷室うつろ配信名言収集ミニゲーム</title>
   
+  <!-- スマホのホーム画面用アイコン指定 -->
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
   <!-- Google Analytics (GA4) 計測タグ -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-226DWMX0DQ"></script>
   <script>
@@ -851,7 +854,7 @@
     <div class="top-header-common">
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="breakout-voice-status" style="font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold;">
-          🧱 ブロックを全て壊してスクショを暴き出せ！ (機数無限)
+          🧱 「ゲームを始める」を押してください
         </div>
       </div>
 
@@ -951,12 +954,49 @@
     let puzzleClearTimeout = null; 
     let isResultScreenActive = false; 
 
+    // SE用のWeb Audio APIバッファーキャッシュ
+    let audioBufferCache = {};
+
     function initAudioContext() {
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (AudioContextClass) audioCtx = new AudioContextClass();
       }
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function preloadSE(audioPath) {
+      initAudioContext();
+      if (!audioCtx || audioBufferCache[audioPath]) return;
+      fetch(audioPath)
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => audioCtx.decodeAudioData(arrayBuffer))
+        .then(buffer => {
+          audioBufferCache[audioPath] = buffer;
+        })
+        .catch(err => console.log("SEプリロード失敗:", err));
+    }
+
+    function playSE(audioPath) {
+      initAudioContext();
+      if (audioCtx && audioBufferCache[audioPath]) {
+        try {
+          const source = audioCtx.createBufferSource();
+          source.buffer = audioBufferCache[audioPath];
+          const gainNode = audioCtx.createGain();
+          gainNode.gain.value = masterVolume;
+          source.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          source.start(0);
+          return;
+        } catch(e) {
+          console.log("Web Audio SE再生エラー:", e);
+        }
+      }
+      // キャッシュ未読み込み時のフォールバック
+      const se = new Audio(audioPath);
+      se.volume = masterVolume;
+      se.play().catch(e => console.log("SE再生エラー:", e));
     }
 
     function stopCurrentNormalizedVoice() {
@@ -1082,17 +1122,11 @@
     }
 
     function playGetCardSE() {
-      initAudioContext();
-      const se = new Audio(CARD_GET_SE_FILE);
-      se.volume = masterVolume;
-      se.play().catch(e => console.log("SE再生エラー:", e));
+      playSE(CARD_GET_SE_FILE);
     }
 
     function playBlockHitSE() {
-      initAudioContext();
-      const se = new Audio(BLOCK_HIT_SE_FILE);
-      se.volume = masterVolume;
-      se.play().catch(e => console.log("ブロック破壊SE再生エラー:", e));
+      playSE(BLOCK_HIT_SE_FILE);
     }
 
     function setMasterVolume(vol) {
@@ -1226,6 +1260,12 @@
     let breakoutItems = []; 
     let breakoutKeyLeft = false;
     let breakoutKeyRight = false;
+
+    // 初回読み込み時にSEをプリロード
+    window.addEventListener('DOMContentLoaded', () => {
+      preloadSE(CARD_GET_SE_FILE);
+      preloadSE(BLOCK_HIT_SE_FILE);
+    });
 
     function showMainTitleScreen() {
       clearInterval(timerInterval);
@@ -1544,6 +1584,9 @@
 
     function closeRetireConfirm() {
       document.getElementById("retire-modal").style.display = "none";
+      if (activeMode === 'breakout' && isGameActive) {
+        runBreakoutLoop();
+      }
     }
 
     function goToGameArea() {
@@ -2281,7 +2324,7 @@
 
       document.getElementById("breakout-card-info").innerText = "";
       document.getElementById("breakout-deal-overlay").style.display = "flex";
-      document.getElementById("breakout-voice-status").innerText = "🔊 （📦 「ゲームを始める」を押してください）";
+      document.getElementById("breakout-voice-status").innerText = "🧱 「ゲームを始める」を押してください";
       
       const canvas = document.getElementById("breakout-canvas");
       const ctx = canvas.getContext("2d");
@@ -2333,6 +2376,7 @@
 
       isGameActive = true;
       isResultScreenActive = false;
+      document.getElementById("breakout-voice-status").innerText = "🧱 パドルを操作してブロックを崩そう！";
 
       const canvasWrapper = document.getElementById("breakout-canvas-wrapper");
       const touchPad = document.getElementById("breakout-touch-pad");
