@@ -854,7 +854,7 @@
     <div class="top-header-common">
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="breakout-voice-status" style="font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold;">
-          🧱 「ゲームを始める」を押してください
+          🧱 パドルを操作してブロックを崩そう！
         </div>
       </div>
 
@@ -2324,7 +2324,7 @@
 
       document.getElementById("breakout-card-info").innerText = "";
       document.getElementById("breakout-deal-overlay").style.display = "flex";
-      document.getElementById("breakout-voice-status").innerText = "🧱 「ゲームを始める」を押してください";
+      document.getElementById("breakout-voice-status").innerText = "🧱 パドルを操作してブロックを崩そう！";
       
       const canvas = document.getElementById("breakout-canvas");
       const ctx = canvas.getContext("2d");
@@ -2487,6 +2487,7 @@
           continue;
         }
 
+        ctx.save();
         ctx.beginPath();
         ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
         if (item.type === 'multiball') ctx.fillStyle = '#ff3366';
@@ -2494,6 +2495,7 @@
         else ctx.fillStyle = '#33ff66';
         ctx.fill();
         ctx.closePath();
+        ctx.restore();
       }
 
       const SUBSTEPS = 4;
@@ -2581,6 +2583,7 @@
       }
 
       let activeBlocksCount = 0;
+      ctx.save();
       breakoutBlocks.forEach(b => {
         if (b.status === 1) {
           activeBlocksCount++;
@@ -2591,6 +2594,7 @@
           ctx.strokeRect(b.x, b.y, b.width, b.height);
         }
       });
+      ctx.restore();
 
       if (activeBlocksCount === 0) {
         isGameActive = false;
@@ -2605,11 +2609,16 @@
         return;
       }
 
-      ctx.fillStyle = "var(--neon-blue)";
+      // パドルの描画（常にネオンブルーを明示的に指定）
+      ctx.save();
+      ctx.fillStyle = "#00ffff";
       ctx.shadowColor = "#00ffff";
       ctx.shadowBlur = 12;
       ctx.fillRect(breakoutPaddle.x, breakoutPaddle.y, breakoutPaddle.width, breakoutPaddle.height);
+      ctx.restore();
 
+      // ボールの描画
+      ctx.save();
       breakoutBalls.forEach(ball => {
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -2619,7 +2628,7 @@
         ctx.fill();
         ctx.closePath();
       });
-      ctx.shadowBlur = 0; 
+      ctx.restore();
 
       breakoutAnimId = requestAnimationFrame(runBreakoutLoop);
     }
