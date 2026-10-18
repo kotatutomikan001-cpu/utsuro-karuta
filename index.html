@@ -200,20 +200,6 @@
 
     .game-select-btn:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--neon-blue), 0 0 15px #fff; outline: 3px solid #fff; }
 
-    /* 隠しボタン（未解放時） */
-    .game-select-btn.secret-locked {
-      background: rgba(255, 255, 255, 0.08);
-      color: #888;
-      border: 2px dashed #555;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-    .game-select-btn.secret-locked:hover {
-      transform: none;
-      box-shadow: none;
-      outline: none;
-    }
-
     /* 隠しボタン（解放時） */
     .game-select-btn.secret-unlocked {
       background: #ffd700;
@@ -636,10 +622,8 @@
     <!-- デバッグ用リセットボタン -->
     <button class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況・隠しモード解除</button>
 
-    <div class="title-btn-group-vertical">
-      <!-- 隠しモード：カルタボタン（初期は非表示または非活性） -->
-      <button id="karuta-secret-btn" class="game-select-btn secret-locked" onclick="event.stopPropagation(); handleKarutaSecretButtonClick()">🔒 ？？？？？ (隠しモード)</button>
-
+    <div id="main-menu-btn-group" class="title-btn-group-vertical">
+      <!-- 隠しカルタボタンはJSで解放時のみ動的に挿入されます -->
       <button class="game-select-btn" onclick="event.stopPropagation(); openShinkiTitle()">🧠 名言神経衰弱</button>
       <button class="game-select-btn" onclick="event.stopPropagation(); openPuzzleTitle()">🧩 名言ジグソーパズル</button>
       <button class="game-select-btn" onclick="event.stopPropagation(); openSlideTitle()">🔲 名言スライドパズル</button>
@@ -1197,14 +1181,25 @@
     }
 
     function updateKarutaSecretButton() {
-      const btn = document.getElementById("karuta-secret-btn");
-      if (!btn) return;
+      const btnGroup = document.getElementById("main-menu-btn-group");
+      let btn = document.getElementById("karuta-secret-btn");
+
       if (isKarutaUnlocked()) {
-        btn.innerText = "🎴 名言カルタ (裏技解放！)";
-        btn.className = "game-select-btn secret-unlocked";
+        if (!btn) {
+          btn = document.createElement("button");
+          btn.id = "karuta-secret-btn";
+          btn.className = "game-select-btn secret-unlocked";
+          btn.innerText = "🎴 名言カルタ";
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            openKarutaTitle();
+          };
+          btnGroup.insertBefore(btn, btnGroup.firstChild);
+        }
       } else {
-        btn.innerText = "🔒 ？？？？？ (隠しモード)";
-        btn.className = "game-select-btn secret-locked";
+        if (btn) {
+          btn.remove();
+        }
       }
     }
 
@@ -1222,18 +1217,7 @@
         if (!isKarutaUnlocked()) {
           setKarutaUnlocked();
           playGetCardSE();
-          showFeedback("correct", "✨ 隠しモード「名言カルタ」解放！ ✨");
-        } else {
-          showFeedback("correct", "🎴 解放済みでございます！");
         }
-      }
-    }
-
-    function handleKarutaSecretButtonClick() {
-      if (isKarutaUnlocked()) {
-        openKarutaTitle();
-      } else {
-        showFeedback("wrong", "🔒 ロゴを5回連打すると…？");
       }
     }
 
