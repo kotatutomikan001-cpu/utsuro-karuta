@@ -81,6 +81,18 @@
       text-align: center;
       padding: 0 10px;
       line-height: 1.3;
+      user-select: none;
+    }
+
+    /* 隠し要素用タップエリア */
+    .secret-trigger {
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.1s, color 0.1s;
+    }
+    .secret-trigger:active {
+      transform: scale(1.08);
+      color: var(--neon-light-blue);
     }
 
     .sub-title-logo {
@@ -187,6 +199,32 @@
     }
 
     .game-select-btn:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--neon-blue), 0 0 15px #fff; outline: 3px solid #fff; }
+
+    /* 隠しボタン（未解放時） */
+    .game-select-btn.secret-locked {
+      background: rgba(255, 255, 255, 0.08);
+      color: #888;
+      border: 2px dashed #555;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+    .game-select-btn.secret-locked:hover {
+      transform: none;
+      box-shadow: none;
+      outline: none;
+    }
+
+    /* 隠しボタン（解放時） */
+    .game-select-btn.secret-unlocked {
+      background: #ffd700;
+      color: #000;
+      box-shadow: 0 0 20px #ffd700;
+      animation: pulseGold 1.5s infinite alternate;
+    }
+    @keyframes pulseGold {
+      0% { box-shadow: 0 0 15px #ffd700; }
+      100% { box-shadow: 0 0 30px #ffd700, 0 0 10px #fff; }
+    }
 
     .action-btn {
       background: var(--neon-blue); color: #000; border: none;
@@ -583,7 +621,7 @@
   <!-- 1. 一番最初の統合タイトル画面 -->
   <div id="main-title-screen" class="screen-overlay" onclick="initAudioContext()">
     <div class="main-title-logo">
-      氷室うつろ配信<br>名言収集ミニゲーム
+      <span id="secret-logo-trigger" class="secret-trigger" onclick="event.stopPropagation(); handleSecretClick();">氷室うつろ</span>配信<br>名言収集ミニゲーム
     </div>
 
     <div class="setting-box">
@@ -596,10 +634,12 @@
     </div>
 
     <!-- デバッグ用リセットボタン -->
-    <button class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況をリセット</button>
+    <button class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況・隠しモード解除</button>
 
     <div class="title-btn-group-vertical">
-      <button class="game-select-btn" onclick="event.stopPropagation(); openKarutaTitle()">🎴 名言カルタ</button>
+      <!-- 隠しモード：カルタボタン（初期は非表示または非活性） -->
+      <button id="karuta-secret-btn" class="game-select-btn secret-locked" onclick="event.stopPropagation(); handleKarutaSecretButtonClick()">🔒 ？？？？？ (隠しモード)</button>
+
       <button class="game-select-btn" onclick="event.stopPropagation(); openShinkiTitle()">🧠 名言神経衰弱</button>
       <button class="game-select-btn" onclick="event.stopPropagation(); openPuzzleTitle()">🧩 名言ジグソーパズル</button>
       <button class="game-select-btn" onclick="event.stopPropagation(); openSlideTitle()">🔲 名言スライドパズル</button>
@@ -724,8 +764,8 @@
     <!-- ソート切り替えボタン群 -->
     <div id="album-sort-container" class="album-sort-group">
       <span style="font-size: 0.85rem; color: var(--neon-light-blue); font-weight: bold;">並び替え:</span>
-      <button id="sort-date-new-btn" class="sort-btn active" onclick="changeAlbumSort('date_new')">📅 配信日付 (新しい順)</button>
-      <button id="sort-date-old-btn" class="sort-btn" onclick="changeAlbumSort('date_old')">📅 配信日付 (古い順)</button>
+      <button id="sort-date-old-btn" class="sort-btn active" onclick="changeAlbumSort('date_old')">📅 配信日付 (古い順)</button>
+      <button id="sort-date-new-btn" class="sort-btn" onclick="changeAlbumSort('date_new')">📅 配信日付 (新しい順)</button>
       <button id="sort-char-btn" class="sort-btn" onclick="changeAlbumSort('char')">あ 五十音順</button>
     </div>
 
@@ -950,9 +990,13 @@
     let modalAudioPath = "";
     let modalYoutubeUrl = "";
     let albumMode = 'normal'; 
-    let albumSortOrder = 'date_new'; // デフォルトは配信日付(新しい順) ('date_new', 'date_old', 'char')
+    let albumSortOrder = 'date_old'; // デフォルトは配信日付(古い順) ('date_old', 'date_new', 'char')
     let puzzleClearTimeout = null; 
     let isResultScreenActive = false; 
+
+    // 裏技タップ回数カウンター
+    let secretClickCount = 0;
+    let secretClickTimer = null;
 
     // SE用のWeb Audio APIバッファーキャッシュ
     let audioBufferCache = {};
@@ -1142,10 +1186,63 @@
       playNormalizedAudio(TEST_VOICE_FILE, 0.0);
     }
 
+    // 隠しモード解放状態の管理
+    function isKarutaUnlocked() {
+      return localStorage.getItem("utsuro_karuta_secret_unlocked") === "true";
+    }
+
+    function setKarutaUnlocked() {
+      localStorage.setItem("utsuro_karuta_secret_unlocked", "true");
+      updateKarutaSecretButton();
+    }
+
+    function updateKarutaSecretButton() {
+      const btn = document.getElementById("karuta-secret-btn");
+      if (!btn) return;
+      if (isKarutaUnlocked()) {
+        btn.innerText = "🎴 名言カルタ (裏技解放！)";
+        btn.className = "game-select-btn secret-unlocked";
+      } else {
+        btn.innerText = "🔒 ？？？？？ (隠しモード)";
+        btn.className = "game-select-btn secret-locked";
+      }
+    }
+
+    function handleSecretClick() {
+      initAudioContext();
+      secretClickCount++;
+
+      if (secretClickTimer) clearTimeout(secretClickTimer);
+      secretClickTimer = setTimeout(() => {
+        secretClickCount = 0;
+      }, 2000); // 2秒間操作がなければカウントリセット
+
+      if (secretClickCount >= 5) {
+        secretClickCount = 0;
+        if (!isKarutaUnlocked()) {
+          setKarutaUnlocked();
+          playGetCardSE();
+          showFeedback("correct", "✨ 隠しモード「名言カルタ」解放！ ✨");
+        } else {
+          showFeedback("correct", "🎴 解放済みでございます！");
+        }
+      }
+    }
+
+    function handleKarutaSecretButtonClick() {
+      if (isKarutaUnlocked()) {
+        openKarutaTitle();
+      } else {
+        showFeedback("wrong", "🔒 ロゴを5回連打すると…？");
+      }
+    }
+
     function debugResetUnlockedCards() {
-      if (confirm("【デバッグ】獲得したカードのデータをすべてリセットして初期状態に戻しますか？")) {
+      if (confirm("【デバッグ】獲得カードデータおよび隠しモード解放状況をリセットしますか？")) {
         localStorage.removeItem("utsuro_karuta_album");
-        alert("カードの獲得状況をリセットしました！");
+        localStorage.removeItem("utsuro_karuta_secret_unlocked");
+        updateKarutaSecretButton();
+        alert("データおよび裏技解放状況をリセットしました！");
       }
     }
 
@@ -1167,7 +1264,7 @@
       { id: 15, char: "も", voice: "もうだめだぁ・・・おしまいだぁ・・・岩盤ドーン！", title: "【 #1/8192】高評価500いくかクリアするまで終わらない喋りまくり耐久【＃雑談】", date: "2025.03.30", screenshot: "screenshot/utsuro_ss_015.png", img: "img/utsuro_thumb_015.jpg", audio: "audio/utsuro_voice_015.mp3", youtube: "https://www.youtube.com/live/qEhuQ-EJbA4?si=CKG1DFvOfj5k9Upr" },
       { id: 16, char: "み", voice: "見たっていう事実を積み重ねて人生を厚くしていくんだろうなと思って・・・", title: "【雑談】今日の夜休みだから朝活【朝活】", date: "2026.04.06", screenshot: "screenshot/utsuro_ss_016.png", img: "img/utsuro_thumb_016.jpg", audio: "audio/utsuro_voice_016.mp3", youtube: "https://www.youtube.com/live/qpnTkfTr5Kw?si=eGGpm3ahP3_sWAL9&t=3389" },
       { id: 17, char: "ぬ", voice: "「ぬっさ～～ん！ぬっさ～～ん！ぬっさん・・・弱い・・・」「ぬっ！ぬっ！」「すいません、でも弱いよ!ぬっさん・・・」", title: "【メダロット2クワガタバージョン】おねえさんとロボトルしようじゃないか【レトロゲーム】", date: "2026.02.10", screenshot: "screenshot/utsuro_ss_017.png", img: "img/utsuro_thumb_017.jpg", audio: "audio/utsuro_voice_017.mp3", youtube: "https://www.youtube.com/live/_4rCdv4lmqA?si=nwKEtL7SP93pG5c9&t=6225" },
-      { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾、やった！rocket launcherｳﾃﾙﾉ!?", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
+      { id: 18, char: "ろ", voice: "ロケットランチャー！rocket launcher!?モーションセンサー爆弾、やった！rocket launcherｳﾃルノ!?", title: "【ゴールデンアイ007】完全初見！君も昔はボンドだったのか？キッズ【レトロゲーム】", date: "2025.12.28", screenshot: "screenshot/utsuro_ss_018.png", img: "img/utsuro_thumb_018.jpg", audio: "audio/utsuro_voice_018.mp3", youtube: "https://www.youtube.com/live/W3z6sn_C-j8?si=gYoprNYjasZ0XFZX&t=6577" },
       { id: 19, char: "こ", voice: "〇すぞ・・・〇すぞ・・・（スゥ～ッ）ふぅ～～っ・・・〇すぞ・・・マジで・・・マジでがっかりだ美樹原ホントに・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=Yw9emN7k1A_8zrZy&t=4105" },
       { id: 20, char: "よ", voice: "妖精がｲｴ~~ﾝ!!!って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
@@ -1261,10 +1358,11 @@
     let breakoutKeyLeft = false;
     let breakoutKeyRight = false;
 
-    // 初回読み込み時にSEをプリロード
+    // 初回読み込み時にSEをプリロード＆隠しボタン表示更新
     window.addEventListener('DOMContentLoaded', () => {
       preloadSE(CARD_GET_SE_FILE);
       preloadSE(BLOCK_HIT_SE_FILE);
+      updateKarutaSecretButton();
     });
 
     function showMainTitleScreen() {
@@ -1273,6 +1371,7 @@
       isGameActive = false;
       isResultScreenActive = false;
       stopCurrentNormalizedVoice();
+      updateKarutaSecretButton();
 
       document.getElementById("main-title-screen").style.display = "flex";
       document.getElementById("karuta-title-screen").style.display = "none";
@@ -1373,18 +1472,18 @@
 
     function changeAlbumSort(order) {
       albumSortOrder = order;
-      const newBtn = document.getElementById("sort-date-new-btn");
       const oldBtn = document.getElementById("sort-date-old-btn");
+      const newBtn = document.getElementById("sort-date-new-btn");
       const charBtn = document.getElementById("sort-char-btn");
 
-      newBtn.classList.remove("active");
       oldBtn.classList.remove("active");
+      newBtn.classList.remove("active");
       charBtn.classList.remove("active");
 
-      if (order === 'date_new') {
-        newBtn.classList.add("active");
-      } else if (order === 'date_old') {
+      if (order === 'date_old') {
         oldBtn.classList.add("active");
+      } else if (order === 'date_new') {
+        newBtn.classList.add("active");
       } else {
         charBtn.classList.add("active");
       }
@@ -1412,12 +1511,12 @@
       // ソート処理
       let sortedData = [...displayData];
       if (albumMode !== 'slide_select') {
-        if (albumSortOrder === 'date_new') {
-          // 配信日付順（新しい順）
-          sortedData.sort((a, b) => new Date(b.date.replace(/\./g, '/')) - new Date(a.date.replace(/\./g, '/')));
-        } else if (albumSortOrder === 'date_old') {
+        if (albumSortOrder === 'date_old') {
           // 配信日付順（古い順）
           sortedData.sort((a, b) => new Date(a.date.replace(/\./g, '/')) - new Date(b.date.replace(/\./g, '/')));
+        } else if (albumSortOrder === 'date_new') {
+          // 配信日付順（新しい順）
+          sortedData.sort((a, b) => new Date(b.date.replace(/\./g, '/')) - new Date(a.date.replace(/\./g, '/')));
         } else if (albumSortOrder === 'char') {
           // 五十音順（バッジの文字順。未設定「？」は最後尾）
           sortedData.sort((a, b) => {
@@ -1614,7 +1713,7 @@
       document.getElementById("board").innerHTML = "";
       document.getElementById("deal-overlay").style.display = "flex";
       document.getElementById("target-voice").innerText = "『準備はいいでございますか？』";
-      document.getElementById("voice-status").innerText = "🔊 （🎵 「札を配る」を押してください）";
+      document.getElementById("voice-status").innerText = "🔊 （<span>「札を配る」を押してください</span>）";
     }
 
     function dealCardsAndStart() {
