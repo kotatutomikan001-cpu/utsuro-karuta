@@ -377,7 +377,7 @@
       position: absolute; top: 0; left: 0; width: 640px; height: 360px; z-index: 2; display: block;
     }
 
-    /* スマホ用十字キー操作パネル */
+    /* 十字キー操作パネル (PCマウス・スマホタッチ共通) */
     .dpad-container {
       display: grid;
       grid-template-columns: repeat(3, 50px);
@@ -386,6 +386,7 @@
       margin-top: 15px;
       justify-content: center;
       user-select: none;
+      -webkit-user-select: none;
       touch-action: manipulation;
     }
 
@@ -401,8 +402,10 @@
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      user-select: none;
+      -webkit-user-select: none;
     }
-    .dpad-btn:active {
+    .dpad-btn:active, .dpad-btn.active {
       background: var(--neon-blue);
       color: #000;
     }
@@ -804,7 +807,7 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🚩 遊び方</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・矢印キー/十字キー/ゲームパッドで自機を操作します。<br>
+        ・矢印キー/十字キー/ゲームパッド/画面の矢印ボタンで自機を操作します。<br>
         ・外枠から内側へラインを引き、再び囲い込むと領域を占領できます！<br>
         ・敵（Qix）や引いている途中の線に触れると1ミスとなります。<br>
         ・<b>85%以上</b> の領域を獲得してスクショ画像を全開にすればクリア！
@@ -1008,20 +1011,20 @@
         <canvas id="qix-canvas" width="640" height="360"></canvas>
       </div>
 
-      <!-- スマホ・タブレット用十字キーUI -->
-      <div class="dpad-container">
+      <!-- PCマウス/タッチ両対応 十字キーUI -->
+      <div class="dpad-container" oncontextmenu="return false;">
         <div class="dpad-btn dpad-up" 
-             ontouchstart="setDpadDirection('up', true)" ontouchend="setDpadDirection('up', false)"
-             onmousedown="setDpadDirection('up', true)" onmouseup="setDpadDirection('up', false)">▲</div>
+             ontouchstart="setDpadDirection('up', true, event)" ontouchend="setDpadDirection('up', false, event)"
+             onmousedown="setDpadDirection('up', true, event)" onmouseup="setDpadDirection('up', false, event)" onmouseleave="setDpadDirection('up', false, event)">▲</div>
         <div class="dpad-btn dpad-left" 
-             ontouchstart="setDpadDirection('left', true)" ontouchend="setDpadDirection('left', false)"
-             onmousedown="setDpadDirection('left', true)" onmouseup="setDpadDirection('left', false)">◀</div>
+             ontouchstart="setDpadDirection('left', true, event)" ontouchend="setDpadDirection('left', false, event)"
+             onmousedown="setDpadDirection('left', true, event)" onmouseup="setDpadDirection('left', false, event)" onmouseleave="setDpadDirection('left', false, event)">◀</div>
         <div class="dpad-btn dpad-right" 
-             ontouchstart="setDpadDirection('right', true)" ontouchend="setDpadDirection('right', false)"
-             onmousedown="setDpadDirection('right', true)" onmouseup="setDpadDirection('right', false)">▶</div>
+             ontouchstart="setDpadDirection('right', true, event)" ontouchend="setDpadDirection('right', false, event)"
+             onmousedown="setDpadDirection('right', true, event)" onmouseup="setDpadDirection('right', false, event)" onmouseleave="setDpadDirection('right', false, event)">▶</div>
         <div class="dpad-btn dpad-down" 
-             ontouchstart="setDpadDirection('down', true)" ontouchend="setDpadDirection('down', false)"
-             onmousedown="setDpadDirection('down', true)" onmouseup="setDpadDirection('down', false)">▼</div>
+             ontouchstart="setDpadDirection('down', true, event)" ontouchend="setDpadDirection('down', false, event)"
+             onmousedown="setDpadDirection('down', true, event)" onmouseup="setDpadDirection('down', false, event)" onmouseleave="setDpadDirection('down', false, event)">▼</div>
       </div>
 
       <div id="qix-deal-overlay">
@@ -3031,9 +3034,20 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function setDpadDirection(dir, active) {
+    // マウス・タッチ操作の共通ハンドラ
+    function setDpadDirection(dir, active, e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       if (dir in qixMoveKey) {
         qixMoveKey[dir] = active;
+      }
+      // UIのビジュアルフィードバック
+      const btn = document.querySelector(`.dpad-${dir}`);
+      if (btn) {
+        if (active) btn.classList.add('active');
+        else btn.classList.remove('active');
       }
     }
 
@@ -3265,7 +3279,6 @@
     }
 
     function handleQixMiss(msg) {
-      // 即座に既存のクイックス・アニメーションループを完全にキャンセルのこと
       if (qixAnimId) {
         cancelAnimationFrame(qixAnimId);
         qixAnimId = null;
@@ -3275,6 +3288,10 @@
       showFeedback("wrong", msg);
       qixLives--;
       updateQixDisplay();
+
+      // 移動フラグを全解除
+      qixMoveKey = { up: false, down: false, left: false, right: false };
+      document.querySelectorAll('.dpad-btn').forEach(b => b.classList.remove('active'));
 
       // 描画中の線を消去
       for (let r = 0; r < QIX_ROWS; r++) {
@@ -3292,7 +3309,6 @@
         isGameActive = false;
         showTimeUpScreen();
       } else {
-        // 残機がある場合は少し間を置いてループを再開
         setTimeout(() => {
           if (activeMode === 'qix' && isGameActive) {
             runQixLoop();
