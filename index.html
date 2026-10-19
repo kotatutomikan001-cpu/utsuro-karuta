@@ -1435,7 +1435,7 @@
       }
     }
 
-    let activeMode = 'karuta';
+    let activeMode = 'none';
     let timerInterval = null;
     let isGameActive = false;
 
@@ -1601,10 +1601,21 @@
       requestAnimationFrame(pollGamepadInput);
     }
 
+    function stopAllAnimations() {
+      if (breakoutAnimId) {
+        cancelAnimationFrame(breakoutAnimId);
+        breakoutAnimId = null;
+      }
+      if (qixAnimId) {
+        cancelAnimationFrame(qixAnimId);
+        qixAnimId = null;
+      }
+    }
+
     function showMainTitleScreen() {
+      stopAllAnimations();
+      activeMode = 'none';
       clearInterval(timerInterval);
-      cancelAnimationFrame(breakoutAnimId);
-      cancelAnimationFrame(qixAnimId);
       isGameActive = false;
       isResultScreenActive = false;
       stopCurrentNormalizedVoice();
@@ -1631,6 +1642,7 @@
     }
 
     function openKarutaTitle() {
+      stopAllAnimations();
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
       document.getElementById("clear-modal").style.display = "none";
@@ -1640,6 +1652,7 @@
     }
 
     function openShinkiTitle() {
+      stopAllAnimations();
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
       document.getElementById("clear-modal").style.display = "none";
@@ -1649,6 +1662,7 @@
     }
 
     function openPuzzleTitle() {
+      stopAllAnimations();
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
       document.getElementById("clear-modal").style.display = "none";
@@ -1658,6 +1672,7 @@
     }
 
     function openSlideTitle() {
+      stopAllAnimations();
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
       document.getElementById("clear-modal").style.display = "none";
@@ -1667,6 +1682,7 @@
     }
 
     function openBreakoutTitle() {
+      stopAllAnimations();
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
       document.getElementById("clear-modal").style.display = "none";
@@ -1676,6 +1692,7 @@
     }
 
     function openQixTitle() {
+      stopAllAnimations();
       stopCurrentNormalizedVoice();
       isResultScreenActive = false;
       document.getElementById("clear-modal").style.display = "none";
@@ -1696,6 +1713,7 @@
     }
 
     function openAlbumScreen(mode = 'normal') {
+      stopAllAnimations();
       albumMode = mode;
       if (albumMode === 'normal' && typeof gtag === 'function') {
         gtag('event', 'view_album');
@@ -1925,8 +1943,7 @@
 
     function openRetireConfirm() {
       stopCurrentNormalizedVoice();
-      cancelAnimationFrame(breakoutAnimId);
-      cancelAnimationFrame(qixAnimId);
+      stopAllAnimations();
       isResultScreenActive = false;
       document.getElementById("retire-modal").style.display = "flex";
     }
@@ -1941,6 +1958,7 @@
     }
 
     function goToGameArea() {
+      stopAllAnimations();
       activeMode = 'karuta';
       initAudioContext();
       stopCurrentNormalizedVoice();
@@ -2104,6 +2122,7 @@
     }
 
     function goToShinkiGameArea() {
+      stopAllAnimations();
       activeMode = 'shinki';
       initAudioContext();
       stopCurrentNormalizedVoice();
@@ -2267,6 +2286,7 @@
 
     /* ジグソーパズル関連の処理 */
     function goToPuzzleGameArea() {
+      stopAllAnimations();
       activeMode = 'puzzle';
       initAudioContext();
       stopCurrentNormalizedVoice();
@@ -2497,6 +2517,7 @@
 
     /* スライドパズル関連の処理 */
     function goToSlideGameArea(cardData = null) {
+      stopAllAnimations();
       activeMode = 'slide';
       initAudioContext();
       stopCurrentNormalizedVoice();
@@ -2661,6 +2682,7 @@
 
     /* ブロック崩し関連の処理 */
     function goToBreakoutGameArea() {
+      stopAllAnimations();
       activeMode = 'breakout';
       initAudioContext();
       stopCurrentNormalizedVoice();
@@ -2670,7 +2692,6 @@
       document.getElementById("breakout-container").style.display = "flex";
 
       clearInterval(timerInterval);
-      cancelAnimationFrame(breakoutAnimId);
       isGameActive = false;
 
       document.getElementById("breakout-card-info").innerText = "";
@@ -2733,7 +2754,7 @@
       const touchPad = document.getElementById("breakout-touch-pad");
       
       canvasWrapper.onmousemove = (e) => {
-        if (!isGameActive) return;
+        if (!isGameActive || activeMode !== 'breakout') return;
         const rect = canvasWrapper.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const scale = 640 / rect.width;
@@ -2746,7 +2767,7 @@
       let paddleStartX = null;
 
       touchPad.ontouchstart = (e) => {
-        if (!isGameActive) return;
+        if (!isGameActive || activeMode !== 'breakout') return;
         if (e.touches.length > 0) {
           const rect = touchPad.getBoundingClientRect();
           touchStartX = e.touches[0].clientX - rect.left;
@@ -2755,7 +2776,7 @@
       };
 
       touchPad.ontouchmove = (e) => {
-        if (!isGameActive || touchStartX === null) return;
+        if (!isGameActive || activeMode !== 'breakout' || touchStartX === null) return;
         if (e.touches.length > 0) {
           const rect = touchPad.getBoundingClientRect();
           const currentX = e.touches[0].clientX - rect.left;
@@ -2774,12 +2795,16 @@
       };
 
       window.onkeydown = (e) => {
-        if (e.key === "ArrowLeft" || e.key === "a") breakoutKeyLeft = true;
-        if (e.key === "ArrowRight" || e.key === "d") breakoutKeyRight = true;
+        if (activeMode === 'breakout') {
+          if (e.key === "ArrowLeft" || e.key === "a") breakoutKeyLeft = true;
+          if (e.key === "ArrowRight" || e.key === "d") breakoutKeyRight = true;
+        }
       };
       window.onkeyup = (e) => {
-        if (e.key === "ArrowLeft" || e.key === "a") breakoutKeyLeft = false;
-        if (e.key === "ArrowRight" || e.key === "d") breakoutKeyRight = false;
+        if (activeMode === 'breakout') {
+          if (e.key === "ArrowLeft" || e.key === "a") breakoutKeyLeft = false;
+          if (e.key === "ArrowRight" || e.key === "d") breakoutKeyRight = false;
+        }
       };
 
       runBreakoutLoop();
@@ -2792,7 +2817,7 @@
     }
 
     function runBreakoutLoop() {
-      if (!isGameActive) return;
+      if (!isGameActive || activeMode !== 'breakout') return;
 
       const canvas = document.getElementById("breakout-canvas");
       const ctx = canvas.getContext("2d");
@@ -2986,6 +3011,7 @@
 
     /* クイックス（陣取り）関連の処理 */
     function goToQixGameArea() {
+      stopAllAnimations();
       activeMode = 'qix';
       initAudioContext();
       stopCurrentNormalizedVoice();
@@ -2994,7 +3020,6 @@
       document.getElementById("qix-title-screen").style.display = "none";
       document.getElementById("qix-container").style.display = "flex";
 
-      cancelAnimationFrame(qixAnimId);
       isGameActive = false;
 
       document.getElementById("qix-card-info").innerText = "";
@@ -3240,6 +3265,12 @@
     }
 
     function handleQixMiss(msg) {
+      // 即座に既存のクイックス・アニメーションループを完全にキャンセルのこと
+      if (qixAnimId) {
+        cancelAnimationFrame(qixAnimId);
+        qixAnimId = null;
+      }
+
       playSE(SHINKI_MISS_SE_FILE);
       showFeedback("wrong", msg);
       qixLives--;
@@ -3254,13 +3285,19 @@
       qixLinePath = [];
       qixPlayer.isDrawing = false;
 
-      // 安全地帯(1)の最寄りのマスへ自機を戻す
+      // 安全地帯(1)のスタート地点へ自機を戻す
       qixPlayer.x = 0; qixPlayer.y = 0;
 
       if (qixLives <= 0) {
         isGameActive = false;
-        cancelAnimationFrame(qixAnimId);
         showTimeUpScreen();
+      } else {
+        // 残機がある場合は少し間を置いてループを再開
+        setTimeout(() => {
+          if (activeMode === 'qix' && isGameActive) {
+            runQixLoop();
+          }
+        }, 800);
       }
     }
 
@@ -3316,7 +3353,7 @@
       // クリア判定（85%以上獲得でクリア）
       if (qixPercent >= 85.0) {
         isGameActive = false;
-        cancelAnimationFrame(qixAnimId);
+        stopAllAnimations();
         showFeedback("correct", "🎉 陣取りクリア！全開達成！");
         saveUnlockedCardId(qixCard.id);
 
@@ -3380,12 +3417,12 @@
         titleEl.innerText = "🧩 PUZZLE COMPLETE! 🧩";
         commentEl.innerText = "「素晴らしい集中力でございます！見事にピースを組み上げて完成させましたね！」";
         scoreLabelEl.innerText = "クリア結果";
-        scoreValEl.innerText = "大購入 ✨";
+        scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "カードを獲得しました！";
         retryBtn.onclick = () => { openPuzzleTitle(); };
       } else if (activeMode === 'slide') {
         titleEl.innerText = "🔲 SLIDE COMPLETE! 🔲";
-        commentEl.innerText = "順調なお手並みでございましたね！パズル制覇おめでとうございます！";
+        commentEl.innerText = "「見事なお手並みでございましたね！パズル制覇おめでとうございます！」";
         scoreLabelEl.innerText = "クリア結果";
         scoreValEl.innerText = "大成功 ✨";
         penaltyEl.innerText = "カードを獲得しました！";
