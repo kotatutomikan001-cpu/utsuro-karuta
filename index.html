@@ -804,10 +804,10 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🚩 遊び方</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・矢印キーまたは画面下のボタンで自機を操作します。<br>
+        ・矢印キー/十字キー/ゲームパッドで自機を操作します。<br>
         ・外枠から内側へラインを引き、再び囲い込むと領域を占領できます！<br>
         ・敵（Qix）や引いている途中の線に触れると1ミスとなります。<br>
-        ・<b>75%以上</b> の領域を獲得してスクショ画像を全開にすればクリア！
+        ・<b>85%以上</b> の領域を獲得してスクショ画像を全開にすればクリア！
       </p>
     </div>
 
@@ -995,7 +995,7 @@
 
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="qix-voice-status" style="font-size: 0.85rem; color: var(--neon-light-blue); font-weight: bold;">
-          🚩 目標: 75%以上の領域を獲得しよう！
+          🚩 目標: 85%以上の領域を獲得しよう！
         </div>
       </div>
 
@@ -1487,12 +1487,119 @@
     let qixMoveKey = { up: false, down: false, left: false, right: false };
     let qixMoveTimer = 0;
 
+    // ゲームパッド制御用変数
+    let gamepadPrevButtons = {};
+
     // 初回読み込み時にSEをプリロード＆隠しボタン表示更新
     window.addEventListener('DOMContentLoaded', () => {
       preloadSE(CARD_GET_SE_FILE);
       preloadSE(BLOCK_HIT_SE_FILE);
       updateKarutaSecretButton();
+      
+      // ゲームパッド入力ルーチンの起動
+      requestAnimationFrame(pollGamepadInput);
     });
+
+    // PC用ゲームパッド（コントローラー）入力ポーリング関数
+    function pollGamepadInput() {
+      const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+      let gp = null;
+      for (let i = 0; i < gamepads.length; i++) {
+        if (gamepads[i] && gamepads[i].connected) {
+          gp = gamepads[i];
+          break;
+        }
+      }
+
+      if (gp) {
+        initAudioContext();
+
+        // 1. 方向キー（D-Pad） / 左スティック入力の処理
+        const threshold = 0.5;
+        const stickX = gp.axes[0] || 0;
+        const stickY = gp.axes[1] || 0;
+
+        const dpadUp = gp.buttons[12] && gp.buttons[12].pressed;
+        const dpadDown = gp.buttons[13] && gp.buttons[13].pressed;
+        const dpadLeft = gp.buttons[14] && gp.buttons[14].pressed;
+        const dpadRight = gp.buttons[15] && gp.buttons[15].pressed;
+
+        const up = dpadUp || stickY < -threshold;
+        const down = dpadDown || stickY > threshold;
+        const left = dpadLeft || stickX < -threshold;
+        const right = dpadRight || stickX > threshold;
+
+        // クイックス（陣取り）移動
+        if (activeMode === 'qix' && isGameActive) {
+          qixMoveKey.up = up;
+          qixMoveKey.down = down;
+          qixMoveKey.left = left;
+          qixMoveKey.right = right;
+        }
+
+        // ブロック崩し移動
+        if (activeMode === 'breakout' && isGameActive) {
+          breakoutKeyLeft = left;
+          breakoutKeyRight = right;
+        }
+
+        // 2. ボタン押下判定（トリガーイベント）
+        function isButtonPressed(btnIdx) {
+          const isDown = gp.buttons[btnIdx] && gp.buttons[btnIdx].pressed;
+          const wasDown = gamepadPrevButtons[btnIdx] || false;
+          gamepadPrevButtons[btnIdx] = isDown;
+          return isDown && !wasDown;
+        }
+
+        // Aボタン（ボタン0: 決定/スタート）
+        if (isButtonPressed(0)) {
+          if (document.getElementById("retire-modal").style.display === "flex") {
+            closeRetireConfirm();
+          } else if (document.getElementById("clear-modal").style.display === "flex") {
+            const retryBtn = document.getElementById("result-retry-btn");
+            if (retryBtn) retryBtn.click();
+          } else if (document.getElementById("qix-deal-overlay") && document.getElementById("qix-deal-overlay").style.display !== "none") {
+            dealQixCardsAndStart();
+          } else if (document.getElementById("breakout-deal-overlay") && document.getElementById("breakout-deal-overlay").style.display !== "none") {
+            dealBreakoutCardsAndStart();
+          } else if (document.getElementById("puzzle-deal-overlay") && document.getElementById("puzzle-deal-overlay").style.display !== "none") {
+            dealPuzzleCardsAndStart();
+          } else if (document.getElementById("slide-deal-overlay") && document.getElementById("slide-deal-overlay").style.display !== "none") {
+            dealSlideCardsAndStart();
+          } else if (document.getElementById("shinki-deal-overlay") && document.getElementById("shinki-deal-overlay").style.display !== "none") {
+            dealShinkiCardsAndStart();
+          } else if (document.getElementById("deal-overlay") && document.getElementById("deal-overlay").style.display !== "none") {
+            dealCardsAndStart();
+          }
+        }
+
+        // Bボタン（ボタン1: キャンセル/戻る）
+        if (isButtonPressed(1)) {
+          if (document.getElementById("retire-modal").style.display === "flex") {
+            showMainTitleScreen();
+          } else if (document.getElementById("clear-modal").style.display === "flex") {
+            showMainTitleScreen();
+          } else if (document.getElementById("image-modal").style.display === "flex") {
+            closeImageModal();
+          } else if (document.getElementById("album-screen").style.display === "flex") {
+            closeAlbumScreen();
+          }
+        }
+
+        // STARTボタン（ボタン8, 9, 10: ポーズ/リタイア画面開閉）
+        if (isButtonPressed(9) || isButtonPressed(8) || isButtonPressed(10)) {
+          if (isGameActive) {
+            if (document.getElementById("retire-modal").style.display === "flex") {
+              closeRetireConfirm();
+            } else {
+              openRetireConfirm();
+            }
+          }
+        }
+      }
+
+      requestAnimationFrame(pollGamepadInput);
+    }
 
     function showMainTitleScreen() {
       clearInterval(timerInterval);
@@ -2892,7 +2999,7 @@
 
       document.getElementById("qix-card-info").innerText = "";
       document.getElementById("qix-deal-overlay").style.display = "flex";
-      document.getElementById("qix-voice-status").innerText = "🚩 目標: 75%以上の領域を獲得しよう！";
+      document.getElementById("qix-voice-status").innerText = "🚩 目標: 85%以上の領域を獲得しよう！";
       
       const canvas = document.getElementById("qix-canvas");
       const ctx = canvas.getContext("2d");
@@ -2934,7 +3041,7 @@
 
       qixPlayer = { x: 0, y: 0, isDrawing: false };
       qixLinePath = [];
-      qixEnemy = { x: 40, y: 22, vx: 0.25, vy: 0.18, length: 18, angle: 0 };
+      qixEnemy = { x: 40, y: 22, vx: 0.3, vy: 0.2, length: 15, angle: 0 };
       qixLives = 3;
       qixPercent = 0;
       qixMoveKey = { up: false, down: false, left: false, right: false };
@@ -3206,8 +3313,8 @@
       updateQixDisplay();
       playGetCardSE();
 
-      // クリア判定（75%以上獲得でクリア）
-      if (qixPercent >= 75.0) {
+      // クリア判定（85%以上獲得でクリア）
+      if (qixPercent >= 85.0) {
         isGameActive = false;
         cancelAnimationFrame(qixAnimId);
         showFeedback("correct", "🎉 陣取りクリア！全開達成！");
@@ -3273,7 +3380,7 @@
         titleEl.innerText = "🧩 PUZZLE COMPLETE! 🧩";
         commentEl.innerText = "「素晴らしい集中力でございます！見事にピースを組み上げて完成させましたね！」";
         scoreLabelEl.innerText = "クリア結果";
-        scoreValEl.innerText = "大成功 ✨";
+        scoreValEl.innerText = "大購入 ✨";
         penaltyEl.innerText = "カードを獲得しました！";
         retryBtn.onclick = () => { openPuzzleTitle(); };
       } else if (activeMode === 'slide') {
@@ -3291,13 +3398,13 @@
         penaltyEl.innerText = "カードを獲得しました！";
         retryBtn.onclick = () => { openBreakoutTitle(); };
       } else {
-        titleEl.innerText = qixPercent >= 75.0 ? "🚩 QIX COMPLETE! 🚩" : "💀 GAME OVER 💀";
-        commentEl.innerText = qixPercent >= 75.0 
+        titleEl.innerText = qixPercent >= 85.0 ? "🚩 QIX COMPLETE! 🚩" : "💀 GAME OVER 💀";
+        commentEl.innerText = qixPercent >= 85.0 
           ? "「見事な領土拡大でございました！大胆に線を引いて囲い込む度胸、見事です！」"
           : "「無念…！敵の動きを見極めつつ、少しずつ囲い込むのが安全でございますよ！」";
         scoreLabelEl.innerText = "最終占領率";
         scoreValEl.innerText = `${qixPercent.toFixed(1)}%`;
-        penaltyEl.innerText = qixPercent >= 75.0 ? "カードを獲得しました！" : "目標: 75%以上";
+        penaltyEl.innerText = qixPercent >= 85.0 ? "カードを獲得しました！" : "目標: 85%以上";
         retryBtn.onclick = () => { openQixTitle(); };
       }
 
