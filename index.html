@@ -683,7 +683,6 @@
     <button class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況・隠しモード解除</button>
 
     <div id="main-menu-btn-group" class="title-btn-group-vertical">
-      <!-- 隠しカルタボタンはJSで解放時のみ動的に挿入されます -->
       <button class="game-select-btn" onclick="event.stopPropagation(); openShinkiTitle()">🧠 名言神経衰弱</button>
       <button class="game-select-btn" onclick="event.stopPropagation(); openPuzzleTitle()">🧩 名言ジグソーパズル</button>
       <button class="game-select-btn" onclick="event.stopPropagation(); openSlideTitle()">🔲 名言スライドパズル</button>
@@ -1207,7 +1206,10 @@
       if (!audioCtx) {
         fallbackAudioObj = new Audio(audioPath);
         fallbackAudioObj.volume = masterVolume;
-        fallbackAudioObj.play().catch(e => console.log("再生拒否:", e));
+        fallbackAudioObj.play().catch(e => {
+          console.log("再生拒否:", e);
+          if (onDurationEnd) onDurationEnd();
+        });
         if (customDuration) {
           puzzleClearTimeout = setTimeout(() => {
             stopCurrentNormalizedVoice();
@@ -1270,10 +1272,14 @@
           }
         })
         .catch(err => {
+          console.log("Audio load error:", err);
           stopCurrentNormalizedVoice();
           fallbackAudioObj = new Audio(audioPath);
           fallbackAudioObj.volume = masterVolume;
-          fallbackAudioObj.play().catch(e => console.log("Fallback failed:", e));
+          fallbackAudioObj.play().catch(e => {
+            console.log("Fallback failed:", e);
+            if (onDurationEnd) onDurationEnd();
+          });
           if (customDuration) {
             puzzleClearTimeout = setTimeout(() => {
               stopCurrentNormalizedVoice();
@@ -1782,13 +1788,10 @@
       let sortedData = [...displayData];
       if (albumMode !== 'slide_select') {
         if (albumSortOrder === 'date_old') {
-          // 配信日付順（古い順）
           sortedData.sort((a, b) => new Date(a.date.replace(/\./g, '/')) - new Date(b.date.replace(/\./g, '/')));
         } else if (albumSortOrder === 'date_new') {
-          // 配信日付順（新しい順）
           sortedData.sort((a, b) => new Date(b.date.replace(/\./g, '/')) - new Date(a.date.replace(/\./g, '/')));
         } else if (albumSortOrder === 'char') {
-          // 五十音順（バッジの文字順。未設定「？」は最後尾）
           sortedData.sort((a, b) => {
             if (a.char === '？') return 1;
             if (b.char === '？') return -1;
@@ -2511,10 +2514,17 @@
         saveUnlockedCardId(currentPuzzleCard.id);
         
         isResultScreenActive = true;
-        playNormalizedAudio(currentPuzzleCard.audio, 0.0, 20.0, () => {
+        playNormalizedAudio(currentPuzzleCard.audio, 0.0, 10.0, () => {
           isResultScreenActive = false;
           showTimeUpScreen();
         });
+
+        setTimeout(() => {
+          if (isResultScreenActive) {
+            isResultScreenActive = false;
+            showTimeUpScreen();
+          }
+        }, 2500);
       }
     }
 
@@ -2676,10 +2686,17 @@
         saveUnlockedCardId(currentSlideCard.id);
         
         isResultScreenActive = true;
-        playNormalizedAudio(currentSlideCard.audio, 0.0, 20.0, () => {
+        playNormalizedAudio(currentSlideCard.audio, 0.0, 10.0, () => {
           isResultScreenActive = false;
           showTimeUpScreen();
         });
+
+        setTimeout(() => {
+          if (isResultScreenActive) {
+            isResultScreenActive = false;
+            showTimeUpScreen();
+          }
+        }, 2500);
       }
     }
 
@@ -2981,10 +2998,17 @@
         saveUnlockedCardId(breakoutCard.id);
 
         isResultScreenActive = true;
-        playNormalizedAudio(breakoutCard.audio, 0.0, 20.0, () => {
+        playNormalizedAudio(breakoutCard.audio, 0.0, 10.0, () => {
           isResultScreenActive = false;
           showTimeUpScreen();
         });
+
+        setTimeout(() => {
+          if (isResultScreenActive) {
+            isResultScreenActive = false;
+            showTimeUpScreen();
+          }
+        }, 2500);
         return;
       }
 
@@ -3374,10 +3398,18 @@
         saveUnlockedCardId(qixCard.id);
 
         isResultScreenActive = true;
-        playNormalizedAudio(qixCard.audio, 0.0, 20.0, () => {
+        playNormalizedAudio(qixCard.audio, 0.0, 10.0, () => {
           isResultScreenActive = false;
           showTimeUpScreen();
         });
+
+        // 音声再生トラブル時用の安全タイマー（2.5秒後に強制画面遷移）
+        setTimeout(() => {
+          if (isResultScreenActive) {
+            isResultScreenActive = false;
+            showTimeUpScreen();
+          }
+        }, 2500);
       }
     }
 
@@ -3415,7 +3447,7 @@
         if (score >= 10) {
           commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターを名乗っても差し支えありませんね！」";
         } else {
-          commentEl.innerText = "「ふふふ…なかなかの速さでございますね！お見事でございます！」";
+          commentEl.innerText = "「ふふふ…なかなかの速さでございますね！お見目でございます！」";
         }
       } else if (activeMode === 'shinki') {
         if (shinkiMatchedPairs >= 12) {
