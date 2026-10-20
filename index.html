@@ -1815,7 +1815,7 @@
       stopCurrentNormalizedVoice();
       updateKarutaSecretButton();
 
-      // ★ クイックス・ブロック崩しのキー入力リスナー解除＆フラグ初期化
+      // クイックス・ブロック崩しのキー入力リスナー解除＆フラグ初期化
       window.onkeydown = null;
       window.onkeyup = null;
       qixMoveKey = { up: false, down: false, left: false, right: false };
@@ -3035,7 +3035,6 @@
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 十字キー・ゲームパッド入力時のパドル移動速度を18に大幅アップ
       if (breakoutKeyLeft) breakoutPaddle.x -= 18;
       if (breakoutKeyRight) breakoutPaddle.x += 18;
 
@@ -3553,6 +3552,24 @@
 
       let ex = Math.min(QIX_COLS - 1, Math.max(0, Math.floor(qixEnemy.x)));
       let ey = Math.min(QIX_ROWS - 1, Math.max(0, Math.floor(qixEnemy.y)));
+
+      // ★ 敵が壁や線上(1)に重なっている場合、周囲の未獲得マス(0)を探して探索スタート地点を補正
+      if (qixGrid[ey][ex] === 1) {
+        let foundSafeStart = false;
+        for (let dy = -2; dy <= 2 && !foundSafeStart; dy++) {
+          for (let dx = -2; dx <= 2 && !foundSafeStart; dx++) {
+            let tx = ex + dx;
+            let ty = ey + dy;
+            if (tx >= 0 && tx < QIX_COLS && ty >= 0 && ty < QIX_ROWS) {
+              if (qixGrid[ty][tx] === 0) {
+                ex = tx;
+                ey = ty;
+                foundSafeStart = true;
+              }
+            }
+          }
+        }
+      }
 
       if (qixGrid[ey][ex] === 0) {
         queue.push({ x: ex, y: ey });
