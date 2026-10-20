@@ -53,6 +53,14 @@
       position: relative;
     }
 
+    /* ゲームパッドフォーカスハイライト用スタイル */
+    .gp-focused {
+      outline: 4px solid #ffd700 !important;
+      box-shadow: 0 0 25px #ffd700, 0 0 10px #fff !important;
+      transform: scale(1.05) !important;
+      z-index: 100 !important;
+    }
+
     /* 画面共通オーバーレイ */
     .screen-overlay {
       position: absolute;
@@ -744,6 +752,7 @@
       <div class="setting-title">🧩 遊び方 (制限時間 なし)</div>
       <p id="puzzle-instructions" style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
         ・ピースをドラッグ＆ドロップして配置しよう！クリックで90度回転。<br>
+        ・ゲームパッド操作：方向キーでピース・マスを選び、Aボタンで選択／配置！<br>
         ・完成したら名言カードを獲得できます！
       </p>
     </div>
@@ -787,7 +796,7 @@
       <div class="setting-title">🧱 遊び方</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
         ・画面下のスワイプエリアでバーを動かしてボールを弾き返そう！(スマホ)<br>
-        ・マウスや十字キーを左右に動かしてバーを動かしてボールを弾き返そう！(PC)<br>
+        ・マウスや十字キー、ゲームパッドを左右に動かしてバーを動かしてボールを弾き返そう！(PC)<br>
         ・アイテム（🔴マルチボール / 🔵ロングバー / 🟢貫通弾）を活用して全てのブロックを壊し、カードをゲットしよう！
       </p>
     </div>
@@ -1499,6 +1508,11 @@
 
     // ゲームパッド制御用変数
     let gamepadPrevButtons = {};
+    let gpNavTargetElements = [];
+    let gpNavIndex = 0;
+
+    // ジグソーパズル用ゲームパッド選択変数
+    let gpPuzzleSelectedPieceIndex = null; // トレイ内の選択中のインデックス
 
     // 初回読み込み時にSEをプリロード＆隠しボタン表示更新
     window.addEventListener('DOMContentLoaded', () => {
@@ -1509,6 +1523,55 @@
       // ゲームパッド入力ルーチンの起動
       requestAnimationFrame(pollGamepadInput);
     });
+
+    // 画面変更時にフォーカス要素を収集するヘルパー
+    function updateGamepadNavTargets() {
+      // 既存のハイライトを全削除
+      document.querySelectorAll('.gp-focused').forEach(el => el.classList.remove('gp-focused'));
+
+      let selector = "";
+      if (document.getElementById("retire-modal").style.display === "flex") {
+        selector = "#retire-modal button";
+      } else if (document.getElementById("clear-modal").style.display === "flex") {
+        selector = "#clear-modal button";
+      } else if (document.getElementById("image-modal").style.display === "flex") {
+        selector = "#image-modal button";
+      } else if (document.getElementById("main-title-screen").style.display !== "none") {
+        selector = "#main-title-screen button";
+      } else if (document.getElementById("karuta-title-screen").style.display !== "none") {
+        selector = "#karuta-title-screen button";
+      } else if (document.getElementById("shinki-title-screen").style.display !== "none") {
+        selector = "#shinki-title-screen button";
+      } else if (document.getElementById("puzzle-title-screen").style.display !== "none") {
+        selector = "#puzzle-title-screen button";
+      } else if (document.getElementById("slide-title-screen").style.display !== "none") {
+        selector = "#slide-title-screen button";
+      } else if (document.getElementById("breakout-title-screen").style.display !== "none") {
+        selector = "#breakout-title-screen button";
+      } else if (document.getElementById("qix-title-screen").style.display !== "none") {
+        selector = "#qix-title-screen button";
+      } else if (document.getElementById("album-screen").style.display !== "none") {
+        selector = "#album-screen .cancel-btn, #album-screen .sort-btn, #album-screen .album-card";
+      } else if (activeMode === 'karuta' && isGameActive) {
+        selector = "#board .card";
+      } else if (activeMode === 'shinki' && isGameActive) {
+        selector = "#shinki-board-container .shinki-card:not(.matched)";
+      } else if (activeMode === 'puzzle' && isGameActive) {
+        selector = "#puzzle-tray .puzzle-piece, #puzzle-grid .puzzle-slot";
+      } else if (activeMode === 'slide' && isGameActive) {
+        selector = "#slide-grid .slide-tile:not(.empty)";
+      }
+
+      if (selector) {
+        gpNavTargetElements = Array.from(document.querySelectorAll(selector)).filter(el => el.offsetParent !== null);
+        if (gpNavIndex >= gpNavTargetElements.length) gpNavIndex = 0;
+        if (gpNavTargetElements.length > 0) {
+          gpNavTargetElements[gpNavIndex].classList.add('gp-focused');
+        }
+      } else {
+        gpNavTargetElements = [];
+      }
+    }
 
     // PC用ゲームパッド（コントローラー）入力ポーリング関数
     function pollGamepadInput() {
@@ -1561,7 +1624,45 @@
           return isDown && !wasDown;
         }
 
-        // Aボタン（ボタン0: 決定/スタート）
+        // --- 画面ナビゲーション・カーソル移動（Qix・ブロック崩しのアクション動作中以外） ---
+        const isActionGameRunning = (activeMode === 'qix' || activeMode === 'breakout') && isGameActive;
+
+        if (!isActionGameRunning) {
+          updateGamepadNavTargets();
+
+          if (gpNavTargetElements.length > 0) {
+            let nextIndex = gpNavIndex;
+
+            if (isButtonPressed(12) || (up && !gamepadPrevButtons['stickUp'])) { // UP
+              nextIndex = Math.max(0, gpNavIndex - 1);
+            }
+            if (isButtonPressed(13) || (down && !gamepadPrevButtons['stickDown'])) { // DOWN
+              nextIndex = Math.min(gpNavTargetElements.length - 1, gpNavIndex + 1);
+            }
+            if (isButtonPressed(14) || (left && !gamepadPrevButtons['stickLeft'])) { // LEFT
+              nextIndex = Math.max(0, gpNavIndex - 1);
+            }
+            if (isButtonPressed(15) || (right && !gamepadPrevButtons['stickRight'])) { // RIGHT
+              nextIndex = Math.min(gpNavTargetElements.length - 1, gpNavIndex + 1);
+            }
+
+            gamepadPrevButtons['stickUp'] = up;
+            gamepadPrevButtons['stickDown'] = down;
+            gamepadPrevButtons['stickLeft'] = left;
+            gamepadPrevButtons['stickRight'] = right;
+
+            if (nextIndex !== gpNavIndex) {
+              if (gpNavTargetElements[gpNavIndex]) gpNavTargetElements[gpNavIndex].classList.remove('gp-focused');
+              gpNavIndex = nextIndex;
+              if (gpNavTargetElements[gpNavIndex]) {
+                gpNavTargetElements[gpNavIndex].classList.add('gp-focused');
+                gpNavTargetElements[gpNavIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
+            }
+          }
+        }
+
+        // Aボタン（ボタン0: 決定/選択/実行）
         if (isButtonPressed(0)) {
           if (document.getElementById("retire-modal").style.display === "flex") {
             closeRetireConfirm();
@@ -1580,6 +1681,31 @@
             dealShinkiCardsAndStart();
           } else if (document.getElementById("deal-overlay") && document.getElementById("deal-overlay").style.display !== "none") {
             dealCardsAndStart();
+          } else if (gpNavTargetElements.length > 0 && gpNavTargetElements[gpNavIndex]) {
+            const focusedEl = gpNavTargetElements[gpNavIndex];
+
+            // ジグソーパズルのゲームパッド特殊操作
+            if (activeMode === 'puzzle' && isGameActive) {
+              if (focusedEl.classList.contains('puzzle-piece')) {
+                // トレイ内のピース選択＆回転
+                const pieceId = focusedEl.id;
+                const pieceObj = puzzleTrayPieces.find(p => p && p.uid === pieceId);
+                if (pieceObj) {
+                  pieceObj.currentRotation = (pieceObj.currentRotation + 90) % 360;
+                  renderPuzzleBoard();
+                  checkPuzzleCompletion();
+                }
+              } else if (focusedEl.classList.contains('puzzle-slot')) {
+                // スロットへの自動はめ込み
+                const slotIdx = parseInt(focusedEl.id.replace('puzzle-slot-', ''));
+                const availablePiece = puzzleTrayPieces.find(p => p !== null);
+                if (availablePiece && !isNaN(slotIdx)) {
+                  placePieceIntoSlot(availablePiece.uid, slotIdx);
+                }
+              }
+            } else {
+              focusedEl.click();
+            }
           }
         }
 
@@ -1593,6 +1719,15 @@
             closeImageModal();
           } else if (document.getElementById("album-screen").style.display === "flex") {
             closeAlbumScreen();
+          } else if (isGameActive) {
+            openRetireConfirm();
+          } else if (document.getElementById("karuta-title-screen").style.display !== "none" ||
+                     document.getElementById("shinki-title-screen").style.display !== "none" ||
+                     document.getElementById("puzzle-title-screen").style.display !== "none" ||
+                     document.getElementById("slide-title-screen").style.display !== "none" ||
+                     document.getElementById("breakout-title-screen").style.display !== "none" ||
+                     document.getElementById("qix-title-screen").style.display !== "none") {
+            showMainTitleScreen();
           }
         }
 
@@ -2844,8 +2979,9 @@
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (breakoutKeyLeft) breakoutPaddle.x -= 7;
-      if (breakoutKeyRight) breakoutPaddle.x += 7;
+      // 十字キー・ゲームパッド入力時のパドル移動速度を18に大幅アップ
+      if (breakoutKeyLeft) breakoutPaddle.x -= 18;
+      if (breakoutKeyRight) breakoutPaddle.x += 18;
 
       if (breakoutPaddle.x < 0) breakoutPaddle.x = 0;
       if (breakoutPaddle.x > 640 - breakoutPaddle.width) breakoutPaddle.x = 640 - breakoutPaddle.width;
