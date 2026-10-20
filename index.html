@@ -1815,6 +1815,13 @@
       stopCurrentNormalizedVoice();
       updateKarutaSecretButton();
 
+      // ★ クイックス・ブロック崩しのキー入力リスナー解除＆フラグ初期化
+      window.onkeydown = null;
+      window.onkeyup = null;
+      qixMoveKey = { up: false, down: false, left: false, right: false };
+      breakoutKeyLeft = false;
+      breakoutKeyRight = false;
+
       document.getElementById("main-title-screen").style.display = "flex";
       document.getElementById("karuta-title-screen").style.display = "none";
       document.getElementById("shinki-title-screen").style.display = "none";
@@ -3326,7 +3333,14 @@
     }
 
     function runQixLoop() {
-      if (!isGameActive || activeMode !== 'qix') return;
+      // Qixモードかつゲームアクティブ時以外はループを即時中断
+      if (!isGameActive || activeMode !== 'qix') {
+        if (qixAnimId) {
+          cancelAnimationFrame(qixAnimId);
+          qixAnimId = null;
+        }
+        return;
+      }
 
       const canvas = document.getElementById("qix-canvas");
       const ctx = canvas.getContext("2d");
