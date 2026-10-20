@@ -722,7 +722,7 @@
       <div class="setting-title">🧠 遊び方 (制限時間 180秒)</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
         ・左右のエリアからカードを1枚ずつめくります。<br>
-        ・左右のエリアに応じたステレオ音声で鳴り分けます！<br>
+        ・ステレオ出力の場合、左(青)のエリアは左から、右(赤)のエリアは右から音声が出力されます。<br>
         ・そろえたボイスの名言カードを獲得できます。<br>
         ・制限時間内に全12ペアのコンプリートを目指しましょう！
       </p>
@@ -766,7 +766,7 @@
         ・空きマスの隣にあるピースをクリックして動かそう！<br>
         ・ピースをスライドさせてサムネイルの絵を復元させよう。<br>
         ・完成したら名言カードを獲得できます。<br>
-        ・制限時間なしで、心ゆくまでじっくり遊べます！
+        ・ゲームの難易度が高いので未獲得のカード含めて任意のカードを選んで遊ぶことが出来ます。
       </p>
     </div>
 
@@ -786,7 +786,8 @@
     <div class="setting-box" style="margin-top: 10px; max-width: 460px;">
       <div class="setting-title">🧱 遊び方</div>
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
-        ・画面下のスワイプエリアでパドルを動かしてボールを弾き返そう！<br>
+        ・画面下のスワイプエリアでバーを動かしてボールを弾き返そう！(スマホ)<br>
+        ・マウスや十字キーを左右に動かしてバーを動かしてボールを弾き返そう！(PC)<br>
         ・アイテム（🔴マルチボール / 🔵ロングバー / 🟢貫通弾）を活用して全てのブロックを壊し、カードをゲットしよう！
       </p>
     </div>
@@ -960,7 +961,7 @@
     <div class="top-header-common">
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="breakout-voice-status" style="font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold;">
-          🧱 パドルを操作してブロックを崩そう！
+          🧱 バーを操作してブロックを崩しよう！
         </div>
       </div>
 
@@ -973,7 +974,7 @@
         <canvas id="breakout-canvas" width="640" height="660"></canvas>
       </div>
       <!-- スマホ用スワイプ操作エリア -->
-      <div id="breakout-touch-pad">👈 ここをスワイプしてパドルを操作 👉</div>
+      <div id="breakout-touch-pad">👈 ここをスワイプしてバーを操作 👉</div>
 
       <div id="breakout-deal-overlay">
         <button class="action-btn" onclick="dealBreakoutCardsAndStart()">ゲームを始める</button>
@@ -1392,7 +1393,7 @@
       { id: 19, char: "こ", voice: "〇すぞ・・・〇すぞ・・・（スゥ～ッ）ふぅ～～っ・・・〇すぞ・・・マジで・・・マジでがっかりだ美樹原ホントに・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_019.png", img: "img/utsuro_thumb_019.jpg", audio: "audio/utsuro_voice_019.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=Yw9emN7k1A_8zrZy&t=4105" },
       { id: 20, char: "よ", voice: "妖精がｲｴ~~ﾝ!!!って言ってる・・・フフフフ", title: "【ドンキーコング64】工場行くぞ！27年前のゲームにどハマりのメイド【レトロゲーム／氷室うつろ】", date: "2026.06.15", screenshot: "screenshot/utsuro_ss_020.png", img: "img/utsuro_thumb_020.jpg", audio: "audio/utsuro_voice_020.mp3", youtube: "https://www.youtube.com/live/IfnVvuMbOA8?si=ujBSWEGEYgvlBcj9&t=1535" },
       { id: 21, char: "う", voice: "（うつろの、うつろの脳みそが焼き切れるとこ見せてよ）見せちゃおっかな・・・うつろの脳みそが焼き切れるとこ・・・", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_021.png", img: "img/utsuro_thumb_021.jpg", audio: "audio/utsuro_voice_021.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=uuTR15FgZy8fTkBd&t=17154" },
-      { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「頑張ったね、うん頑張ったよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい,あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
+      { id: 22, char: "よ", voice: "「よかった～、ミニうつろもお疲れ様」「ｱﾘｶﾞﾄｳ!ｳﾂﾛﾁｬﾝ!ｱﾘｶﾞﾄｳ!ｶﾞﾝﾊﾞｯﾀ!ﾐﾆｳﾂﾛﾓｶﾞﾝﾊﾞｯﾀ!」「感謝したね、うん感謝したよ、ミニうつろ」「ﾜｧｲ!」「遠投じゃないけど、遠投じゃないけど並べよ、かわいい,あはははは」", title: "【＃風来のシレン6】えっ今日は超真髄クリアしていいのか！？【不思議のダンジョン 風来のシレン6 とぐろ島探検録】", date: "2025.02.11", screenshot: "screenshot/utsuro_ss_022.png", img: "img/utsuro_thumb_022.jpg", audio: "audio/utsuro_voice_022.mp3", youtube: "https://www.youtube.com/live/GBVnjVcUyAw?si=Uw9cbwZNI35v9Mpe&t=18376" },
       { id: 23, char: "み", voice: "南ってねぇ、下なんだよ", title: "【がんばれゴエモン〜宇宙海賊アコギング〜】プレステのゴエモンをやっていくでございます【レトロゲーム】", date: "2026.01.09", screenshot: "screenshot/utsuro_ss_023.png", img: "img/utsuro_thumb_023.jpg", audio: "audio/utsuro_voice_023.mp3", youtube: "https://www.youtube.com/live/LsuM9jHKCis?si=5ONIhid5jmngfiKU&t=5470" },
       { id: 24, char: "い", voice: "一旦ぱふるか・・・ふふふ、すまんが一旦ぱふらせてもらうか・・・", title: "【ドラゴンクエスト】完全初見！今こそSFC版で冒険を始めるメイド【レトロゲーム】", date: "2025.11.12", screenshot: "screenshot/utsuro_ss_024.png", img: "img/utsuro_thumb_024.jpg", audio: "audio/utsuro_voice_024.mp3", youtube: "https://www.youtube.com/live/p6dnGOYMntM?si=Uo-qzSpNJhiPE0aD&t=10039" },
       { id: 25, char: "つ", voice: "付き合いたいよぉ・・・もう誰でもいいから付き合いたいよぉ・・・付き合いたいよぉ、もう美樹原でいいよぉ・・・", title: "【ときめきメモリアル】連鎖爆発破滅煉獄編【ネタバレ注意／～forever with you～ エモーショナル】", date: "2026.02.17", screenshot: "screenshot/utsuro_ss_025.png", img: "img/utsuro_thumb_025.jpg", audio: "audio/utsuro_voice_025.mp3", youtube: "https://www.youtube.com/live/DAS5JGZjBvQ?si=usAxewascBlX4Ns5&t=1797" },
@@ -2716,7 +2717,7 @@
 
       document.getElementById("breakout-card-info").innerText = "";
       document.getElementById("breakout-deal-overlay").style.display = "flex";
-      document.getElementById("breakout-voice-status").innerText = "🧱 パドルを操作してブロックを崩そう！";
+      document.getElementById("breakout-voice-status").innerText = "🧱 バーを操作してブロックを崩そう！";
       
       const canvas = document.getElementById("breakout-canvas");
       const ctx = canvas.getContext("2d");
@@ -2768,7 +2769,7 @@
 
       isGameActive = true;
       isResultScreenActive = false;
-      document.getElementById("breakout-voice-status").innerText = "🧱 パドルを操作してブロックを崩そう！";
+      document.getElementById("breakout-voice-status").innerText = "🧱 バーを操作してブロックを崩そう！";
 
       const canvasWrapper = document.getElementById("breakout-canvas-wrapper");
       const touchPad = document.getElementById("breakout-touch-pad");
@@ -3447,12 +3448,12 @@
         if (score >= 10) {
           commentEl.innerText = "「素晴らしい反射神経でございます！うつろのボイスマスターを名乗っても差し支えありませんね！」";
         } else {
-          commentEl.innerText = "「ふふふ…なかなかの速さでございますね！お見目でございます！」";
+          commentEl.innerText = "「ふふふ…なかなかの速さでございますね！お見所でございます！」";
         }
       } else if (activeMode === 'shinki') {
         if (shinkiMatchedPairs >= 12) {
           titleEl.innerText = "🎉 COMPLETE! 🎉";
-          commentEl.innerText = "「お見事でございます！すべての名言ペアを記憶して引き当てるとは…さすがの記憶力でございますね！」";
+          commentEl.innerText = "「お見所でございます！すべての名言ペアを記憶して引き当てるとは…さすがの記憶力でございますね！」";
         } else {
           titleEl.innerText = "⌛ TIME UP! ⌛";
           commentEl.innerText = "「惜しかったでございますね…！耳をすませてボイスの鳴り分けを聞き取るのがコツでございますよ！」";
