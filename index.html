@@ -1511,9 +1511,6 @@
     let gpNavTargetElements = [];
     let gpNavIndex = 0;
 
-    // ジグソーパズル用ゲームパッド選択変数
-    let gpPuzzleSelectedPieceIndex = null; // トレイ内の選択中のインデックス
-
     // 初回読み込み時にSEをプリロード＆隠しボタン表示更新
     window.addEventListener('DOMContentLoaded', () => {
       preloadSE(CARD_GET_SE_FILE);
@@ -1570,6 +1567,69 @@
         }
       } else {
         gpNavTargetElements = [];
+      }
+    }
+
+    // 上下左右の幾何学的方向へフォーカスを移動する関数
+    function navigateSpatial(direction) {
+      if (!gpNavTargetElements || gpNavTargetElements.length === 0) return;
+      const currentEl = gpNavTargetElements[gpNavIndex];
+      if (!currentEl) {
+        gpNavIndex = 0;
+        if (gpNavTargetElements[0]) gpNavTargetElements[0].classList.add('gp-focused');
+        return;
+      }
+
+      const currentRect = currentEl.getBoundingClientRect();
+      const currentCenter = {
+        x: currentRect.left + currentRect.width / 2,
+        y: currentRect.top + currentRect.height / 2
+      };
+
+      let bestCandidateIndex = -1;
+      let minDistance = Infinity;
+
+      for (let i = 0; i < gpNavTargetElements.length; i++) {
+        if (i === gpNavIndex) continue;
+        const targetEl = gpNavTargetElements[i];
+        const targetRect = targetEl.getBoundingClientRect();
+        const targetCenter = {
+          x: targetRect.left + targetRect.width / 2,
+          y: targetRect.top + targetRect.height / 2
+        };
+
+        const dx = targetCenter.x - currentCenter.x;
+        const dy = targetCenter.y - currentCenter.y;
+
+        let inDirection = false;
+        // 方向ごとの角度・位置判定
+        if (direction === 'up' && dy < -5 && Math.abs(dx) <= Math.abs(dy) * 1.5) inDirection = true;
+        if (direction === 'down' && dy > 5 && Math.abs(dx) <= Math.abs(dy) * 1.5) inDirection = true;
+        if (direction === 'left' && dx < -5 && Math.abs(dy) <= Math.abs(dx) * 1.5) inDirection = true;
+        if (direction === 'right' && dx > 5 && Math.abs(dy) <= Math.abs(dx) * 1.5) inDirection = true;
+
+        if (inDirection) {
+          // 距離の重みづけ計算（正面方向の要素を優先）
+          const distSq = dx * dx + dy * dy;
+          let weight = 1.0;
+          if (direction === 'up' || direction === 'down') weight += Math.abs(dx) / (Math.abs(dy) + 1);
+          else weight += Math.abs(dy) / (Math.abs(dx) + 1);
+
+          const weightedDist = distSq * weight;
+          if (weightedDist < minDistance) {
+            minDistance = weightedDist;
+            bestCandidateIndex = i;
+          }
+        }
+      }
+
+      if (bestCandidateIndex !== -1) {
+        if (gpNavTargetElements[gpNavIndex]) gpNavTargetElements[gpNavIndex].classList.remove('gp-focused');
+        gpNavIndex = bestCandidateIndex;
+        if (gpNavTargetElements[gpNavIndex]) {
+          gpNavTargetElements[gpNavIndex].classList.add('gp-focused');
+          gpNavTargetElements[gpNavIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
       }
     }
 
@@ -1631,34 +1691,23 @@
           updateGamepadNavTargets();
 
           if (gpNavTargetElements.length > 0) {
-            let nextIndex = gpNavIndex;
-
-            if (isButtonPressed(12) || (up && !gamepadPrevButtons['stickUp'])) { // UP
-              nextIndex = Math.max(0, gpNavIndex - 1);
+            if (isButtonPressed(12) || (up && !gamepadPrevButtons['stickUp'])) {
+              navigateSpatial('up');
             }
-            if (isButtonPressed(13) || (down && !gamepadPrevButtons['stickDown'])) { // DOWN
-              nextIndex = Math.min(gpNavTargetElements.length - 1, gpNavIndex + 1);
+            if (isButtonPressed(13) || (down && !gamepadPrevButtons['stickDown'])) {
+              navigateSpatial('down');
             }
-            if (isButtonPressed(14) || (left && !gamepadPrevButtons['stickLeft'])) { // LEFT
-              nextIndex = Math.max(0, gpNavIndex - 1);
+            if (isButtonPressed(14) || (left && !gamepadPrevButtons['stickLeft'])) {
+              navigateSpatial('left');
             }
-            if (isButtonPressed(15) || (right && !gamepadPrevButtons['stickRight'])) { // RIGHT
-              nextIndex = Math.min(gpNavTargetElements.length - 1, gpNavIndex + 1);
+            if (isButtonPressed(15) || (right && !gamepadPrevButtons['stickRight'])) {
+              navigateSpatial('right');
             }
 
             gamepadPrevButtons['stickUp'] = up;
             gamepadPrevButtons['stickDown'] = down;
             gamepadPrevButtons['stickLeft'] = left;
             gamepadPrevButtons['stickRight'] = right;
-
-            if (nextIndex !== gpNavIndex) {
-              if (gpNavTargetElements[gpNavIndex]) gpNavTargetElements[gpNavIndex].classList.remove('gp-focused');
-              gpNavIndex = nextIndex;
-              if (gpNavTargetElements[gpNavIndex]) {
-                gpNavTargetElements[gpNavIndex].classList.add('gp-focused');
-                gpNavTargetElements[gpNavIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-              }
-            }
           }
         }
 
