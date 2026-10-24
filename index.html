@@ -1361,7 +1361,7 @@
       if (secretClickTimer) clearTimeout(secretClickTimer);
       secretClickTimer = setTimeout(() => {
         secretClickCount = 0;
-      }, 2000); // 2秒間操作がなければカウントリセット
+      }, 2000);
 
       if (secretClickCount >= 5) {
         secretClickCount = 0;
@@ -1499,7 +1499,7 @@
     let qixGrid = []; // 0: 未獲得(黒), 1: 獲得済み(透明), 2: 描画中ライン
     let qixPlayer = { x: 0, y: 0, isDrawing: false };
     let qixLinePath = [];
-    let qixEnemies = []; // ★ 敵を配列管理
+    let qixEnemies = [];
     let qixCard = null;
     let qixAnimId = null;
     let qixLives = 3;
@@ -1524,7 +1524,6 @@
 
     // 画面変更時にフォーカス要素を収集するヘルパー
     function updateGamepadNavTargets() {
-      // 既存のハイライトを全削除
       document.querySelectorAll('.gp-focused').forEach(el => el.classList.remove('gp-focused'));
 
       let selector = "";
@@ -1571,7 +1570,6 @@
       }
     }
 
-    // 上下左右の幾何学的方向へフォーカスを移動する関数
     function navigateSpatial(direction) {
       if (!gpNavTargetElements || gpNavTargetElements.length === 0) return;
       const currentEl = gpNavTargetElements[gpNavIndex];
@@ -1603,14 +1601,12 @@
         const dy = targetCenter.y - currentCenter.y;
 
         let inDirection = false;
-        // 方向ごとの角度・位置判定
         if (direction === 'up' && dy < -5 && Math.abs(dx) <= Math.abs(dy) * 1.5) inDirection = true;
         if (direction === 'down' && dy > 5 && Math.abs(dx) <= Math.abs(dy) * 1.5) inDirection = true;
         if (direction === 'left' && dx < -5 && Math.abs(dy) <= Math.abs(dx) * 1.5) inDirection = true;
         if (direction === 'right' && dx > 5 && Math.abs(dy) <= Math.abs(dx) * 1.5) inDirection = true;
 
         if (inDirection) {
-          // 距離の重みづけ計算（正面方向の要素を優先）
           const distSq = dx * dx + dy * dy;
           let weight = 1.0;
           if (direction === 'up' || direction === 'down') weight += Math.abs(dx) / (Math.abs(dy) + 1);
@@ -1634,7 +1630,6 @@
       }
     }
 
-    // PC用ゲームパッド（コントローラー）入力ポーリング関数
     function pollGamepadInput() {
       const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
       let gp = null;
@@ -1648,7 +1643,6 @@
       if (gp) {
         initAudioContext();
 
-        // 1. 方向キー（D-Pad） / 左スティック入力の処理
         const threshold = 0.5;
         const stickX = gp.axes[0] || 0;
         const stickY = gp.axes[1] || 0;
@@ -1663,7 +1657,6 @@
         const left = dpadLeft || stickX < -threshold;
         const right = dpadRight || stickX > threshold;
 
-        // クイックス（陣取り）移動
         if (activeMode === 'qix' && isGameActive) {
           qixMoveKey.up = up;
           qixMoveKey.down = down;
@@ -1671,13 +1664,11 @@
           qixMoveKey.right = right;
         }
 
-        // ブロック崩し移動
         if (activeMode === 'breakout' && isGameActive) {
           breakoutKeyLeft = left;
           breakoutKeyRight = right;
         }
 
-        // 2. ボタン押下判定（トリガーイベント）
         function isButtonPressed(btnIdx) {
           const isDown = gp.buttons[btnIdx] && gp.buttons[btnIdx].pressed;
           const wasDown = gamepadPrevButtons[btnIdx] || false;
@@ -1685,7 +1676,6 @@
           return isDown && !wasDown;
         }
 
-        // --- 画面ナビゲーション・カーソル移動（Qix・ブロック崩しのアクション動作中以外） ---
         const isActionGameRunning = (activeMode === 'qix' || activeMode === 'breakout') && isGameActive;
 
         if (!isActionGameRunning) {
@@ -1712,7 +1702,6 @@
           }
         }
 
-        // Aボタン（ボタン0: 決定/選択/実行）
         if (isButtonPressed(0)) {
           if (document.getElementById("retire-modal").style.display === "flex") {
             closeRetireConfirm();
@@ -1734,10 +1723,8 @@
           } else if (gpNavTargetElements.length > 0 && gpNavTargetElements[gpNavIndex]) {
             const focusedEl = gpNavTargetElements[gpNavIndex];
 
-            // ジグソーパズルのゲームパッド特殊操作
             if (activeMode === 'puzzle' && isGameActive) {
               if (focusedEl.classList.contains('puzzle-piece')) {
-                // トレイ内のピース選択＆回転
                 const pieceId = focusedEl.id;
                 const pieceObj = puzzleTrayPieces.find(p => p && p.uid === pieceId);
                 if (pieceObj) {
@@ -1746,7 +1733,6 @@
                   checkPuzzleCompletion();
                 }
               } else if (focusedEl.classList.contains('puzzle-slot')) {
-                // スロットへの自動はめ込み
                 const slotIdx = parseInt(focusedEl.id.replace('puzzle-slot-', ''));
                 const availablePiece = puzzleTrayPieces.find(p => p !== null);
                 if (availablePiece && !isNaN(slotIdx)) {
@@ -1759,7 +1745,6 @@
           }
         }
 
-        // Bボタン（ボタン1: キャンセル/戻る）
         if (isButtonPressed(1)) {
           if (document.getElementById("retire-modal").style.display === "flex") {
             showMainTitleScreen();
@@ -1781,7 +1766,6 @@
           }
         }
 
-        // STARTボタン（ボタン8, 9, 10: ポーズ/リタイア画面開閉）
         if (isButtonPressed(9) || isButtonPressed(8) || isButtonPressed(10)) {
           if (isGameActive) {
             if (document.getElementById("retire-modal").style.display === "flex") {
@@ -1805,18 +1789,20 @@
         cancelAnimationFrame(qixAnimId);
         qixAnimId = null;
       }
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
     }
 
     function showMainTitleScreen() {
       stopAllAnimations();
       activeMode = 'none';
-      clearInterval(timerInterval);
       isGameActive = false;
       isResultScreenActive = false;
       stopCurrentNormalizedVoice();
       updateKarutaSecretButton();
 
-      // クイックス・ブロック崩しのキー入力リスナー解除＆フラグ初期化
       window.onkeydown = null;
       window.onkeyup = null;
       qixMoveKey = { up: false, down: false, left: false, right: false };
@@ -1921,7 +1907,6 @@
         gtag('event', 'view_album');
       }
 
-      // スライド選択モード時はソート切り替えボタンを非表示にする
       const sortContainer = document.getElementById("album-sort-container");
       if (sortContainer) {
         sortContainer.style.display = (albumMode === 'slide_select') ? 'none' : 'flex';
@@ -1977,7 +1962,6 @@
       
       const displayData = (albumMode === 'slide_select') ? getSlideSelectableData() : allData;
       
-      // ソート処理
       let sortedData = [...displayData];
       if (albumMode !== 'slide_select') {
         if (albumSortOrder === 'date_old') {
@@ -2173,7 +2157,6 @@
         modeBadge.innerText = "MODE: HARD"; modeBadge.style.borderColor = "#ff3366";
       }
 
-      clearInterval(timerInterval);
       remainingTime = GAME_TIME_LIMIT;
       score = 0; missCount = 0; isGameActive = false;
 
@@ -2186,6 +2169,7 @@
     }
 
     function dealCardsAndStart() {
+      stopAllAnimations();
       initAudioContext();
       document.getElementById("deal-overlay").style.display = "none";
       const validData = getValidGameData();
@@ -2214,7 +2198,7 @@
           remainingTime = 0;
           document.getElementById("timer-display").innerText = "0.0";
           isGameActive = false;
-          clearInterval(timerInterval);
+          if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
           showTimeUpScreen();
         } else {
           document.getElementById("timer-display").innerText = remainingTime.toFixed(1);
@@ -2314,7 +2298,7 @@
 
         if (remainingTime <= 0) {
           isGameActive = false;
-          clearInterval(timerInterval);
+          if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
           showTimeUpScreen();
         }
       }
@@ -2330,7 +2314,6 @@
       document.getElementById("shinki-title-screen").style.display = "none";
       document.getElementById("shinki-container").style.display = "flex";
 
-      clearInterval(timerInterval);
       shinkiRemainingTime = SHINKI_TIME_LIMIT;
       shinkiMatchedPairs = 0;
       firstCard = null; secondCard = null; isCheckingPair = false; isGameActive = false;
@@ -2344,6 +2327,7 @@
     }
 
     function dealShinkiCardsAndStart() {
+      stopAllAnimations();
       initAudioContext();
       document.getElementById("shinki-deal-overlay").style.display = "none";
 
@@ -2373,7 +2357,7 @@
           shinkiRemainingTime = 0;
           document.getElementById("shinki-timer-display").innerText = "0.0";
           isGameActive = false;
-          clearInterval(timerInterval);
+          if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
           showTimeUpScreen();
         } else {
           document.getElementById("shinki-timer-display").innerText = shinkiRemainingTime.toFixed(1);
@@ -2441,7 +2425,7 @@
 
             if (shinkiMatchedPairs >= 12) {
               isGameActive = false;
-              clearInterval(timerInterval);
+              if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
             } else {
               document.getElementById("shinki-voice-status").innerText = "🔊 次のペアを探してください！";
             }
@@ -2494,7 +2478,6 @@
       document.getElementById("puzzle-title-screen").style.display = "none";
       document.getElementById("puzzle-container").style.display = "flex";
 
-      clearInterval(timerInterval);
       isGameActive = false;
 
       document.getElementById("puzzle-tray").innerHTML = '<div class="tray-title">📦 ピース置き場</div>';
@@ -2505,6 +2488,7 @@
     }
 
     function dealPuzzleCardsAndStart() {
+      stopAllAnimations();
       initAudioContext();
       document.getElementById("puzzle-deal-overlay").style.display = "none";
 
@@ -2733,7 +2717,6 @@
       document.getElementById("album-screen").style.display = "none";
       document.getElementById("slide-container").style.display = "flex";
 
-      clearInterval(timerInterval);
       isGameActive = false;
 
       const selectableData = getSlideSelectableData();
@@ -2788,6 +2771,7 @@
     }
 
     function dealSlideCardsAndStart() {
+      stopAllAnimations();
       initAudioContext();
       document.getElementById("slide-deal-overlay").style.display = "none";
 
@@ -2904,7 +2888,6 @@
       document.getElementById("breakout-title-screen").style.display = "none";
       document.getElementById("breakout-container").style.display = "flex";
 
-      clearInterval(timerInterval);
       isGameActive = false;
 
       document.getElementById("breakout-card-info").innerText = "";
@@ -2917,6 +2900,7 @@
     }
 
     function dealBreakoutCardsAndStart() {
+      stopAllAnimations();
       initAudioContext();
       document.getElementById("breakout-deal-overlay").style.display = "none";
 
@@ -3205,7 +3189,6 @@
         return;
       }
 
-      // パドルの描画
       ctx.save();
       ctx.fillStyle = "#00ffff";
       ctx.shadowColor = "#00ffff";
@@ -3213,7 +3196,6 @@
       ctx.fillRect(breakoutPaddle.x, breakoutPaddle.y, breakoutPaddle.width, breakoutPaddle.height);
       ctx.restore();
 
-      // ボールの描画
       ctx.save();
       breakoutBalls.forEach(ball => {
         ctx.beginPath();
@@ -3251,7 +3233,6 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // マウス・タッチ操作の共通ハンドラ
     function setDpadDirection(dir, active, e) {
       if (e) {
         e.preventDefault();
@@ -3260,7 +3241,6 @@
       if (dir in qixMoveKey) {
         qixMoveKey[dir] = active;
       }
-      // UIのビジュアルフィードバック
       const btn = document.querySelector(`.dpad-${dir}`);
       if (btn) {
         if (active) btn.classList.add('active');
@@ -3269,6 +3249,7 @@
     }
 
     function dealQixCardsAndStart() {
+      stopAllAnimations();
       initAudioContext();
       document.getElementById("qix-deal-overlay").style.display = "none";
 
@@ -3281,7 +3262,6 @@
       document.getElementById("qix-card-info").innerText = ""; 
       document.getElementById("qix-bg-img").src = qixCard.screenshot || qixCard.img;
 
-      // グリッド初期化（外枠のみ獲得済み(=1)、内側は未獲得(=0)）
       qixGrid = [];
       for (let r = 0; r < QIX_ROWS; r++) {
         let row = [];
@@ -3310,7 +3290,6 @@
       isGameActive = true;
       isResultScreenActive = false;
 
-      // キーボード操作のリスナー登録
       window.onkeydown = (e) => {
         if (!isGameActive || activeMode !== 'qix') return;
         if (e.key === "ArrowUp" || e.key === "w") qixMoveKey.up = true;
@@ -3348,7 +3327,6 @@
       const cellW = 640 / QIX_COLS;
       const cellH = 360 / QIX_ROWS;
 
-      // 自機の移動処理
       qixMoveTimer++;
       if (qixMoveTimer >= 2) { 
         qixMoveTimer = 0;
@@ -3363,7 +3341,6 @@
         }
       }
 
-      // 50%以上占領したら2体目の敵を出現させる処理
       if (qixPercent >= 50.0 && qixEnemies.length === 1) {
         qixEnemies.push({
           x: qixPlayer.x > 40 ? 15 : 65,
@@ -3377,7 +3354,6 @@
         showFeedback("wrong", "⚠️ 警告: 敵が増殖しました！");
       }
 
-      // 占領率が高くなるにつれて全体スピード・不規則性を強化
       const currentSpeedBoost = 1.0 + (qixPercent / 100) * 0.8;
 
       let enemyHit = false;
@@ -3423,10 +3399,8 @@
         return;
       }
 
-      // 描画処理
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. 未獲得エリアの黒マスク描画
       ctx.fillStyle = "rgba(0, 0, 0, 0.95)";
       for (let r = 0; r < QIX_ROWS; r++) {
         for (let c = 0; c < QIX_COLS; c++) {
@@ -3436,7 +3410,6 @@
         }
       }
 
-      // 2. 境界線＆確保済みエリア枠の描画
       ctx.strokeStyle = "rgba(0, 255, 255, 0.4)";
       ctx.lineWidth = 1;
       for (let r = 0; r < QIX_ROWS; r++) {
@@ -3447,7 +3420,6 @@
         }
       }
 
-      // 3. 引いている途中の線描画
       if (qixLinePath.length > 1) {
         ctx.beginPath();
         ctx.strokeStyle = "#ff3366";
@@ -3462,7 +3434,6 @@
         ctx.shadowBlur = 0;
       }
 
-      // 4. 敵（Qix配列）全員の描画
       qixEnemies.forEach((enemy, idx) => {
         ctx.save();
         ctx.translate((enemy.x + 0.5) * cellW, (enemy.y + 0.5) * cellH);
@@ -3480,7 +3451,6 @@
         ctx.restore();
       });
 
-      // 5. 自機の描画
       ctx.save();
       ctx.fillStyle = "#00ffff";
       ctx.shadowColor = "#00ffff";
@@ -3502,32 +3472,27 @@
       let currentTile = qixGrid[qixPlayer.y][qixPlayer.x];
       let nextTile = qixGrid[ny][nx];
 
-      // 1. 安全領域(1)から未獲得領域(0)へ進む場合（線引き開始）
       if (currentTile === 1 && nextTile === 0) {
         qixPlayer.isDrawing = true;
         qixLinePath = [{ x: qixPlayer.x, y: qixPlayer.y }, { x: nx, y: ny }];
-        qixGrid[ny][nx] = 2; // 線描画状態へ
+        qixGrid[ny][nx] = 2;
         qixPlayer.x = nx; qixPlayer.y = ny;
       }
-      // 2. 未獲得領域(0)を進行中の場合
       else if (qixPlayer.isDrawing && nextTile === 0) {
         qixLinePath.push({ x: nx, y: ny });
         qixGrid[ny][nx] = 2;
         qixPlayer.x = nx; qixPlayer.y = ny;
       }
-      // 3. 自分が引いている途中の線(2)に衝突した場合（自己交差ミス）
       else if (qixPlayer.isDrawing && nextTile === 2) {
         handleQixMiss("❌ 自分の線にぶつかってしまった！");
         return;
       }
-      // 4. 線引き中に安全領域(1)に戻ってきた場合（領域獲得判定）
       else if (qixPlayer.isDrawing && nextTile === 1) {
         qixLinePath.push({ x: nx, y: ny });
         qixPlayer.x = nx; qixPlayer.y = ny;
         qixPlayer.isDrawing = false;
         fillQixArea();
       }
-      // 5. 安全領域(1)同士の移動
       else if (!qixPlayer.isDrawing && nextTile === 1) {
         qixPlayer.x = nx; qixPlayer.y = ny;
       }
@@ -3544,11 +3509,9 @@
       qixLives--;
       updateQixDisplay();
 
-      // 移動フラグを全解除
       qixMoveKey = { up: false, down: false, left: false, right: false };
       document.querySelectorAll('.dpad-btn').forEach(b => b.classList.remove('active'));
 
-      // 描画中の線を消去
       for (let r = 0; r < QIX_ROWS; r++) {
         for (let c = 0; c < QIX_COLS; c++) {
           if (qixGrid[r][c] === 2) qixGrid[r][c] = 0;
@@ -3557,7 +3520,6 @@
       qixLinePath = [];
       qixPlayer.isDrawing = false;
 
-      // 安全地帯(1)のスタート地点へ自機を戻す
       qixPlayer.x = 0; qixPlayer.y = 0;
 
       if (qixLives <= 0) {
@@ -3573,12 +3535,10 @@
     }
 
     function fillQixArea() {
-      // 描画線を獲得領域(1)に変換
       qixLinePath.forEach(pt => {
         qixGrid[pt.y][pt.x] = 1;
       });
 
-      // 塗りつぶし判定（敵の位置からFlood Fillして未獲得領域を特定）
       let visited = Array.from({ length: QIX_ROWS }, () => Array(QIX_COLS).fill(false));
       let queue = [];
 
@@ -3625,7 +3585,6 @@
         });
       }
 
-      // 敵が到達できなかった未獲得領域(0)を全て獲得(1)へ変換
       let filledCount = 0;
       for (let r = 0; r < QIX_ROWS; r++) {
         for (let c = 0; c < QIX_COLS; c++) {
@@ -3640,7 +3599,6 @@
       updateQixDisplay();
       playGetCardSE();
 
-      // クリア判定（85%以上獲得でクリア）
       if (qixPercent >= 85.0) {
         isGameActive = false;
         stopAllAnimations();
@@ -3653,7 +3611,6 @@
           showTimeUpScreen();
         });
 
-        // 音声再生トラブル時用の安全タイマー（2.5秒後に強制画面遷移）
         setTimeout(() => {
           if (isResultScreenActive) {
             isResultScreenActive = false;
