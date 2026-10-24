@@ -818,8 +818,9 @@
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
         ・矢印キー/十字キー/ゲームパッド/画面の矢印ボタンで自機を操作します。<br>
         ・外枠から内側へラインを引き、再び囲い込むと領域を占領できます！<br>
-        ・敵（Qix）や引いている途中の線に触れると1ミスとなります。<br>
-        ・<b>85%以上</b> の領域を獲得してスクショ画像を全開にすればクリア！
+        ・敵(三角)が引いている途中の線に触れると1ミスとなります。<br>
+        ・<b>85%以上</b> の領域を獲得してスクショ画像を全開にすればクリア！<br>
+        ・残機は三機❤️❤️❤️です。
       </p>
     </div>
 
@@ -1498,7 +1499,7 @@
     let qixGrid = []; // 0: 未獲得(黒), 1: 獲得済み(透明), 2: 描画中ライン
     let qixPlayer = { x: 0, y: 0, isDrawing: false };
     let qixLinePath = [];
-    let qixEnemy = { x: 40, y: 22, vx: 0.3, vy: 0.2, length: 15, angle: 0 };
+    let qixEnemies = []; // ★ 敵を配列管理
     let qixCard = null;
     let qixAnimId = null;
     let qixLives = 3;
@@ -3296,7 +3297,9 @@
 
       qixPlayer = { x: 0, y: 0, isDrawing: false };
       qixLinePath = [];
-      qixEnemy = { x: 40, y: 22, vx: 0.3, vy: 0.2, length: 15, angle: 0 };
+      qixEnemies = [
+        { x: 40, y: 22, vx: 0.3, vy: 0.2, length: 15, angle: 0, speedFactor: 1.0 }
+      ];
       qixLives = 3;
       qixPercent = 0;
       qixMoveKey = { up: false, down: false, left: false, right: false };
@@ -3332,7 +3335,6 @@
     }
 
     function runQixLoop() {
-      // Qixモードかつゲームアクティブ時以外はループを即時中断
       if (!isGameActive || activeMode !== 'qix') {
         if (qixAnimId) {
           cancelAnimationFrame(qixAnimId);
@@ -3346,7 +3348,7 @@
       const cellW = 640 / QIX_COLS;
       const cellH = 360 / QIX_ROWS;
 
-      // 自機の移動処理（押しっぱなしでの連続移動スピードを制御）
+      // 自機の移動処理
       qixMoveTimer++;
       if (qixMoveTimer >= 2) { 
         qixMoveTimer = 0;
@@ -3361,36 +3363,64 @@
         }
       }
 
-      // Qix（敵）の更新処理
-      qixEnemy.x += qixEnemy.vx;
-      qixEnemy.y += qixEnemy.vy;
-      qixEnemy.angle += 0.08;
-
-      if (qixEnemy.x < 3 || qixEnemy.x >= QIX_COLS - 3) qixEnemy.vx *= -1;
-      if (qixEnemy.y < 3 || qixEnemy.y >= QIX_ROWS - 3) qixEnemy.vy *= -1;
-
-      // 敵が壁や確保領域に突っ込んだ場合の反転
-      let ex = Math.floor(qixEnemy.x);
-      let ey = Math.floor(qixEnemy.y);
-      if (ex >= 0 && ex < QIX_COLS && ey >= 0 && ey < QIX_ROWS) {
-        if (qixGrid[ey][ex] === 1) {
-          qixEnemy.vx *= -1;
-          qixEnemy.vy *= -1;
-        }
+      // 50%以上占領したら2体目の敵を出現させる処理
+      if (qixPercent >= 50.0 && qixEnemies.length === 1) {
+        qixEnemies.push({
+          x: qixPlayer.x > 40 ? 15 : 65,
+          y: qixPlayer.y > 22 ? 10 : 35,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: (Math.random() - 0.5) * 0.6,
+          length: 10,
+          angle: Math.random() * Math.PI,
+          speedFactor: 1.2
+        });
+        showFeedback("wrong", "⚠️ 警告: 敵が増殖しました！");
       }
 
-      // 敵と描画中ラインの衝突判定
-      if (qixPlayer.isDrawing) {
-        let enemyHit = false;
-        qixLinePath.forEach(pt => {
-          let dist = Math.hypot(pt.x - qixEnemy.x, pt.y - qixEnemy.y);
-          if (dist < 2.5) enemyHit = true;
-        });
+      // 占領率が高くなるにつれて全体スピード・不規則性を強化
+      const currentSpeedBoost = 1.0 + (qixPercent / 100) * 0.8;
 
-        if (enemyHit) {
-          handleQixMiss("❌ 敵に線を引くところを邪魔された！");
-          return;
+      let enemyHit = false;
+
+      qixEnemies.forEach(enemy => {
+        if (Math.random() < 0.05) {
+          enemy.vx += (Math.random() - 0.5) * 0.15;
+          enemy.vy += (Math.random() - 0.5) * 0.15;
+          
+          const maxSpd = 0.6 * enemy.speedFactor;
+          enemy.vx = Math.max(-maxSpd, Math.min(maxSpd, enemy.vx));
+          enemy.vy = Math.max(-maxSpd, Math.min(maxSpd, enemy.vy));
         }
+
+        enemy.x += enemy.vx * currentSpeedBoost;
+        enemy.y += enemy.vy * currentSpeedBoost;
+        enemy.angle += 0.08 * currentSpeedBoost;
+
+        if (enemy.x < 3 || enemy.x >= QIX_COLS - 3) enemy.vx *= -1;
+        if (enemy.y < 3 || enemy.y >= QIX_ROWS - 3) enemy.vy *= -1;
+
+        let ex = Math.floor(enemy.x);
+        let ey = Math.floor(enemy.y);
+        if (ex >= 0 && ex < QIX_COLS && ey >= 0 && ey < QIX_ROWS) {
+          if (qixGrid[ey][ex] === 1) {
+            enemy.vx *= -1;
+            enemy.vy *= -1;
+            enemy.x += enemy.vx * 2;
+            enemy.y += enemy.vy * 2;
+          }
+        }
+
+        if (qixPlayer.isDrawing) {
+          qixLinePath.forEach(pt => {
+            let dist = Math.hypot(pt.x - enemy.x, pt.y - enemy.y);
+            if (dist < 2.2) enemyHit = true;
+          });
+        }
+      });
+
+      if (enemyHit) {
+        handleQixMiss("❌ 敵に線を引くところを邪魔された！");
+        return;
       }
 
       // 描画処理
@@ -3432,21 +3462,23 @@
         ctx.shadowBlur = 0;
       }
 
-      // 4. 敵（Qix線状グラフィック）の描画
-      ctx.save();
-      ctx.translate((qixEnemy.x + 0.5) * cellW, (qixEnemy.y + 0.5) * cellH);
-      ctx.rotate(qixEnemy.angle);
-      ctx.strokeStyle = "#ffd700";
-      ctx.lineWidth = 3;
-      ctx.shadowColor = "#ffd700";
-      ctx.shadowBlur = 15;
-      ctx.beginPath();
-      ctx.moveTo(-qixEnemy.length, -qixEnemy.length / 2);
-      ctx.lineTo(qixEnemy.length, qixEnemy.length / 2);
-      ctx.lineTo(-qixEnemy.length / 2, qixEnemy.length);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.restore();
+      // 4. 敵（Qix配列）全員の描画
+      qixEnemies.forEach((enemy, idx) => {
+        ctx.save();
+        ctx.translate((enemy.x + 0.5) * cellW, (enemy.y + 0.5) * cellH);
+        ctx.rotate(enemy.angle);
+        ctx.strokeStyle = idx === 0 ? "#ffd700" : "#ff3355";
+        ctx.lineWidth = 3;
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.shadowBlur = 15;
+        ctx.beginPath();
+        ctx.moveTo(-enemy.length, -enemy.length / 2);
+        ctx.lineTo(enemy.length, enemy.length / 2);
+        ctx.lineTo(-enemy.length / 2, enemy.length);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+      });
 
       // 5. 自機の描画
       ctx.save();
@@ -3550,31 +3582,32 @@
       let visited = Array.from({ length: QIX_ROWS }, () => Array(QIX_COLS).fill(false));
       let queue = [];
 
-      let ex = Math.min(QIX_COLS - 1, Math.max(0, Math.floor(qixEnemy.x)));
-      let ey = Math.min(QIX_ROWS - 1, Math.max(0, Math.floor(qixEnemy.y)));
+      qixEnemies.forEach(enemy => {
+        let ex = Math.min(QIX_COLS - 1, Math.max(0, Math.floor(enemy.x)));
+        let ey = Math.min(QIX_ROWS - 1, Math.max(0, Math.floor(enemy.y)));
 
-      // ★ 敵が壁や線上(1)に重なっている場合、周囲の未獲得マス(0)を探して探索スタート地点を補正
-      if (qixGrid[ey][ex] === 1) {
-        let foundSafeStart = false;
-        for (let dy = -2; dy <= 2 && !foundSafeStart; dy++) {
-          for (let dx = -2; dx <= 2 && !foundSafeStart; dx++) {
-            let tx = ex + dx;
-            let ty = ey + dy;
-            if (tx >= 0 && tx < QIX_COLS && ty >= 0 && ty < QIX_ROWS) {
-              if (qixGrid[ty][tx] === 0) {
-                ex = tx;
-                ey = ty;
-                foundSafeStart = true;
+        if (qixGrid[ey][ex] === 1) {
+          let foundSafeStart = false;
+          for (let dy = -2; dy <= 2 && !foundSafeStart; dy++) {
+            for (let dx = -2; dx <= 2 && !foundSafeStart; dx++) {
+              let tx = ex + dx;
+              let ty = ey + dy;
+              if (tx >= 0 && tx < QIX_COLS && ty >= 0 && ty < QIX_ROWS) {
+                if (qixGrid[ty][tx] === 0) {
+                  ex = tx;
+                  ey = ty;
+                  foundSafeStart = true;
+                }
               }
             }
           }
         }
-      }
 
-      if (qixGrid[ey][ex] === 0) {
-        queue.push({ x: ex, y: ey });
-        visited[ey][ex] = true;
-      }
+        if (qixGrid[ey][ex] === 0 && !visited[ey][ex]) {
+          queue.push({ x: ex, y: ey });
+          visited[ey][ex] = true;
+        }
+      });
 
       while (queue.length > 0) {
         let curr = queue.shift();
