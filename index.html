@@ -797,7 +797,8 @@
       <p style="font-size: 0.9rem; line-height: 1.6; text-align: left; margin: 5px 0;">
         ・画面下のスワイプエリアでバーを動かしてボールを弾き返そう！(スマホ)<br>
         ・マウスや十字キー、ゲームパッドを左右に動かしてバーを動かしてボールを弾き返そう！(PC)<br>
-        ・アイテム（🔴マルチボール / 🔵ロングバー / 🟢貫通弾）を活用して全てのブロックを壊し、カードをゲットしよう！
+        ・アイテム（🔴マルチボール / 🔵ロングバー / 🟢貫通弾）を活用して全てのブロックを壊し、カードをゲットしよう！<br>
+        ・残機は三機❤️❤️❤️です。
       </p>
     </div>
 
@@ -969,9 +970,14 @@
   <!-- 12. ブロック崩しゲームエリア全体 -->
   <div id="breakout-container">
     <div class="top-header-common">
+      <div class="stat-box">
+        <div class="stat-label">❤️ 残機</div>
+        <div id="breakout-lives-display" class="stat-display">❤️❤️❤️</div>
+      </div>
+
       <div class="stat-box" style="flex: 1; align-items: center; justify-content: center;">
         <div id="breakout-voice-status" style="font-size: 0.9rem; color: var(--neon-light-blue); font-weight: bold;">
-          🧱 バーを操作してブロックを崩しよう！
+          🧱 バーを操作してブロックを崩そう！
         </div>
       </div>
 
@@ -1137,6 +1143,12 @@
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     }
 
+    // ゲームパッド接続時の初期化イベント
+    window.addEventListener("gamepadconnected", (e) => {
+      gamepadPrevButtons = {};
+      initAudioContext();
+    });
+
     function preloadSE(audioPath) {
       initAudioContext();
       if (!audioCtx || audioBufferCache[audioPath]) return;
@@ -1210,22 +1222,31 @@
       }
     }
 
-    function playNormalizedAudio(audioPath, panValue = 0.0, customDuration = null, onDurationEnd = null) {
+    function playNormalizedAudio(audioPath, panValue = 0.0, maxDuration = null, onEndCallback = null) {
       initAudioContext();
       stopCurrentNormalizedVoice();
+
+      const maxLimit = maxDuration ? Math.min(maxDuration, 20.0) : null;
+
+      function triggerFinish() {
+        stopCurrentNormalizedVoice();
+        if (onEndCallback) {
+          const cb = onEndCallback;
+          onEndCallback = null;
+          cb();
+        }
+      }
 
       if (!audioCtx) {
         fallbackAudioObj = new Audio(audioPath);
         fallbackAudioObj.volume = masterVolume;
+        fallbackAudioObj.onended = () => triggerFinish();
         fallbackAudioObj.play().catch(e => {
           console.log("再生拒否:", e);
-          if (onDurationEnd) onDurationEnd();
+          triggerFinish();
         });
-        if (customDuration) {
-          puzzleClearTimeout = setTimeout(() => {
-            stopCurrentNormalizedVoice();
-            if (onDurationEnd) onDurationEnd();
-          }, customDuration * 1000);
+        if (maxLimit) {
+          puzzleClearTimeout = setTimeout(() => triggerFinish(), maxLimit * 1000);
         }
         return;
       }
@@ -1272,14 +1293,12 @@
 
           merger.connect(audioCtx.destination);
 
+          source.onended = () => triggerFinish();
           source.start(0);
           currentSourceNode = source;
 
-          if (customDuration) {
-            puzzleClearTimeout = setTimeout(() => {
-              stopCurrentNormalizedVoice();
-              if (onDurationEnd) onDurationEnd();
-            }, customDuration * 1000);
+          if (maxLimit) {
+            puzzleClearTimeout = setTimeout(() => triggerFinish(), maxLimit * 1000);
           }
         })
         .catch(err => {
@@ -1287,15 +1306,13 @@
           stopCurrentNormalizedVoice();
           fallbackAudioObj = new Audio(audioPath);
           fallbackAudioObj.volume = masterVolume;
+          fallbackAudioObj.onended = () => triggerFinish();
           fallbackAudioObj.play().catch(e => {
             console.log("Fallback failed:", e);
-            if (onDurationEnd) onDurationEnd();
+            triggerFinish();
           });
-          if (customDuration) {
-            puzzleClearTimeout = setTimeout(() => {
-              stopCurrentNormalizedVoice();
-              if (onDurationEnd) onDurationEnd();
-            }, customDuration * 1000);
+          if (maxLimit) {
+            puzzleClearTimeout = setTimeout(() => triggerFinish(), maxLimit * 1000);
           }
         });
     }
@@ -1490,6 +1507,7 @@
     let breakoutBalls = []; 
     let breakoutBlocks = [];
     let breakoutItems = []; 
+    let breakoutLives = 3;
     let breakoutKeyLeft = false;
     let breakoutKeyRight = false;
 
@@ -1703,7 +1721,11 @@
         }
 
         if (isButtonPressed(0)) {
-          if (document.getElementById("retire-modal").style.display === "flex") {
+          if (isResultScreenActive) {
+            stopCurrentNormalizedVoice();
+            isResultScreenActive = false;
+            showTimeUpScreen();
+          } else if (document.getElementById("retire-modal").style.display === "flex") {
             closeRetireConfirm();
           } else if (document.getElementById("clear-modal").style.display === "flex") {
             const retryBtn = document.getElementById("result-retry-btn");
@@ -1746,7 +1768,11 @@
         }
 
         if (isButtonPressed(1)) {
-          if (document.getElementById("retire-modal").style.display === "flex") {
+          if (isResultScreenActive) {
+            stopCurrentNormalizedVoice();
+            isResultScreenActive = false;
+            showTimeUpScreen();
+          } else if (document.getElementById("retire-modal").style.display === "flex") {
             showMainTitleScreen();
           } else if (document.getElementById("clear-modal").style.display === "flex") {
             showMainTitleScreen();
@@ -2691,17 +2717,12 @@
         saveUnlockedCardId(currentPuzzleCard.id);
         
         isResultScreenActive = true;
-        playNormalizedAudio(currentPuzzleCard.audio, 0.0, 10.0, () => {
-          isResultScreenActive = false;
-          showTimeUpScreen();
-        });
-
-        setTimeout(() => {
+        playNormalizedAudio(currentPuzzleCard.audio, 0.0, 20.0, () => {
           if (isResultScreenActive) {
             isResultScreenActive = false;
             showTimeUpScreen();
           }
-        }, 2500);
+        });
       }
     }
 
@@ -2863,17 +2884,12 @@
         saveUnlockedCardId(currentSlideCard.id);
         
         isResultScreenActive = true;
-        playNormalizedAudio(currentSlideCard.audio, 0.0, 10.0, () => {
-          isResultScreenActive = false;
-          showTimeUpScreen();
-        });
-
-        setTimeout(() => {
+        playNormalizedAudio(currentSlideCard.audio, 0.0, 20.0, () => {
           if (isResultScreenActive) {
             isResultScreenActive = false;
             showTimeUpScreen();
           }
-        }, 2500);
+        });
       }
     }
 
@@ -2890,7 +2906,6 @@
 
       isGameActive = false;
 
-      // 画像と情報をクリア
       const bgImg = document.getElementById("breakout-bg-img");
       if (bgImg) bgImg.src = "";
       document.getElementById("breakout-card-info").innerText = "";
@@ -2901,6 +2916,10 @@
       const ctx = canvas.getContext("2d");
       ctx.fillStyle = "#000000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function updateBreakoutDisplay() {
+      document.getElementById("breakout-lives-display").innerText = "❤️".repeat(breakoutLives);
     }
 
     function dealBreakoutCardsAndStart() {
@@ -2916,6 +2935,9 @@
       breakoutCard = validData[Math.floor(Math.random() * validData.length)];
       document.getElementById("breakout-card-info").innerText = ""; 
       document.getElementById("breakout-bg-img").src = breakoutCard.screenshot || breakoutCard.img;
+
+      breakoutLives = 3;
+      updateBreakoutDisplay();
 
       resetBreakoutPaddleAndBalls();
 
@@ -3152,8 +3174,19 @@
         if (ball.y > 660) {
           breakoutBalls.splice(i, 1);
           if (breakoutBalls.length === 0) {
-            showFeedback("wrong", "❌ ボールが落ちたけど復活！");
-            breakoutBalls.push({ x: 320, y: 530, radius: 7, dx: (Math.random() > 0.5 ? 2.5 : -2.5), dy: -2.5, speed: 3.5, piercing: false });
+            breakoutLives--;
+            updateBreakoutDisplay();
+            playSE(SHINKI_MISS_SE_FILE);
+
+            if (breakoutLives <= 0) {
+              isGameActive = false;
+              stopAllAnimations();
+              showTimeUpScreen();
+              return;
+            } else {
+              showFeedback("wrong", "❌ ボール落とし！残機減少！");
+              resetBreakoutPaddleAndBalls();
+            }
           }
           continue;
         }
@@ -3175,21 +3208,17 @@
 
       if (activeBlocksCount === 0) {
         isGameActive = false;
+        stopAllAnimations();
         showFeedback("correct", "🎉 ブロック崩しクリア！");
         saveUnlockedCardId(breakoutCard.id);
 
         isResultScreenActive = true;
-        playNormalizedAudio(breakoutCard.audio, 0.0, 10.0, () => {
-          isResultScreenActive = false;
-          showTimeUpScreen();
-        });
-
-        setTimeout(() => {
+        playNormalizedAudio(breakoutCard.audio, 0.0, 20.0, () => {
           if (isResultScreenActive) {
             isResultScreenActive = false;
             showTimeUpScreen();
           }
-        }, 2500);
+        });
         return;
       }
 
@@ -3228,7 +3257,6 @@
 
       isGameActive = false;
 
-      // ゲーム開始前は画像を空にして真っ黒に初期化
       const bgImg = document.getElementById("qix-bg-img");
       if (bgImg) bgImg.src = "";
       document.getElementById("qix-card-info").innerText = "";
@@ -3269,7 +3297,6 @@
       qixCard = validData[Math.floor(Math.random() * validData.length)];
       document.getElementById("qix-card-info").innerText = ""; 
       
-      // 今回遊ぶスクショ画像を正確にセット
       const bgImg = document.getElementById("qix-bg-img");
       if (bgImg) {
         bgImg.src = qixCard.screenshot || qixCard.img;
@@ -3354,7 +3381,6 @@
         }
       }
 
-      // 占領率50%以上で敵を追加生成（未獲得エリアを探索して安全な位置に出現させる）
       if (qixPercent >= 50.0 && qixEnemies.length === 1) {
         let emptySpots = [];
         for (let r = 2; r < QIX_ROWS - 2; r++) {
@@ -3635,17 +3661,12 @@
         saveUnlockedCardId(qixCard.id);
 
         isResultScreenActive = true;
-        playNormalizedAudio(qixCard.audio, 0.0, 10.0, () => {
-          isResultScreenActive = false;
-          showTimeUpScreen();
-        });
-
-        setTimeout(() => {
+        playNormalizedAudio(qixCard.audio, 0.0, 20.0, () => {
           if (isResultScreenActive) {
             isResultScreenActive = false;
             showTimeUpScreen();
           }
-        }, 2500);
+        });
       }
     }
 
@@ -3712,11 +3733,13 @@
         penaltyEl.innerText = "カードを獲得しました！";
         retryBtn.onclick = () => { openSlideTitle(); };
       } else if (activeMode === 'breakout') {
-        titleEl.innerText = "🧱 BREAKOUT COMPLETE! 🧱";
-        commentEl.innerText = "「素晴らしいブロック崩しでございました！全てのブロックを崩してスクショを暴き出しましたね！」";
+        titleEl.innerText = breakoutLives > 0 ? "🧱 BREAKOUT COMPLETE! 🧱" : "💀 GAME OVER 💀";
+        commentEl.innerText = breakoutLives > 0 
+          ? "「素晴らしいブロック崩しでございました！全てのブロックを崩してスクショを暴き出しましたね！」"
+          : "「無念…！バーを素早く動かしてボールを確実に打ち返すのがコツでございますよ！」";
         scoreLabelEl.innerText = "クリア結果";
-        scoreValEl.innerText = "大成功 ✨";
-        penaltyEl.innerText = "カードを獲得しました！";
+        scoreValEl.innerText = breakoutLives > 0 ? "大成功 ✨" : "失敗 💦";
+        penaltyEl.innerText = breakoutLives > 0 ? "カードを獲得しました！" : "残機がなくなりました";
         retryBtn.onclick = () => { openBreakoutTitle(); };
       } else {
         titleEl.innerText = qixPercent >= 85.0 ? "🚩 QIX COMPLETE! 🚩" : "💀 GAME OVER 💀";
