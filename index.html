@@ -677,7 +677,7 @@
   <!-- 1. 一番最初の統合タイトル画面 -->
   <div id="main-title-screen" class="screen-overlay" onclick="initAudioContext()">
     <div class="main-title-logo">
-      <span id="secret-logo-trigger" class="secret-trigger" onclick="event.stopPropagation(); handleSecretClick();">氷室うつろ</span>配信<br>名言収集ミニゲーム
+      氷室<span id="char-u" class="secret-trigger" onclick="event.stopPropagation(); handleCharClick('u');">う</span><span id="char-tsu" class="secret-trigger" onclick="event.stopPropagation(); handleCharClick('tsu');">つ</span><span id="char-ro" class="secret-trigger" onclick="event.stopPropagation(); handleCharClick('ro');">ろ</span>配信<br>名言収集ミニゲーム
     </div>
 
     <div class="setting-box">
@@ -841,7 +841,7 @@
     </div>
 
     <!-- 隠しデバッグリセットボタン（本アイコン10回連続タップで出現） -->
-    <button id="hidden-debug-btn" class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況・隠しモードリセット</button>
+    <button id="hidden-debug-btn" class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況リセット</button>
 
     <!-- ソート切り替えボタン群 -->
     <div id="album-sort-container" class="album-sort-group">
@@ -1132,9 +1132,8 @@
     let puzzleClearTimeout = null; 
     let isResultScreenActive = false; 
 
-    // メインタイトル裏技用タップカウンター
-    let secretClickCount = 0;
-    let secretClickTimer = null;
+    // メインタイトル裏技「う」「つ」「ろ」連打用カウンター（段階制御・時間制限なし）
+    let charTapCounts = { u: 0, tsu: 0, ro: 0 };
 
     // アルバムデバッグ用タップカウンター（本アイコン10回連続用）
     let albumSecretClickCount = 0;
@@ -1387,22 +1386,36 @@
       }
     }
 
-    // メインタイトル側の裏技（名言カルタ解放）
-    function handleSecretClick() {
+    // メインタイトル側の裏技（う:5回 -> つ:2回 -> ろ:6回 / 入力時間制限なし）
+    function handleCharClick(char) {
       initAudioContext();
-      secretClickCount++;
 
-      if (secretClickTimer) clearTimeout(secretClickTimer);
-      secretClickTimer = setTimeout(() => {
-        secretClickCount = 0;
-      }, 2000);
+      if (isKarutaUnlocked()) return;
 
-      if (secretClickCount >= 5) {
-        secretClickCount = 0;
-        if (!isKarutaUnlocked()) {
-          setKarutaUnlocked();
-          playGetCardSE();
+      if (char === 'u') {
+        if (charTapCounts.tsu === 0 && charTapCounts.ro === 0) {
+          charTapCounts.u++;
+        } else {
+          charTapCounts = { u: 1, tsu: 0, ro: 0 };
         }
+      } else if (char === 'tsu') {
+        if (charTapCounts.u === 5 && charTapCounts.ro === 0) {
+          charTapCounts.tsu++;
+        } else {
+          charTapCounts = { u: 0, tsu: 0, ro: 0 };
+        }
+      } else if (char === 'ro') {
+        if (charTapCounts.u === 5 && charTapCounts.tsu === 2) {
+          charTapCounts.ro++;
+        } else {
+          charTapCounts = { u: 0, tsu: 0, ro: 0 };
+        }
+      }
+
+      if (charTapCounts.u === 5 && charTapCounts.tsu === 2 && charTapCounts.ro === 6) {
+        charTapCounts = { u: 0, tsu: 0, ro: 0 };
+        setKarutaUnlocked();
+        playGetCardSE();
       }
     }
 
@@ -1414,7 +1427,7 @@
       if (albumSecretClickTimer) clearTimeout(albumSecretClickTimer);
       albumSecretClickTimer = setTimeout(() => {
         albumSecretClickCount = 0;
-      }, 5000); // 5秒以内へ更新
+      }, 5000);
 
       if (albumSecretClickCount >= 10) {
         albumSecretClickCount = 0;
@@ -1426,12 +1439,11 @@
       }
     }
 
+    // デバッグ：カード獲得状況のみリセット
     function debugResetUnlockedCards() {
-      if (confirm("【デバッグ】獲得カードデータおよび隠しモード解放状況をリセットしますか？")) {
+      if (confirm("【デバッグ】獲得カードデータをリセットしますか？（隠しモード解放状況は保持されます）")) {
         localStorage.removeItem("utsuro_karuta_album");
-        localStorage.removeItem("utsuro_karuta_secret_unlocked");
-        updateKarutaSecretButton();
-        alert("データおよび裏技解放状況をリセットしました！");
+        alert("獲得カードデータをリセットしました！");
         renderAlbumGrid();
       }
     }
