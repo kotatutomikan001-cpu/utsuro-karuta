@@ -843,7 +843,7 @@
     <!-- 隠しデバッグリセットボタン（本アイコン10回連続タップで出現） -->
     <button id="hidden-debug-btn" class="debug-btn" onclick="event.stopPropagation(); debugResetUnlockedCards()">🧹 【デバッグ】カード獲得状況リセット</button>
 
-    <!-- ソート切り替えボタン群 -->
+    <!-- ソートボタン群 -->
     <div id="album-sort-container" class="album-sort-group">
       <span style="font-size: 0.85rem; color: var(--neon-light-blue); font-weight: bold;">並び替え:</span>
       <button id="sort-date-old-btn" class="sort-btn active" onclick="changeAlbumSort('date_old')">📅 配信日付 (古い順)</button>
@@ -1237,6 +1237,7 @@
       }
     }
 
+    /* ★ 修正済み playNormalizedAudio 関数 ★ */
     function playNormalizedAudio(audioPath, panValue = 0.0, maxDuration = null, onEndCallback = null) {
       initAudioContext();
       stopCurrentNormalizedVoice();
@@ -1286,25 +1287,30 @@
           const leftGain = audioCtx.createGain();
           const rightGain = audioCtx.createGain();
 
-          if (panValue < 0) {
-            leftGain.gain.value = 1.0;
-            rightGain.gain.value = 0.0;
-          } else if (panValue > 0) {
-            leftGain.gain.value = 0.0;
-            rightGain.gain.value = 1.0;
-          } else {
-            leftGain.gain.value = 1.0;
-            rightGain.gain.value = 1.0;
-          }
-
           source.connect(gainNode);
           gainNode.connect(splitter);
 
-          splitter.connect(leftGain, 0);    
-          splitter.connect(rightGain, 1);   
+          // スプリッターの 0(L) を leftGain へ、1(R) を rightGain へ正しく接続
+          splitter.connect(leftGain, 0);
+          splitter.connect(rightGain, 1);
 
-          leftGain.connect(merger, 0, 0);
-          leftGain.connect(merger, 0, 1);
+          if (panValue < 0) {
+            // 左エリア：左耳（Mergerの0ch）のみ出力
+            leftGain.gain.value = 1.0;
+            rightGain.gain.value = 0.0;
+            leftGain.connect(merger, 0, 0);
+          } else if (panValue > 0) {
+            // 右エリア：右耳（Mergerの1ch）のみ出力
+            leftGain.gain.value = 0.0;
+            rightGain.gain.value = 1.0;
+            rightGain.connect(merger, 0, 1);
+          } else {
+            // 左右両方：ステレオ維持で両耳へ出力
+            leftGain.gain.value = 1.0;
+            rightGain.gain.value = 1.0;
+            leftGain.connect(merger, 0, 0);
+            rightGain.connect(merger, 0, 1);
+          }
 
           merger.connect(audioCtx.destination);
 
