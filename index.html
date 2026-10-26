@@ -1415,7 +1415,9 @@
       if (charTapCounts.u === 5 && charTapCounts.tsu === 2 && charTapCounts.ro === 6) {
         charTapCounts = { u: 0, tsu: 0, ro: 0 };
         setKarutaUnlocked();
-        playGetCardSE();
+        
+        // 効果音ではなく任意のボイスを再生（パスはお好みで変更できます）
+        playNormalizedAudio("audio/utsuro_voice_999.mp3", 0.0);
       }
     }
 
